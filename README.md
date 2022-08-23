@@ -27,7 +27,7 @@ Ahora que ya esta todo instalado, se nos habran desplegado todos los dockers.
 
 | Docker             | Enlace                                     |
 |:-------------------|:-------------------------------------------|
-| Tablero            | http://localhost/?show=include.php         |
+| Tablero            | http://localhost/Tablero/?show=include.php |
 | Servidor Principal | http://localhost:8080/?show=include.php    |
 | LFI                | http://localhost:8000/?show=include.php    |
 | HTML Injection     | http://localhost:8001/?show=include.php    |
