@@ -7,19 +7,19 @@ Una herramienta, que ha sido creada con las diferentes vulnerabilidades de DVWA,
 
 ## Script de instalación
 
-&gt; ACLARACIONES
-&gt; &gt; Esta herramienta cuenta con un página web, que facilita el encendido y apagado de los docker mediante un botón. Para el funcionamiento correcto de dicha web, es necesario añadir esta línea: 'www-data ALL=(ALL) NOPASSWD: ALL', al final de todo del archvo '/etc/sudoers'. De lo contrario, toda la herramienta va a funcionar correctamente, pero tendrás que encender y apagar las máquinas que desees manualmente.
+> ACLARACIONES
+>> Esta herramienta cuenta con un página web, que facilita el encendido y apagado de los docker mediante un botón. Para el funcionamiento correcto de dicha web, es necesario añadir esta línea: 'www-data ALL=(ALL) NOPASSWD: ALL', al final de todo del archvo '/etc/sudoers'. De lo contrario, toda la herramienta va a funcionar correctamente, pero tendrás que encender y apagar las máquinas que desees manualmente.
 
 Primero darle permisos de ejecución al script:
 
-'''
+```
 chmod +x <nombre_del_script&gt;
-'''
+```
 Una vez echo, es tan fácil como ejecutarlo:
 
-'''
+```
 ./<nombre_del_script&gt;
-'''
+```
 
 ## Uso
 
