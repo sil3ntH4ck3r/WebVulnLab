@@ -13,12 +13,12 @@ Una herramienta, que ha sido creada con las diferentes vulnerabilidades de DVWA,
 Primero darle permisos de ejecución al script:
 
 ```
-chmod +x <nombre_del_script&gt;
+chmod +x <nombre_del_script
 ```
 Una vez echo, es tan fácil como ejecutarlo:
 
 ```
-./<nombre_del_script&gt;
+./<nombre_del_script
 ```
 
 ## Uso
