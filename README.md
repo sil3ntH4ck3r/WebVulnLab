@@ -46,6 +46,6 @@ También en el Tablero, puedes encender y apagar vía web.
 - Uso de Traefik para poner subdominios, y que no sea por IP
 - Añadir alguna máquina CTF
 - En cada máquina, añadir la opción de aprender, donde podrás descubrir más sobre dicha vulnerabilidad.
-- Mejorar la estética.
+- Mejorar la estética (estoy trabajando en ello).
 - Añadir la posibilidad de reiniciar los contenedores.
 - Hacer el proyecto de Hacking-Lab, pero para Windows.
