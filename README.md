@@ -35,6 +35,7 @@ Ahora que ya está todo instalado, se nos habrán desplegado todos los dockers.
 | SSRF | http://localhost:8004/?show=include.php |
 | SQL Injection | http://localhost:8005/?show=include.php |
 | Blind SQL Injection| http://localhost:8006/?show=include.php |
+| Padding Oracle Attack| http://localhost:8007/?show=include.php |
 
 En el Servidor principal, cuando le das a 'Empezar a Aprender' te llevara un menú donde tienes enlaces directos a cada docker, para poder practicar.
 También en el Tablero, puedes encender y apagar vía web.
