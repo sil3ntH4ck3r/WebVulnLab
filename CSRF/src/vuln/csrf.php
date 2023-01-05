@@ -47,7 +47,7 @@ switch ($_SERVER["SCRIPT_NAME"]) {
 <body>
 
 	<div class="jumbotron">
-		<h1>Inicio</h1>
+		<h1>Cambiar tu contraseña</h1>
 	</div>
 
 
@@ -60,7 +60,7 @@ switch ($_SERVER["SCRIPT_NAME"]) {
 	    	<a class="nav-link <?php if ($CURRENT_PAGE == "About") {?>active<?php }?>" href="http://localhost:8003/?show=about.php">Sobre nosotros</a>
 	  	</li>
 	  	<li class="nav-item">
-	    	<a class="nav-link <?php if ($CURRENT_PAGE == "Contact") {?>active<?php }?>" href="http://localhost:8003/?show=contact.php">Contactenos</a>
+	    	<a class="nav-link <?php if ($CURRENT_PAGE == "Contact") {?>active<?php }?>" href="http://localhost:8003/?show=contact.php">Contáctenos</a>
 	  	</li>
 		  <?php
                     session_start();
@@ -68,7 +68,7 @@ switch ($_SERVER["SCRIPT_NAME"]) {
                     if(!$_SESSION['user'])
                     {
                 ?>
-                <li class="nav-item"> <a class="nav-link <?php if ($CURRENT_PAGE == "Login") {?>active<?php }?>" href="http://localhost:8003/?show=inicio.php">Iniciar Sesion</a> </li>
+                <li class="nav-item"> <a class="nav-link <?php if ($CURRENT_PAGE == "Login") {?>active<?php }?>" href="http://localhost:8003/?show=inicio.php">Iniciar Sesión</a> </li>
                 <?php 
                     }                
 				?>
@@ -82,7 +82,7 @@ switch ($_SERVER["SCRIPT_NAME"]) {
                     if($_SESSION['user'])
                     {
                 ?>
-                <li class="nav-item"> <a class="nav-link <?php if ($CURRENT_PAGE == "Logout") {?>active<?php }?>" href="http://localhost:8003/?show=logout.php">Cerrar Sesion</a> </li>
+                <li class="nav-item"> <a class="nav-link <?php if ($CURRENT_PAGE == "Logout") {?>active<?php }?>" href="http://localhost:8003/?show=logout.php">Cerrar Sesión</a> </li>
                 <?php 
                     }                
 				?>
@@ -100,7 +100,7 @@ switch ($_SERVER["SCRIPT_NAME"]) {
 	</div>
 
 	<div class="container" id="main-content">
-			<h2>Pagina web en desarrollo!</h2>
+			<h2>¡La página web está en desarrollo!</h2>
 <div class="thumbnail">
     <div class="well">
         <div class="col-lg-6"> 
@@ -110,7 +110,7 @@ switch ($_SERVER["SCRIPT_NAME"]) {
                         <label></label>
                         <input type="password" class="form-control" width="50%" placeholder="Nueva contraseña" name="passwd"></input> <br>
                         <input type="password" class="form-control" width="50%" placeholder="Confirma la nueva contraseña" name="confirm"></input> <br>
-                        <div align="right"> <button class="btn btn-default" type="submit" name="submit" value="submit">Submit Button</button></div>
+                        <div align="right"> <button class="btn btn-default" type="submit" name="submit" value="submit">Cambiar</button></div>
                     </div> 
                 </form>
                 <?php
@@ -122,9 +122,9 @@ switch ($_SERVER["SCRIPT_NAME"]) {
                 if($current_user){
                     if(isset($_GET['submit'])){
                         if(empty($password) && empty($password)){
-                            echo "No puede estar en blanco, intentalo de nuevo";
+                            echo "No puede estar en blanco, inténtalo de nuevo";
                         }else if($password != $confirm){
-                            echo "Las contraseñas con coinciden";
+                            echo "Las contraseñas no coinciden";
                         }else{
                             $stmt = $conn1->prepare("UPDATE users set password=:pass where username=:user");
                             $stmt->bindParam(':pass', md5($password));
@@ -133,12 +133,12 @@ switch ($_SERVER["SCRIPT_NAME"]) {
                             if($stmt->rowCount() > 0){
                                 echo "<b>Cambio de contraseña correcto<br></b>";
                             }else{
-                                echo "<b>Usuario invalido<br></b>";
+                                echo "<b>Usuario inválido<br></b>";
                             }
                         }
                     }
                 }else{
-                    echo "<b> Has de iniciar sesion </b>";
+                    echo "<b> Has de iniciar sesión </b>";
                 }
                 ?>
             </p>

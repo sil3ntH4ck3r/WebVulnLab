@@ -46,7 +46,7 @@
 <body>
 
 	<div class="jumbotron">
-		<h1>Inicio!</h1>
+		<h1>Inicio</h1>
 	</div>
 
 
@@ -59,14 +59,14 @@
 	    	<a class="nav-link <?php if ($CURRENT_PAGE == "About") {?>active<?php }?>" href="?show=about.php">Sobre nosotros</a>
 	  	</li>
 	  	<li class="nav-item">
-	    	<a class="nav-link <?php if ($CURRENT_PAGE == "Contact") {?>active<?php }?>" href="?show=contact.php">Contactenos</a>
+	    	<a class="nav-link <?php if ($CURRENT_PAGE == "Contact") {?>active<?php }?>" href="?show=contact.php">Contáctenos</a>
 	  	</li>
 		</ul>
 	</div>
 
 	<div class="container" id="main-content">
-	<h2>Esta pagina web esta en desarrollo!</h2>
-	<p>Compruebe si la pagina web deseada existe:</p>
+	<h2>¡La página web está en desarrollo!</h2>
+	<p>Compruebe si la página web deseada existe:</p>
 			<div class="vulnerable_code_area">
                 <form method="post">
                         <table width="550" cellpadding="2" cellspacing="1">

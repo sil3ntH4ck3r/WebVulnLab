@@ -38,7 +38,7 @@
 <body>
 
 <div class="jumbotron">
-	<h1>Contactenos!</h1>
+	<h1>¡Contáctenos!</h1>
 </div>
 
 
@@ -51,7 +51,7 @@
 	    <a class="nav-link <?php if ($CURRENT_PAGE == "About") {?>active<?php }?>" href="?show=about.php">Sobre nosotros</a>
 	  </li>
 	  <li class="nav-item">
-	    <a class="nav-link <?php if ($CURRENT_PAGE == "Contact") {?>active<?php }?>" href="?show=contact.php">Contactenos</a>
+	    <a class="nav-link <?php if ($CURRENT_PAGE == "Contact") {?>active<?php }?>" href="?show=contact.php">Contáctenos</a>
 	  </li>
 	  <?php
                     session_start();
@@ -59,7 +59,7 @@
                     if(!$_SESSION['user'])
                     {
                 ?>
-                <li class="nav-item"> <a class="nav-link <?php if ($CURRENT_PAGE == "Login") {?>active<?php }?>" href="?show=inicio.php">Iniciar Sesion</a> </li>
+                <li class="nav-item"> <a class="nav-link <?php if ($CURRENT_PAGE == "Login") {?>active<?php }?>" href="?show=inicio.php">Iniciar Sesión</a> </li>
                 <?php 
                     }                
 				?>
@@ -73,7 +73,7 @@
                     if($_SESSION['user'])
                     {
                 ?>
-                <li class="nav-item"> <a class="nav-link <?php if ($CURRENT_PAGE == "Logout") {?>active<?php }?>" href="?show=logout.php">Cerrar Sesion</a> </li>
+                <li class="nav-item"> <a class="nav-link <?php if ($CURRENT_PAGE == "Logout") {?>active<?php }?>" href="?show=logout.php">Cerrar Sesión</a> </li>
                 <?php 
                     }                
 				?>
@@ -91,8 +91,8 @@
 </div>
 
 <div class="container" id="main-content">
-	<h2>Pagina web en desarrollo!</h2>
-	<p>Seccion: Contactanos, en contruccion</p>
+	<h2>¡La página web está en desarrollo!</h2>
+	<p>Sección: ¡Contáctenos, está en construcción!</p>
 </div>
 
 <div class="footer">
