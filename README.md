@@ -49,4 +49,4 @@ También en el Tablero, puedes encender y apagar vía web.
 - En cada máquina, añadir la opción de aprender, donde podrás descubrir más sobre dicha vulnerabilidad.
 - Mejorar la estética (estoy trabajando en ello).
 - Añadir la posibilidad de reiniciar los contenedores.
-- Hacer el proyecto de Hacking-Lab, pero para Windows.
+- Hacer este mismo proyecto (Pentesting-Web-Lab), pero para Windows.
