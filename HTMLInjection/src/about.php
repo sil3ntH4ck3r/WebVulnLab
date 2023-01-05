@@ -38,7 +38,7 @@
 <body>
 
 <div class="jumbotron">
-	<h1>Sobre nosotros!</h1>
+	<h1>Sobre nosotros</h1>
 </div>
 
 
@@ -51,14 +51,14 @@
 	    <a class="nav-link <?php if ($CURRENT_PAGE == "About") {?>active<?php }?>" href="?show=about.php">Sobre nosotros</a>
 	  </li>
 	  <li class="nav-item">
-	    <a class="nav-link <?php if ($CURRENT_PAGE == "Contact") {?>active<?php }?>" href="?show=contact.php">Contactenos</a>
+	    <a class="nav-link <?php if ($CURRENT_PAGE == "Contact") {?>active<?php }?>" href="?show=contact.php">Contáctenos</a>
 	  </li>
 	</ul>
 </div>
 
 <div class="container" id="main-content">
-	<h2>Pagina web en  desarrollo!</h2>
-	<p>Seccion: Sobre nosotros esta en contruccion!</p>
+	<h2>La página web está en desarrollo</h2>
+	<p>Sección: ¡Sobre nosotros, está en construcción!</p>
 </div>
 
 <div class="footer">

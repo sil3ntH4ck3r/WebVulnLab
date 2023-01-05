@@ -84,7 +84,7 @@ echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour
 
 # CONSTRUYENDO SERVIDOR LOCAL
 echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo Tablero${endColour}"
-sudo mv Tablero /var/www/html
+sudo mv ../Tablero /var/www/html
 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Tablero constuido correctamente${endColour}"
 echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando Tablero${endColour}"
 service apache2 start

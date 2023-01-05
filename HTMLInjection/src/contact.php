@@ -38,7 +38,7 @@
 <body>
 
 <div class="jumbotron">
-	<h1>Contactenos!</h1>
+	<h1>¡Contáctenos!</h1>
 </div>
 
 
@@ -51,13 +51,13 @@
 	    <a class="nav-link <?php if ($CURRENT_PAGE == "About") {?>active<?php }?>" href="?show=about.php">Sobre nosotros</a>
 	  </li>
 	  <li class="nav-item">
-	    <a class="nav-link <?php if ($CURRENT_PAGE == "Contact") {?>active<?php }?>" href="?show=contact.php">Contactenos</a>
+	    <a class="nav-link <?php if ($CURRENT_PAGE == "Contact") {?>active<?php }?>" href="?show=contact.php">Contáctenos</a>
 	  </li>
 	</ul>
 </div>
 
 <div class="container" id="main-content">
-	<h2>Deje su comentario!</h2>
+	<h2>¡Deje su comentario!</h2>
 			<div class="vulnerable_code_area">
                 <form method="post">
                         <table width="550" cellpadding="2" cellspacing="1">
@@ -84,7 +84,7 @@
 				$mensaje=$_REQUEST['mtxMessage'];
 
 				if($mensaje == NULL && $name == NULL){
-					echo "No puedes dejar los campos vacios";
+					echo "No puedes dejar los campos vacíos";
 					exit;
 				}
                 if($name == NULL){
@@ -97,7 +97,7 @@
 				}
                 if($mensaje && $name)
                 {
-                        echo 'Sr. ' . $name . ', gracias por su aprotacion';  
+                        echo 'Señor/a. ' . $name . ', gracias por su aportación';  
                 }
         }
         ?>
