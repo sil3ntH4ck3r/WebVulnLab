@@ -74,11 +74,19 @@ echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}
 docker run --name ssrf -d -v $pwd/SSRF/src:/var/www/html -p 8004:80 ssrf
 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker SSRF iniciado correctamente${endColour}"
 
-# CONSTRUYENDO SERVIDOR LOCAL
+cd ../PaddingOracle
+echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del Padding Oracle${endColour}"
+sudo docker build -t padding .
+echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
+echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker Padding Oracle${endColour}"
+docker run --name padding -d -v $pwd/PaddingOracle/src:/var/www/html -p 8007:80 padding
+echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker SSRF iniciado correctamente${endColour}"
 
+# CONSTRUYENDO SERVIDOR LOCAL
 echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo Tablero${endColour}"
 sudo mv Tablero /var/www/html
 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Tablero constuido correctamente${endColour}"
 echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando Tablero${endColour}"
 service apache2 start
 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Tablero iniciado correctamente${endColour}"
+
