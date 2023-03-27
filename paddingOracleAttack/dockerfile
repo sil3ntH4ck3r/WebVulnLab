@@ -1,0 +1,18 @@
+FROM php:7.3-apache
+
+# Instalar dependencias
+RUN apt-get update && apt-get install -y libmcrypt-dev
+RUN docker-php-ext-install mysqli
+
+# Instalar la extensión mcrypt de PHP
+RUN pecl install mcrypt-1.0.3 \
+    && docker-php-ext-enable mcrypt
+
+# Habilitar la extensión de PHP en Apache
+RUN a2enmod rewrite
+
+# Copiar la configuración de Apache
+#COPY apache2.conf /etc/apache2/apache2.conf
+
+# Iniciar Apache en el contenedor
+CMD ["apache2-foreground"]

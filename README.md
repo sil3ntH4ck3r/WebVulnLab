@@ -7,46 +7,31 @@ Una herramienta, que ha sido creada con las diferentes vulnerabilidades de DVWA,
 
 ## Script de instalación
 
-> ACLARACIONES
->> Esta herramienta cuenta con un página web, que facilita el encendido y apagado de los docker mediante un botón. Para el funcionamiento correcto de dicha web, es necesario añadir esta línea: 'www-data ALL=(ALL) NOPASSWD: ALL', al final de todo del archvo '/etc/sudoers'. De lo contrario, toda la herramienta va a funcionar correctamente, pero tendrás que encender y apagar las máquinas que desees manualmente.
-
 Primero darle permisos de ejecución al script:
 
 ```
-chmod +x <nombre_del_script
+chmod +x <nombre_del_script>
 ```
 Una vez echo, es tan fácil como ejecutarlo:
 
 ```
-./<nombre_del_script
+./<nombre_del_script>
 ```
 
 ## Uso
 
 Ahora que ya está todo instalado, se nos habrán desplegado todos los dockers.
 
-| Docker | Enlace |
-|:-------------------|:-------------------------------------------|
-| Tablero | http://localhost/Tablero/?show=include.php |
-| Servidor Principal | http://localhost:8080/?show=include.php |
-| LFI | http://localhost:8000/?show=include.php |
-| HTML Injection | http://localhost:8001/?show=include.php |
-| CSRF | http://localhost:8003/?show=include.php |
-| SSRF | http://localhost:8004/?show=include.php |
-| SQL Injection | http://localhost:8005/?show=include.php |
-| Blind SQL Injection| http://localhost:8006/?show=include.php |
-| Padding Oracle Attack| http://localhost:8007/?show=include.php |
+| Docker               | Enlace                                     |Estatus                                |
+|:---------------------|:-------------------------------------------|---------------------------------------|
+| Tablero              | http://localhost/tablero/tablero.php       |Funcional                              |
+| Servidor Principal   | http://localhost:8080/                     |Funcional                              |
+| LFI                  | http://localhost:8000/                     |Funcional                              |
+| SQL Injection        | http://localhost:8005/                     |Desárrollandose (pero se puede probar) |
+| Padding Oracle Attack| http://localhost:8007/login.php            |Desárrollandose (pero se puede probar) |
 
-En el Servidor principal, cuando le das a 'Empezar a Aprender' te llevara un menú donde tienes enlaces directos a cada docker, para poder practicar.
-También en el Tablero, puedes encender y apagar vía web.
+Cabe destacar que aún está en desarrollo, y que no todos los dockers están funcionado correctamente. Este repositorio se actualiza cada día.
 
 ## Cosas para las siguientes actualizaciones
 
-- Añadir más vulnerabilidades.
-- Ver en el tablero que máquinas están encendidas y que máquinas están apagadas.
-- Uso de Traefik para poner subdominios, y que no sea por IP
-- Añadir alguna máquina CTF
-- En cada máquina, añadir la opción de aprender, donde podrás descubrir más sobre dicha vulnerabilidad.
-- Mejorar la estética (estoy trabajando en ello).
-- Añadir la posibilidad de reiniciar los contenedores.
-- Hacer este mismo proyecto (Pentesting-Web-Lab), pero para Windows.
+- Migrarlo todo a la segunda versión (cunado ya este todo migrado, se avanzará en el desarrollo de nuevas vulnerabilidades) 
