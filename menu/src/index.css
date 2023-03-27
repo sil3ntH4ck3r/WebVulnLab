@@ -1,0 +1,240 @@
+/* Estilos generales */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  scroll-behavior: smooth; /* hace que el desplazamiento por la página sea suave */
+}
+
+/* Estilos del encabezado */
+
+header {
+  background-color: #333;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 20%;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+h1 {
+  font-size: 3rem;
+  margin-top: 1rem;
+}
+
+/* Estilos del contenido principal */
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60%;
+  margin-top: 300px;
+  margin-bottom: 300px; /* Ajustar el valor según el alto del footer */
+}
+
+section {
+  width: 80%;
+  margin-bottom: 2rem;
+}
+
+h2 {
+  font-size: 2rem;
+  color: #333;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  margin-bottom: 1rem;
+}
+
+/* Estilos del pie de página */
+footer {
+  background-color: #333;
+  color: #fff;
+  height: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+footer p {
+  margin: 0;
+}
+
+/* Estilos para dispositivos móviles */
+@media screen and (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  section {
+    width: 90%;
+  }
+}
+
+nav li {
+  margin-right: 1rem; /* Agregar un margen derecho entre elementos */
+}
+
+.card {
+  background-color: #fff;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border-radius: 0.5rem;
+  padding: 2rem;
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.card h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card li {
+  margin-bottom: 0.5rem;
+}
+
+.steps {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 50px 0;
+}
+
+.step {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 0 20px;
+}
+
+.step-number {
+  background-color: #f2f2f2;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.step-text {
+  font-size: 20px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.start-button {
+  background-color: black;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.board-button {
+  background-color: white;
+  color: black;
+  padding: 0.5rem 1rem;
+  border: 1px solid black;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.board-button:hover {
+  background-color: black;
+  color: white;
+}
+
+.start-button:hover {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}
+
+.price {
+  display: flex;
+  flex-wrap: wrap;
+   margin: 0 auto;
+  max-width: 800px;
+}
+
+.price > p, .price {
+  flex-basis: 50%;
+  margin-top: 50px;
+}
+#zeroprecio {
+  font-size: 100px; /* o cualquier otro tamaño que desees */
+}
+.start-button {
+  font-size: 20px;
+}
+.board-button {
+  font-size: 20px;
+}
+.services {
+  text-align: center;
+  width: 100%;
+}
+
+.services-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.services-container aside {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  width: 45%;
+}
