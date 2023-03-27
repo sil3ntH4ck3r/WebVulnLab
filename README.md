@@ -1,7 +1,6 @@
 # Pentesting-Web-Lab
 
-Pentesting-Web-Lab es una herramienta que te permite desplegar dockers con diferentes vulnerabilidades web, para que puedas practicar en un sitio centralizado.
-Una herramienta, que ha sido creada con las diferentes vulnerabilidades de DVWA, XVWA... con el fin de tener las máximas vulnerabilidades web en un mismo sitio, y acceder a ellas sin la necesidad de conexión a internet.
+¿Te gustaría aprender a detectar y explotar vulnerabilidades web de forma segura y divertida? ¿Quieres poner a prueba tus habilidades de hacking ético con retos reales y variados? Entonces no te pierdas la segunda versión de la herramienta de contenedores con vulnerabilidades web, creada por un apasionado de la seguridad informática. En esta nueva versión, encontrarás una interfaz más atractiva y fácil de usar, así como nuevas funcionalidades que te permitirán desplegar y configurar los contenedores a tu gusto. Aunque todavía está en desarrollo, ya puedes descargarla y probar las primeras características. No esperes más y descubre lo que esta herramienta puede hacer por ti y por tu aprendizaje. ¡Te sorprenderás!
 
 ## Instalación
 
