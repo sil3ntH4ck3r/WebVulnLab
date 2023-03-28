@@ -41,13 +41,13 @@ This script will download and install all the necessary dependencies, create the
 
 4. Once the installation is complete, you can access the different containers through the following links:
 
-| Docker               | Container Link                             |Estatus                                |
+| Docker               | Container Link                             |Status                                 |
 |:---------------------|:-------------------------------------------|---------------------------------------|
-| Dashboard            | http://localhost/tablero/tablero.php       |Funcional                              |
-| Main Server          | http://localhost:8080/                     |Funcional                              |
-| LFI                  | http://localhost:8000/                     |Funcional                              |
-| SQL Injection        | http://localhost:8005/                     |Desárrollandose (pero se puede probar) |
-| Padding Oracle Attack| http://localhost:8007/login.php            |Desárrollandose (pero se puede probar) |
+| Dashboard            | http://localhost/tablero/tablero.php       |Functional                             |
+| Main Server          | http://localhost:8080/                     |Functional                             |
+| LFI                  | http://localhost:8000/                     |Functional                             |
+| SQL Injection        | http://localhost:8005/                     |Under development (but can be tested)  |
+| Padding Oracle Attack| http://localhost:8007/login.php            |Under development (but can be tested)  |
 
 Note that it is still in development, and not all containers are working correctly. This repository is updated frequently.
 
