@@ -15,7 +15,7 @@ To install and use the Pentesting-Web-Lab tool, follow these steps:
 1. Download the GitHub repository using the following command in your terminal:
 
 ```
-git clone https://github.com/sil3ntH4ck3r/Pentesting-Web-Lab.git
+git clone -b dev https://github.com/sil3ntH4ck3r/Pentesting-Web-Lab.git
 ```
 > If you don't have Git installed yet, download and install it from its [official website](https://git-scm.com/downloads).
 
