@@ -23,6 +23,7 @@ git clone https://github.com/sil3ntH4ck3r/Pentesting-Web-Lab.git
 ```bash
 sudo apt-get install git
 ```
+Una vez descargado, el proyecto no requiere conexión a internet, ya que está diseñado para su uso en un entorno local.
 
 2. Navega hasta el directorio donde clonaste el repositorio y da permisos de ejecución al script de instalación:
 
