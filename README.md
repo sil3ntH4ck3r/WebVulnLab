@@ -8,25 +8,28 @@ En esta nueva versión, encontrarás una interfaz más atractiva y fácil de usa
 
 Para instalar y utilizar la herramienta Pentesting-Web-Lab, sigue los siguientes pasos:
 
-1. Primero darle permisos de ejecución al script:
-
-Descarga el repositorio de GitHub usando el siguiente comando en tu terminal:
+1. Descarga el repositorio de GitHub usando el siguiente comando en tu terminal:
 
 ```
 git clone https://github.com/sil3ntH4ck3r/Pentesting-Web-Lab.git
 ```
-Si aún no tienes Git instalado, descárgalo e instálalo desde su [página oficia](https://git-scm.com/downloads)
+> Si aún no tienes Git instalado, descárgalo e instálalo desde su [página oficia](https://git-scm.com/downloads)
+
+> Para instalarlo en Ubuntu/Debian, puedes utilizar este comando:
+```bash
+sudo apt-get install git
+```
 
 2. Navega hasta el directorio donde clonaste el repositorio y da permisos de ejecución al script de instalación:
 
-```
+```bash
 cd Pentesting-Web-Lab
 chmod +x autoH4ck3nv.sh
 ```
 
 3. Ejecuta el script de instalación:
 
-```
+```bash
 ./autoH4ck3nv.sh
 ```
 
