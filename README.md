@@ -15,6 +15,8 @@ En esta nueva versión, encontrarás una interfaz más atractiva y fácil de usa
 
 ## Instalación
 
+**IMPORTANTE:** Ejecutar el script de instalación con permisos de superusuario.
+
 Para instalar y utilizar la herramienta Pentesting-Web-Lab, sigue los siguientes pasos:
 
 1. Descarga el repositorio de GitHub usando el siguiente comando en tu terminal:
