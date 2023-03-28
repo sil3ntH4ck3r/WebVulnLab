@@ -10,7 +10,7 @@ En esta nueva versión, encontrarás una interfaz más atractiva y fácil de usa
 
 ## Requisitos
 
-- docker
+- docker (comando para instalar docker en Kali Linux: `sudo apt-get install docker.io`)
 - php
 
 ## Instalación
