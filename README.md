@@ -8,6 +8,11 @@
 
 En esta nueva versión, encontrarás una interfaz más atractiva y fácil de usar, así como nuevas funcionalidades que te permitirán desplegar y configurar los contenedores a tu gusto. Aunque todavía está en desarrollo, ya puedes descargarla y probar las primeras características. ¡Te sorprenderás!
 
+## Requisitos
+
+- docker
+- php
+
 ## Instalación
 
 Para instalar y utilizar la herramienta Pentesting-Web-Lab, sigue los siguientes pasos:
