@@ -1,25 +1,38 @@
 # Pentesting-Web-Lab
 
-¿Te gustaría aprender a detectar y explotar vulnerabilidades web de forma segura y divertida? ¿Quieres poner a prueba tus habilidades de hacking ético con retos reales y variados? Entonces no te pierdas la segunda versión de la herramienta de contenedores con vulnerabilidades web, creada por un apasionado de la seguridad informática. En esta nueva versión, encontrarás una interfaz más atractiva y fácil de usar, así como nuevas funcionalidades que te permitirán desplegar y configurar los contenedores a tu gusto. Aunque todavía está en desarrollo, ya puedes descargarla y probar las primeras características. No esperes más y descubre lo que esta herramienta puede hacer por ti y por tu aprendizaje. ¡Te sorprenderás!
+¿Te gustaría aprender a detectar y explotar vulnerabilidades web de forma segura y divertida? ¿Quieres poner a prueba tus habilidades de hacking ético con retos reales y variados? Entonces no te pierdas la segunda versión de la herramienta de contenedores con vulnerabilidades web, creada por un apasionado de la seguridad informática.
+
+En esta nueva versión, encontrarás una interfaz más atractiva y fácil de usar, así como nuevas funcionalidades que te permitirán desplegar y configurar los contenedores a tu gusto. Aunque todavía está en desarrollo, ya puedes descargarla y probar las primeras características. ¡Te sorprenderás!
 
 ## Instalación
 
-## Script de instalación
+Para instalar y utilizar la herramienta Pentesting-Web-Lab, sigue los siguientes pasos:
 
-Primero darle permisos de ejecución al script:
+1. Primero darle permisos de ejecución al script:
 
-```
-chmod +x <nombre_del_script>
-```
-Una vez echo, es tan fácil como ejecutarlo:
+Descarga el repositorio de GitHub usando el siguiente comando en tu terminal:
 
 ```
-./<nombre_del_script>
+git clone https://github.com/sil3ntH4ck3r/Pentesting-Web-Lab.git
+```
+Si aún no tienes Git instalado, descárgalo e instálalo desde su [página oficia](https://git-scm.com/downloads)
+
+2. Navega hasta el directorio donde clonaste el repositorio y da permisos de ejecución al script de instalación:
+
+```
+cd Pentesting-Web-Lab
+chmod +x autoH4ck3nv.sh
 ```
 
-## Uso
+3. Ejecuta el script de instalación:
 
-Ahora que ya está todo instalado, se nos habrán desplegado todos los dockers.
+```
+./autoH4ck3nv.sh
+```
+
+Este script descargará e instalará todas las dependencias necesarias, creará los contenedores de Docker y configurará la herramienta para que puedas comenzar a utilizarla.
+
+4. Una vez finalizada la instalación, podrás acceder a los diferentes contenedores a través de los siguientes enlaces:
 
 | Docker               | Enlace                                     |Estatus                                |
 |:---------------------|:-------------------------------------------|---------------------------------------|
@@ -29,8 +42,18 @@ Ahora que ya está todo instalado, se nos habrán desplegado todos los dockers.
 | SQL Injection        | http://localhost:8005/                     |Desárrollandose (pero se puede probar) |
 | Padding Oracle Attack| http://localhost:8007/login.php            |Desárrollandose (pero se puede probar) |
 
-Cabe destacar que aún está en desarrollo, y que no todos los dockers están funcionado correctamente. Este repositorio se actualiza cada día.
+Cabe destacar que aún está en desarrollo, y que no todos los contenedores están funcionando correctamente. Este repositorio se actualiza a menudo.
+
+## Contribuir
+
+Si deseas contribuir al desarrollo de Pentesting-Web-Lab, ¡eres bienvenido! Puedes hacerlo de varias maneras:
+
+- Informando de bugs o problemas que encuentres en la herramienta a través de la sección de "Issues" en el repositorio de GitHub.
+- Proponiendo nuevas características o mejoras.
+- Ayudando a solucionar problemas o desarrollando nuevas vulnerabilidades.
 
 ## Cosas para las siguientes actualizaciones
-
-- Migrarlo todo a la segunda versión (cunado ya este todo migrado, se avanzará en el desarrollo de nuevas vulnerabilidades) 
+Migrar todo a la segunda versión (cuando ya esté todo migrado, se avanzará en el desarrollo de nuevas vulnerabilidades).
+- Añadir más contenedores y vulnerabilidades.
+- Mejorar la documentación para que sea más fácil de entender y seguir.
+- Refactorizar el código para hacerlo más legible y mantenible.
