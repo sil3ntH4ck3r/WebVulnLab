@@ -60,6 +60,6 @@ sudo docker build -t padding_v2 .
 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
 echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker PADDING_V2 i PADDING_DB_V2${endColour}"
 sudo docker run --name padding_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7                                                             
-sudo docker run --name padding_v2 --link sqli_db_v2:db -p 8005:80 -v $(pwd)/src:/var/www/html/ -d padding_v2
+sudo docker run --name padding_v2 --link sqli_db_v2:db -p 8007:80 -v $(pwd)/src:/var/www/html/ -d padding_v2
 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker PADDING_V2 iniciado correctamente${endColour}"
 
