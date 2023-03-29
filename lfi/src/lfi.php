@@ -17,11 +17,11 @@
             <div class="container">
                 <h1 class="logo">Cybertec</h1>
                 <ul class="menu">
-                <li><a href="http://localhost:8000/lfi.php#">Inicio</a></li>
-                    <li><a href="http://localhost:8000/?show=lfi.php#services">Servicios</a></li>
-                    <li><a href="http://localhost:8000/?show=lfi.php#about">Sobre Nosotros</a></li>
-                    <li><a href="http://localhost:8000/?show=lfi.php#contact">Contacto</a></li>
-                    <li><a href="http://localhost:8000/?show=productos.html">Productos</a></li>
+                <li><a href="http://lfi.local/lfi.php#">Inicio</a></li>
+                    <li><a href="http://lfi.local/?show=lfi.php#services">Servicios</a></li>
+                    <li><a href="http://lfi.local/?show=lfi.php#about">Sobre Nosotros</a></li>
+                    <li><a href="http://lfi.local/?show=lfi.php#contact">Contacto</a></li>
+                    <li><a href="http://lfi.local/?show=productos.html">Productos</a></li>
                 </ul>
             </div>
         </nav>
