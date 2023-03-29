@@ -52,10 +52,10 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Docker               | Enlace                                     |Estatus                                |
 |:---------------------|:-------------------------------------------|---------------------------------------|
 | Tablero              | http://localhost/tablero/tablero.php       |Funcional                              |
-| Servidor Principal   | http://localhost:8080/                     |Funcional                              |
-| LFI                  | http://localhost:8000/                     |Funcional                              |
-| SQL Injection        | http://localhost:8005/                     |Desárrollandose (pero se puede probar) |
-| Padding Oracle Attack| http://localhost:8007/login.php            |Desárrollandose (pero se puede probar) |
+| Servidor Principal   | http://menu.local/                         |Funcional                              |
+| LFI                  | http://lfi.local/                          |Funcional                              |
+| SQL Injection        | http://sqli.local/                         |Desárrollandose (pero se puede probar) |
+| Padding Oracle Attack| http://paddingoracleattack/login.php       |Desárrollandose (pero se puede probar) |
 
 Cabe destacar que aún está en desarrollo, y que no todos los contenedores están funcionando correctamente. Este repositorio se actualiza a menudo.
 
