@@ -85,7 +85,7 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
         <?php
 
             if ($totalContenedores === 0) {
-                echo "<h3>NO HAY CONTENEDORES EN DESPLEGADOS</h3>";
+                echo "<h3>NO HAY CONTENEDORES DESPLEGADOS</h3>";
             } else {
                 echo "<h3>Contenedores en ejecución: $encendidos </h3> <!-- Mostrar número de contenedores encendidos -->
                 <h3>Contenedores apagados: $apagados </h3> <!-- Mostrar número de contenedores apagados -->
