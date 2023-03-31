@@ -54,8 +54,21 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Tablero              | http://localhost/tablero/tablero.php       |Funcional                              |
 | Servidor Principal   | http://menu.local/                         |Funcional                              |
 | LFI                  | http://lfi.local/                          |Funcional                              |
-| SQL Injection        | http://sqli.local/                         |Desárrollandose (pero se puede probar) |
+| SQL Injection (Error)| http://sqli.local/                         |Desárrollandose (pero se puede probar) |
 | Padding Oracle Attack| http://paddingoracleattack/login.php       |Desárrollandose (pero se puede probar) |
+| Remote File Lnclusion|                    -                       |                   -                   |
+| HTML Injection       |                    -                       |                   -                   |
+| XSS                  |                    -                       |                   -                   |
+| Blind XSS            |                    -                       |                   -                   |
+| CSRF                 |                    -                       |                   -                   |
+| SSRF                 |                    -                       |                   -                   |
+| SQL Injection (Time) |                    -                       |                   -                   |
+| ShellShock           |                    -                       |                   -                   |
+| XXE                  |                    -                       |                   -                   |
+| Blind XXE            |                    -                       |                   -                   |
+| Domain Zone Transfer |                    -                       |                   -                   |
+| Insecure Deseralization |                    -                       |                   -                   |
+| Type Juggling        |                    -                       |                   -                   |
 
 Cabe destacar que aún está en desarrollo, y que no todos los contenedores están funcionando correctamente. Este repositorio se actualiza a menudo.
 
