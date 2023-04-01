@@ -54,7 +54,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Tablero              | http://localhost/tablero/tablero.php       |Funcional                              |
 | Servidor Principal   | http://menu.local/                         |Funcional                              |
 | LFI                  | http://lfi.local/                          |Funcional                              |
-| Padding Oracle Attack| http://paddingoracleattack/                |Funcional                              |
+| Padding Oracle Attack| http://paddingoracleattack.local/          |Funcional                              |
 | SQL Injection (Error)| http://sqli.local/                         |Desárrollandose (pero se puede probar) |
 | Remote File Lnclusion|                    -                       |                   -                   |
 | HTML Injection       |                    -                       |                   -                   |
