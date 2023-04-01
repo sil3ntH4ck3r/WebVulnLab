@@ -42,7 +42,7 @@ chmod +x autoH4ck3nv.sh
 3. Ejecuta el script de instalación:
 
 ```bash
-./autoH4ck3nv.sh
+sudo ./autoH4ck3nv.sh
 ```
 
 Este script descargará e instalará todas las dependencias necesarias, creará los contenedores de Docker y configurará la herramienta para que puedas comenzar a utilizarla.
