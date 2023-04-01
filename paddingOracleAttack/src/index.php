@@ -1,4 +1,38 @@
 <?php 
+
+// Conectar a la base de datos
+$conexion = mysqli_connect("db", "usuario", "contraseña", "database");
+if ($conexion) {
+  $conexion->set_charset("utf8");
+}
+
+// Comprobar la conexión
+if (mysqli_connect_errno()) {
+  die("Error al conectar a la base de datos: " . mysqli_connect_error());
+}
+
+// Verificar si la tabla ya existe
+$table_name = "usuarios";
+$sql = "SELECT 1 FROM $table_name LIMIT 1";
+$result = mysqli_query($conexion, $sql);
+
+if ($result === false) {
+  // La tabla no existe, crearla
+  $sql = "CREATE TABLE $table_name (
+    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(30) NOT NULL,
+    contraseña VARCHAR(30) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  )";
+
+  mysqli_query($conexion, $sql);
+  mysqli_query($conexion, "INSERT INTO usuarios (nombre, contraseña, email) VALUES ('admin', 'P@$\$w0rd!', 'admin@admin.com')");
+} 
+
+// Cerrar la conexión
+mysqli_close($conexion);
+
     session_start(); 
     //include "verificar.php";
         if ($_SESSION['loggedin']==true){
@@ -56,16 +90,6 @@
         if (strspn($text, chr($pad), strlen($text) - $pad) != $pad) return false; 
         return substr($text, 0, -1 * $pad); 
     } 
-
-    if (isset($_COOKIE["cookieAuth"])) {
-    // desencriptamos la cookie
-            $decryptedCookie = decryptString($_COOKIE["cookieAuth"], "pntstrlb");
-    // mostramos el valor de la cookie desencriptada
-    //echo "Cookie desencriptada: " . $decryptedCookie;
-    } else {
-    // la cookie no está establecida, mostramos un mensaje de error
-    //echo "La cookie no está establecida.";
-    }
 
 ?>
 <!DOCTYPE html>
@@ -242,9 +266,23 @@ body {
             <div class="container">
                 <h1 class="logo">Cybertec</h1>
                 <ul class="menu">
-                <li><a href="http://localhost:8007/login.php">Login</a></li>
-                    <li><a href="http://localhost:8007/register.php">Register</a></li>
-                    <li><a href="http://localhost:8007/logout.php">Logout</a></li>
+                    <?php
+                        if ($_SESSION['loggedin']==false)
+                        {   
+                            echo '<li><a href="http://paddingoracleattack.local/index.php">Login</a></li>';
+                            echo '<li><a href="http://paddingoracleattack.local/register.php">Register</a></li>';
+                            echo '<li><a href="http://paddingoracleattack.local/reiniciar.php">Reiniciar Base de Datos</a></li>';
+                        }
+                    ?>
+                    <?php
+                    if ($_SESSION['loggedin']==true)
+                    {   
+                        echo '<li><a href="http://paddingoracleattack.local/logout.php">Logout</a></li>';
+                        echo '<li><a href="http://paddingoracleattack.local/perfil.php">Perfil</a></li>';
+                        echo '<li><a href="http://paddingoracleattack.local/reiniciar.php">Reiniciar Base de Datos</a></li>';
+                    }
+                    ?>
+
                 </ul>
             </div>
         </nav>
@@ -269,11 +307,22 @@ body {
     <?php if (isset($_SESSION['mensaje'])): ?>
     <p class="mensaje"><?php echo $_SESSION['mensaje']; ?></p>
     <?php unset($_SESSION['mensaje']); endif; ?>
+    
+        <?php
 
-    <?php
-	    $pattern = "/user=/i";
-	    $cookieUser = preg_replace($pattern, "", $decryptedCookie);
-	?>
+            if (isset($_COOKIE["cookieAuth"])) {
+                // desencriptamos la cookie
+                        $decryptedCookie = decryptString($_COOKIE["cookieAuth"], "pntstrlb");
+                        $pattern = "/user=/i";
+                        $cookieUser = preg_replace($pattern, "", $decryptedCookie);
+                // mostramos el valor de la cookie desencriptada
+                    //echo "Cookie desencriptada: " . $decryptedCookie;
+                } else {
+                // la cookie no está establecida, mostramos un mensaje de error
+                    //echo "La cookie no está establecida.";
+                }
+
+        ?>
 
 </body>
 

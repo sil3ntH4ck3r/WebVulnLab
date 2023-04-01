@@ -177,8 +177,10 @@ body {
             <div class="container">
                 <h1 class="logo">Cybertec</h1>
                 <ul class="menu">
-                <li><a href="http://localhost:8007/login.php">Login</a></li>
-                    <li><a href="http://localhost:8007/register.php">Register</a></li>
+                <li><a href="http://paddingoracleattack.local/index.php">Login</a></li>
+                    <li><a href="http://paddingoracleattack.local/register.php">Register</a></li>
+                    <li><a href="http://paddingoracleattack.local/reiniciar.php">Reiniciar Base de Datos</a></li>
+                    
                 </ul>
             </div>
         </nav>
