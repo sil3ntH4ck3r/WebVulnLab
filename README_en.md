@@ -8,7 +8,14 @@ Would you like to learn how to detect and exploit web vulnerabilities safely and
 
 In this new version, you will find a more attractive and user-friendly interface, as well as new features that will allow you to deploy and configure the containers to your liking. Although it is still in development, you can already download it and try out the first features. You will be surprised!
 
+## Requirements
+
+- docker (command to install docker on Kali Linux: `sudo apt-get install docker.io`)
+- php
+
 ## Installation
+
+**IMPORTANT NOTE**: Run the installation script with superuser privileges.
 
 To install and use the Pentesting-Web-Lab tool, follow these steps:
 
@@ -34,20 +41,33 @@ chmod +x autoH4ck3nv.sh
 3. Run the installation script:
 
 ```bash
-./autoH4ck3nv.sh
+sudo ./autoH4ck3nv.sh
 ```
 
 This script will download and install all the necessary dependencies, create the Docker containers, and configure the tool so you can start using it.
 
 4. Once the installation is complete, you can access the different containers through the following links:
 
-| Docker               | Container Link                             |Status                                 |
-|:---------------------|:-------------------------------------------|---------------------------------------|
-| Dashboard            | http://localhost/tablero/tablero.php       |Functional                             |
-| Main Server          | http://localhost:8080/                     |Functional                             |
-| LFI                  | http://localhost:8000/                     |Functional                             |
-| SQL Injection        | http://localhost:8005/                     |Under development (but can be tested)  |
-| Padding Oracle Attack| http://localhost:8007/login.php            |Under development (but can be tested)  |
+| Docker               | Container Link                             |Status                                |
+|:---------------------|:-------------------------------------------|--------------------------------------|
+| Tablero              | http://localhost/tablero/tablero.php       |Functional                            |
+| Servidor Principal   | http://menu.local/                         |Functional                            |
+| LFI                  | http://lfi.local/                          |Functional                            |
+| Padding Oracle Attack| http://paddingoracleattack.local/          |Functional                            |
+| SQL Injection (Error)| http://sqli.local/                         |In development (but can be tested)    |
+| Remote File Lnclusion|                    -                       |                   -                  |
+| HTML Injection       |                    -                       |                   -                  |
+| XSS                  |                    -                       |                   -                  |
+| Blind XSS            |                    -                       |                   -                  |
+| CSRF                 |                    -                       |                   -                  |
+| SSRF                 |                    -                       |                   -                  |
+| SQL Injection (Time) |                    -                       |                   -                  |
+| ShellShock           |                    -                       |                   -                  |
+| XXE                  |                    -                       |                   -                  |
+| Blind XXE            |                    -                       |                   -                  |
+| Domain Zone Transfer |                    -                       |                   -                  |
+| Insecure Deseralization |                    -                       |                   -               |
+| Type Juggling        |                    -                       |                   -                  |
 
 Note that it is still in development, and not all containers are working correctly. This repository is updated frequently.
 
