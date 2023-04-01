@@ -12,12 +12,7 @@ if (mysqli_connect_errno()) {
 }
 
 $sql = "DROP TABLE IF EXISTS usuarios";
-if (mysqli_query($conexion, $sql)) {
-  echo "La tabla usuarios ha sido eliminada exitosamente";
-} else {
-  echo "Error al eliminar la tabla: " . mysqli_error($conexion);
-}
-
+mysqli_query($conexion, $sql);
 $sql = "CREATE TABLE usuarios (
     id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(30) NOT NULL,
@@ -25,12 +20,7 @@ $sql = "CREATE TABLE usuarios (
     email VARCHAR(50) NOT NULL,
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
   )";
-  
-  if (mysqli_query($conexion, $sql)) {
-    echo "La tabla usuarios ha sido creada exitosamente";
-  } else {
-    echo "Error al crear la tabla: " . mysqli_error($conexion);
-  }
+  mysqli_query($conexion, $sql);
 
 // Insertar un nuevo usuario
 //$nombre = "juan";
@@ -43,5 +33,7 @@ $sql = "CREATE TABLE usuarios (
 //echo "Usuario insertado correctamente";
 
 // Cerrar la conexión
+mysqli_query($conexion, "INSERT INTO usuarios (nombre, contraseña, email) VALUES ('admin', 'P@$\$w0rd!', 'admin@admin.com')");
 mysqli_close($conexion);
+header("Location: index.php"); //redirigir al usuario a la página de inicio
 ?>
