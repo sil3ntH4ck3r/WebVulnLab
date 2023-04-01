@@ -50,8 +50,8 @@ This script will download and install all the necessary dependencies, create the
 
 | Docker               | Container Link                             |Status                                |
 |:---------------------|:-------------------------------------------|--------------------------------------|
-| Tablero              | http://localhost/tablero/tablero.php       |Functional                            |
-| Servidor Principal   | http://menu.local/                         |Functional                            |
+| Dashboard            | http://localhost/tablero/tablero.php       |Functional                            |
+| Main Server          | http://menu.local/                         |Functional                            |
 | LFI                  | http://lfi.local/                          |Functional                            |
 | Padding Oracle Attack| http://paddingoracleattack.local/          |Functional                            |
 | SQL Injection (Error)| http://sqli.local/                         |In development (but can be tested)    |
