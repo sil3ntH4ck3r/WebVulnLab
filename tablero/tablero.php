@@ -57,7 +57,7 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Docker Control</title>
+    <title>Tablero</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="api.css">
     <meta charset="UTF-8">

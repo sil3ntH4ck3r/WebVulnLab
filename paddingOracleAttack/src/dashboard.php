@@ -217,7 +217,7 @@ canvas {
 <header>
         <nav>
             <div class="container">
-                <h1 class="logo">Cybertec</h1>
+                <h1 class="logo">Padding Oracle Attack</h1>
                 <ul class="menu">
                     <li><a href="http://paddingoracleattack.local/logout.php">Logout</a></li>
                     <li><a href="http://paddingoracleattack.local/perfil.php">Perfil</a></li>

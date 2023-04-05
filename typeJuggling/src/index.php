@@ -23,7 +23,7 @@ if(isset($_POST['username']) && isset($_POST['password'])){
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Panel Administrativo</title>
+    <title>Cybertec</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="padding.css">
