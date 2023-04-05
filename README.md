@@ -55,6 +55,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Servidor Principal   | http://menu.local/                         |Funcional                              |
 | LFI                  | http://lfi.local/                          |Funcional                              |
 | Padding Oracle Attack| http://paddingoracleattack.local/          |Funcional                              |
+| Type Juggling        | http://typejuggling.local                  |Funcional                              |
 | SQL Injection (Error)| http://sqli.local/                         |Desárrollandose (pero se puede probar) |
 | Remote File Lnclusion|                    -                       |                   -                   |
 | HTML Injection       |                    -                       |                   -                   |
@@ -68,7 +69,6 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Blind XXE            |                    -                       |                   -                   |
 | Domain Zone Transfer |                    -                       |                   -                   |
 | Insecure Deseralization |                    -                       |                   -                   |
-| Type Juggling        |                    -                       |                   -                   |
 
 Cabe destacar que aún está en desarrollo, y que no todos los contenedores están funcionando correctamente. Este repositorio se actualiza a menudo.
 
