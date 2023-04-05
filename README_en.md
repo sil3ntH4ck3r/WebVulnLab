@@ -54,6 +54,7 @@ This script will download and install all the necessary dependencies, create the
 | Main Server          | http://menu.local/                         |Functional                            |
 | LFI                  | http://lfi.local/                          |Functional                            |
 | Padding Oracle Attack| http://paddingoracleattack.local/          |Functional                            |
+| Type Juggling        | http://typejuggling.local                  |Functional                            |
 | SQL Injection (Error)| http://sqli.local/                         |In development (but can be tested)    |
 | Remote File Lnclusion|                    -                       |                   -                  |
 | HTML Injection       |                    -                       |                   -                  |
@@ -67,7 +68,6 @@ This script will download and install all the necessary dependencies, create the
 | Blind XXE            |                    -                       |                   -                  |
 | Domain Zone Transfer |                    -                       |                   -                  |
 | Insecure Deseralization |                    -                       |                   -               |
-| Type Juggling        |                    -                       |                   -                  |
 
 Note that it is still in development, and not all containers are working correctly. This repository is updated frequently.
 
