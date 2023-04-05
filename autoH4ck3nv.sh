@@ -32,7 +32,7 @@ sudo cp hack3nv.conf /etc/apache2/sites-available
 sudo a2ensite hack3nv.conf
 sudo systemctl reload apache2
 
-echo "127.0.0.1 lfi.local menu.local sqli.local paddingoracleattack.local typejuggling.local" >> /etc/hosts
+echo "127.0.0.1 lfi.local menu.local sqli.local paddingoracleattack.local typejuggling.local rfi.local" >> /etc/hosts
 
 # CONFIGURANDO CONTENEDORES
 
@@ -66,9 +66,16 @@ sudo docker run --name padding_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQ
 sudo docker run --name padding_v2 --link padding_db_v2:db -p 8007:80 -v $pwd/paddingOracleAttack/src:/var/www/html/ -d padding_v2
 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker PADDING_V2 iniciado correctamente${endColour}"
 
-echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del LFI_V2${endColour}"
+echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del TYPEJUGGLING_V2${endColour}"
 sudo docker build -t typejuggling_v2 $pwd/typeJuggling
 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker LFI_V2${endColour}"
+echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker TYPEJUGGLING_V2${endColour}"
 sudo docker run --name typejuggling_v2 -d -v $pwd/typeJuggling/src:/var/www/html -p 8008:80 typejuggling_v2
-echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker LFI_V2 iniciado correctamente${endColour}"
+echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker TYPEJUGGLING_V2 iniciado correctamente${endColour}"
+
+echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del RFI_V2${endColour}"
+sudo docker build -t rfi_v2 $pwd/rfi
+echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
+echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker RFI_V2${endColour}"
+sudo docker run --name rfi_v2 -d -v $pwd/rfi/src:/var/www/html -p 8009:80 rfi_v2
+echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker RFI_V2 iniciado correctamente${endColour}"
