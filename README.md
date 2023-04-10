@@ -38,6 +38,7 @@ Una vez descargado, el proyecto no requiere conexión a internet, ya que está d
 cd Pentesting-Web-Lab
 chmod +x autoH4ck3nv.sh
 ```
+> En caso que utilizes Arch Linux, el script de instalación es: autoH4ck3nvArchLinux.sh
 
 3. Ejecuta el script de instalación:
 
