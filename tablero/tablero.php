@@ -56,7 +56,6 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
 ?>
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Tablero</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
@@ -64,29 +63,27 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
     <meta charset="UTF-8">
 
     <style>
-    form {
-        display: inline-block;
-    }
+            form {
+              display: inline-block;
+            }
 
-    form button {
-        display: inline-block;
-        margin-right: 5px;
-    }
+            form button {
+              display: inline-block;
+              margin-right: 5px;
+            }
     </style>
 
 </head>
-
 <body>
-    <header>
-        <nav class="container">
-            <h1>Admin Panel</h1>
-        </nav>
-    </header>
-    <main class="container">
-        <div class="card">
-            <h2>Contenedores Docker</h2>
-            <div class="counters">
-                <?php
+<header>
+    <h1>Tablero</h1>
+</header>
+<h1>Contenedores Docker</h1>
+
+<div id="counter" style="margin: auto;">
+
+        <?php
+
             if ($totalContenedores === 0) {
                 echo "<h3>NO HAY CONTENEDORES DESPLEGADOS</h3>";
             } else {
@@ -94,45 +91,43 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
                 <h3>Contenedores apagados: $apagados </h3> <!-- Mostrar número de contenedores apagados -->
                 <h3>Total contenedores: $totalContenedores </h3> <!-- Mostrar número de contenedores totales -->";
             }
-            ?>
-            </div>
-        </div>
+        ?>
+</div>
 
-        <ul>
-            <?php foreach ($containers as $container): ?>
-            <li class="card">
-                <h2><?php echo $container['Names'][0]; ?></h2>
-                <div class="buttons">
-                    <?php if (strpos($container['Status'], 'Up') !== false): ?>
-                    <form method="POST">
-                        <input type="hidden" name="action" value="stop">
-                        <input type="hidden" name="container_id" value="<?php echo $container['Id']; ?>">
-                        <button class="stop" type="submit">Apagar</button>
-                    </form>
-                    <form method="POST">
-                        <input type="hidden" name="action" value="restart">
-                        <input type="hidden" name="container_id" value="<?php echo $container['Id']; ?>">
-                        <button class="restart-button" type="submit">Reiniciar</button>
-                    </form>
-                    <?php else: ?>
-                    <form method="POST">
-                        <input type="hidden" name="action" value="start">
-                        <input type="hidden" name="container_id" value="<?php echo $container['Id']; ?>">
-                        <button class="start-button" type="submit">Encender</button>
-                    </form>
 
-                    <form method="POST">
-                        <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="container_id" value="<?php echo $container['Id']; ?>">
-                        <button class="delete" type="submit"
-                            onclick="confirmDelete(event, '<?php echo $container['Names'][0]; ?>', this.form)">Eliminar</button>
+<ul>
+    <?php foreach ($containers as $container): ?>
+        <li>
+            <h2><?php echo $container['Names'][0]; ?></h2>
 
-                    </form>
+            <?php if (strpos($container['Status'], 'Up') !== false): ?>
+                <form method="POST">
+                    <input type="hidden" name="action" value="stop">
+                    <input type="hidden" name="container_id" value="<?php echo $container['Id']; ?>">
+                    <button class="stop-button" type="submit">Apagar</button>
+                </form>
+                <form method="POST">
+                    <input type="hidden" name="action" value="restart">
+                    <input type="hidden" name="container_id" value="<?php echo $container['Id']; ?>">
+                    <button class="restart-button" type="submit">Reiniciar</button>
+                </form>
+            <?php else: ?>
+                <form method="POST">
+                    <input type="hidden" name="action" value="start">
+                    <input type="hidden" name="container_id" value="<?php echo $container['Id']; ?>">
+                    <button class="start-button"type="submit">Encender</button>
+                </form>
 
-                    <?php endif; ?>
-                </div>
+                <form method="POST">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="container_id" value="<?php echo $container['Id']; ?>">
+                    <button class="delete-button" type="submit" onclick="confirmDelete(event, '<?php echo $container['Names'][0]; ?>', this.form)">Eliminar</button>
 
-                <script>
+                </form>
+
+            <?php endif; ?>
+
+            <script>
                 function confirmDelete(event, containerName, form) {
                     event.preventDefault(); // evita el envío del formulario si el usuario hace clic en "Cancelar"
                     if (confirm("¿Está seguro de que desea eliminar el contenedor " + containerName + "?")) {
@@ -141,30 +136,28 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
                     }
 
 
-                    //                    Swal.fire({
-                    //                        title: '¿Está seguro de que desea eliminar el contenedor ' + containerName + '?',
-                    //                        text: "¡Esta acción no se puede deshacer!",
-                    //                        icon: 'warning',
-                    //                        showCancelButton: true,
-                    //                        confirmButtonColor: '#3085d6',
-                    //                        cancelButtonColor: '#d33',
-                    //                        confirmButtonText: 'Sí, eliminarlo'
-                    //                    }).then((result) => {
-                    //                        if (result.isConfirmed) {
-                    //                            
-                    //                            form.submit();
-                    //                            
-                    //                        }
-                    //                    })
+//                    Swal.fire({
+//                        title: '¿Está seguro de que desea eliminar el contenedor ' + containerName + '?',
+//                        text: "¡Esta acción no se puede deshacer!",
+//                        icon: 'warning',
+//                        showCancelButton: true,
+//                        confirmButtonColor: '#3085d6',
+//                        cancelButtonColor: '#d33',
+//                        confirmButtonText: 'Sí, eliminarlo'
+//                    }).then((result) => {
+//                        if (result.isConfirmed) {
+//                            
+//                            form.submit();
+//                            
+//                        }
+//                    })
                 }
-                </script>
-            </li>
-            <?php endforeach; ?>
-        </ul>
-    </main>
-    <footer>
-        <p>Derechos de autor © 2023. Todos los derechos reservados.</p>
-    </footer>
+            </script>
+        </li>
+    <?php endforeach; ?>
+</ul>
 </body>
-
+<footer>
+    <p>Derechos de autor © 2023. Todos los derechos reservados.</p>
+</footer>
 </html>

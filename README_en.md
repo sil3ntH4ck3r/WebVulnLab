@@ -55,11 +55,11 @@ This script will download and install all the necessary dependencies, create the
 | LFI                  | http://lfi.local/                          |Functional                            |
 | Padding Oracle Attack| http://paddingoracleattack.local/          |Functional                            |
 | Type Juggling        | http://typejuggling.local                  |Functional                            |
+| Remote File Lnclusion|http://rfi.local                            |Functional                            |
+| XSS                  | http://xss.local/                          |Functional                            |
 | SQL Injection (Error)| http://sqli.local/                         |In development (but can be tested)    |
-| Remote File Lnclusion|                    -                       |                   -                  |
+| Blind XSS            |                    -                       |In development                        |
 | HTML Injection       |                    -                       |                   -                  |
-| XSS                  |                    -                       |                   -                  |
-| Blind XSS            |                    -                       |                   -                  |
 | CSRF                 |                    -                       |                   -                  |
 | SSRF                 |                    -                       |                   -                  |
 | SQL Injection (Time) |                    -                       |                   -                  |

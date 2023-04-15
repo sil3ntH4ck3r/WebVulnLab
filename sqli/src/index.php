@@ -25,6 +25,7 @@
     <h1>Comentarios</h1>
 
     <?php
+        error_reporting(0); //desactivar warnings
         // Conexión a la base de datos
         $db = mysqli_connect("db", "usuario", "contraseña", "database");
 
@@ -45,19 +46,21 @@
             foreach ($productos as $producto) {
                 mysqli_query($db, "INSERT INTO productos (nombre, descripcion, precio) VALUES ('" . $producto['nombre'] . "', '" . $producto['descripcion'] . "', " . $producto['precio'] . ")");
             }
+
         }
 
         // Obtener la búsqueda del usuario, si se ha enviado
         $busqueda = "";
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
             $busqueda = $_GET["busqueda"];
+            //$busqueda = $_GET["busqueda"];
         }
 
         // Consulta para obtener los productos
         if (empty($busqueda)) {
             $result = mysqli_query($db, "SELECT * FROM productos");
         } else {
-            $result = mysqli_query($db, "SELECT * FROM productos WHERE nombre LIKE '%" . $busqueda . "%'");
+            $result = mysqli_query($db, "SELECT * FROM productos WHERE nombre LIKE '%" . $busqueda . "%'") or die(mysqli_error($db)); //or die(mysqli_error($db))
         }
 
         // Mostrar los productos
@@ -76,23 +79,6 @@
             }
         }
     ?>
-
-    <div class="message-popup">
-        <p>Mensaje recibido de Juan:</p>
-        <p>¡Hola! ¿Cómo estás?</p>
-    </div>
-
-    <script>
-        document.querySelector('.new-message-button').addEventListener('click', function() {
-            var messagePopup = document.querySelector('.message-popup');
-            
-            messagePopup.style.display = 'block';
-            
-            setTimeout(function() {
-                messagePopup.style.display = 'none';
-            },3000); // Desaparece después de tres segundos
-        });
-    </script>
 </body>
 
 <footer>
