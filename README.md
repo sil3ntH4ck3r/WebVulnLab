@@ -58,10 +58,10 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Padding Oracle Attack| http://paddingoracleattack.local/          |Funcional                              |
 | Type Juggling        | http://typejuggling.local                  |Funcional                              |
 | Remote File Lnclusion| http://rfi.local                           |Funcional                              |
+| XSS                  | http://xss.local/                          |Funcional                              |
 | SQL Injection (Error)| http://sqli.local/                         |Desárrollandose (pero se puede probar) |
+| Blind XSS            |                    -                       |Desárrollandose                        |
 | HTML Injection       |                    -                       |                   -                   |
-| XSS                  |                    -                       |                   -                   |
-| Blind XSS            |                    -                       |                   -                   |
 | CSRF                 |                    -                       |                   -                   |
 | SSRF                 |                    -                       |                   -                   |
 | SQL Injection (Time) |                    -                       |                   -                   |

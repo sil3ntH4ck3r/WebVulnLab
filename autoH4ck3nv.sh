@@ -32,7 +32,7 @@ sudo cp hack3nv.conf /etc/apache2/sites-available
 sudo a2ensite hack3nv.conf
 sudo systemctl reload apache2
 
-echo "127.0.0.1 lfi.local menu.local sqli.local paddingoracleattack.local typejuggling.local rfi.local" >> /etc/hosts
+echo "127.0.0.1 lfi.local menu.local sqli.local paddingoracleattack.local typejuggling.local rfi.local xss.local" >> /etc/hosts
 
 # CONFIGURANDO CONTENEDORES
 
@@ -79,3 +79,10 @@ echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour
 echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker RFI_V2${endColour}"
 sudo docker run --name rfi_v2 -d -v $pwd/rfi/src:/var/www/html -p 8009:80 rfi_v2
 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker RFI_V2 iniciado correctamente${endColour}"
+
+echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del RFI_V2${endColour}"
+sudo docker build -t xss_v2 $pwd/xss
+echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
+echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker XSS_V2${endColour}"
+sudo docker run --name xss_v2 -d -v $pwd/xss/src:/var/www/html -p 8004:80 xss_v2
+echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker XSS_V2 iniciado correctamente${endColour}"
