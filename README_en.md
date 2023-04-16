@@ -57,7 +57,7 @@ This script will download and install all the necessary dependencies, create the
 | Type Juggling        | http://typejuggling.local                  |Functional                            |
 | Remote File Lnclusion|http://rfi.local                            |Functional                            |
 | XSS                  | http://xss.local/                          |Functional                            |
-| XXE                  | http://xxe.local/                          |In development (but can be tested)    |
+| XXE                  | http://xxe.local/                          |Functional                            |
 | Blind XXE            | http://blindxxe.local                      |In development (but can be tested)    |
 | SQL Injection (Error)| http://sqli.local/                         |In development (but can be tested)    |
 | Blind XSS            |                    -                       |In development                        |
