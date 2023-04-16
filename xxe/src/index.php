@@ -1,18 +1,19 @@
-<?php
-// Cargar archivo XML
-$xml = simplexml_load_file('users.xml');
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Formulario de inicio de sesión</title>
+</head>
+<body>
+    <form method="POST" action="xxe.php" enctype="text/xml">
+    <label for="username">Usuario:</label>
+    <input type="text" name="username" id="username"><br>
 
-// Obtener credenciales del formulario
-$username = $_POST['username'];
-$password = $_POST['password'];
+    <label for="password">Contraseña:</label>
+    <input type="password" name="password" id="password"><br>
 
-// Buscar usuario en el archivo XML
-$users = $xml->xpath("//user[username='$username' and password='$password']");
+    <input type="submit" value="Enviar">
+    </form>
 
-// Comprobar si el usuario existe
-if (count($users) == 1) {
-    echo "Bienvenido, $username!";
-} else {
-    echo "Credenciales inválidas.";
-}
-?>
+</body>
+</html>
+
