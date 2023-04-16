@@ -88,10 +88,10 @@ sudo docker run --name xss_v2 -d -v $pwd/xss/src:/var/www/html -p 8004:80 xss_v2
 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker XSS_V2 iniciado correctamente${endColour}"
 
 echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del XXE_V2${endColour}"
-sudo docker build -t xxs_v2 $pwd/xxe
+sudo docker build -t xxe_v2 $pwd/xxe
 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
 echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker XXE_V2${endColour}"
-sudo docker run --name xxs_v2 -d -v $pwd/xxe/src:/var/www/html -p 8003:80 xxs_v2
+sudo docker run --name xxe_v2 -d -v $pwd/xxe/src:/var/www/html -p 8003:80 xxe_v2
 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker XXE_V2 iniciado correctamente${endColour}"
 
 echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del BLIND_XXE_V2${endColour}"
