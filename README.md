@@ -59,6 +59,8 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Type Juggling        | http://typejuggling.local                  |Funcional                              |
 | Remote File Lnclusion| http://rfi.local                           |Funcional                              |
 | XSS                  | http://xss.local/                          |Funcional                              |
+| XXE                  | http://xxe.local/                          |Desárrollandose (pero se puede probar) |
+| Blind XXE            | http://blindxxe.local                      |Desárrollandose (pero se puede probar) |
 | SQL Injection (Error)| http://sqli.local/                         |Desárrollandose (pero se puede probar) |
 | Blind XSS            |                    -                       |Desárrollandose                        |
 | HTML Injection       |                    -                       |                   -                   |
@@ -66,8 +68,6 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | SSRF                 |                    -                       |                   -                   |
 | SQL Injection (Time) |                    -                       |                   -                   |
 | ShellShock           |                    -                       |                   -                   |
-| XXE                  |                    -                       |                   -                   |
-| Blind XXE            |                    -                       |                   -                   |
 | Domain Zone Transfer |                    -                       |                   -                   |
 | Insecure Deseralization |                    -                       |                   -                   |
 
