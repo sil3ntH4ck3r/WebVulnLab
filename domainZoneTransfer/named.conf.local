@@ -1,0 +1,4 @@
+zone "domainzonetransfer.local" {
+    type master;
+    file "/etc/bind/db.domainzonetransfer.local";
+};

@@ -32,7 +32,7 @@ sudo cp hack3nvArchLinux.conf /etc/httpd/conf/extra/
 echo "Include conf/extra/hack3nvArchLinux.conf" | sudo tee -a /etc/httpd/conf/httpd.conf > /dev/null
 sudo systemctl reload httpd
 
-echo "127.0.0.1 lfi.local menu.local sqli.local paddingoracleattack.local typejuggling.local rfi.local xss.local xxe.local blindxxe.local" | sudo tee -a /etc/hosts > /dev/null
+echo "127.0.0.1 lfi.local menu.local sqli.local paddingoracleattack.local typejuggling.local rfi.local xss.local xxe.local blindxxe.local insecuredeserializationphp.local domainzonetransfer.local csrf.local" | sudo tee -a /etc/hosts > /dev/null
 
 # CONFIGURANDO CONTENEDORES
 
@@ -100,3 +100,25 @@ echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour
 echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker BLIND_XXE_V2${endColour}"
 sudo docker run --name blindxxe_v2 -d -v $pwd/blindxxe/src:/var/www/html -p 8002:80 blindxxe_v2
 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker BLIND_XXE_V2 iniciado correctamente${endColour}"
+
+echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del CSRF_V2${endColour}"
+sudo docker build -t csrf_v2 $pwd/csrf
+echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
+echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker CSRF_V2${endColour}"
+sudo docker run --name csrf_v2 -d -v $pwd/csrf/src:/var/www/html -p 8001:80 csrf_v2
+echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker CSRF_V2 iniciado correctamente${endColour}"
+
+echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del DOMAIN_ZONE_TRANSFER_V2${endColour}"
+sudo docker build -t domainzonetransfer_v2 $pwd/domainZoneTransfer
+echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
+echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker DOMAIN_ZONE_TRANSFER_V2${endColour}"
+sudo docker run --name domainzonetransfer_v2 -d -p 53:53/udp -p 53:53/tcp domainzonetransfer_v2
+echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker DOMAIN_ZONE_TRANSFER_V2 iniciado correctamente${endColour}"
+
+
+echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del INSECURE_DESERIALIZATION_PHP_V2${endColour}"
+sudo docker build -t insecuredeserializationphp_v2 $pwd/insecureDeserializationPhp
+echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
+echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker INSECURE_DESERIALIZATION_PHP_V2${endColour}"
+sudo docker run --name insecuredeserializationphp_v2 -d -v $pwd/insecureDeserializationPhp/src:/var/www/html -p 8011:80 insecuredeserializationphp_v2
+echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker INSECURE_DESERIALIZATION_PHP_V2 iniciado correctamente${endColour}"

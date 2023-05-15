@@ -62,14 +62,14 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | XXE                  | http://xxe.local/                          |Funcional                              |
 | Blind XXE            | http://blindxxe.local                      |Desárrollandose (pero se puede probar) |
 | SQL Injection (Error)| http://sqli.local/                         |Desárrollandose (pero se puede probar) |
+| Domain Zone Transfer | http://domainzonetransfer.local/           |Desárrollandose (pero se puede probar) |
+| Insecure Deseralization | http://insecuredeseralization.local/    |Desárrollandose (pero se puede probar) |
+| CSRF                 | http://csrf.local                          |Desárrollandose (pero se puede probar) |
 | Blind XSS            |                    -                       |Desárrollandose                        |
 | HTML Injection       |                    -                       |                   -                   |
-| CSRF                 |                    -                       |                   -                   |
 | SSRF                 |                    -                       |                   -                   |
 | SQL Injection (Time) |                    -                       |                   -                   |
 | ShellShock           |                    -                       |                   -                   |
-| Domain Zone Transfer |                    -                       |                   -                   |
-| Insecure Deseralization |                    -                       |                   -                   |
 
 Cabe destacar que aún está en desarrollo, y que no todos los contenedores están funcionando correctamente. Este repositorio se actualiza a menudo.
 
