@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+    <user>
+        <username>admin</username>
+        <password>P@$$w0rd!</password>
+        <email>admin@xpathinjection.local</email>
+    </user>
+    <user>
+        <username>guest</username>
+        <password>guest</password>
+        <email>guest@xpathinjection.local</email>
+    </user>
+    <user>
+        <username>root</username>
+        <password>P@$$w0rd!</password>
+        <email>root@xpathinjection.local</email>
+    </user>
+</users>

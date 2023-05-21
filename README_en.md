@@ -58,6 +58,7 @@ This script will download and install all the necessary dependencies, create the
 | Remote File Lnclusion|http://rfi.local                            |Functional                            |
 | XSS                  | http://xss.local/                          |Functional                            |
 | XXE                  | http://xxe.local/                          |Functional                            |
+| XPath Injection      | http://xpathinjection.local/               |Functional                            |
 | Blind XXE            | http://blindxxe.local                      |In development (but can be tested)    |
 | SQL Injection (Error)| http://sqli.local/                         |In development (but can be tested)    |
 | Domain Zone Transfer | http://domainzonetransfer.local/           |In development (but can be tested)    |
