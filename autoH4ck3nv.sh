@@ -37,7 +37,7 @@ sudo cp hack3nv.conf /etc/apache2/sites-available
 sudo a2ensite hack3nv.conf
 sudo systemctl reload apache2
 
-sudo echo "127.0.0.1 lfi.local menu.local sqli.local paddingoracleattack.local typejuggling.local rfi.local xss.local xxe.local blindxxe.local insecuredeserializationphp.local domainzonetransfer.local csrf.local xpathinjection.local" >> /etc/hosts
+sudo echo "127.0.0.1 lfi.local menu.local sqli.local paddingoracleattack.local typejuggling.local rfi.local xss.local xxe.local blindxxe.local latexinjection.local domainzonetransfer.local csrf.local xpathinjection.local" >> /etc/hosts
 
 # MEJORAS
 
@@ -413,20 +413,20 @@ else
     fi 
     echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker DOMAIN_ZONE_TRANSFER_V2 iniciado correctamente${endColour}"
 
-    echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del INSECURE_DESERIALIZATION_PHP_V2${endColour}"
-    sudo docker build -t insecuredeserializationphp_v2 $pwd/insecureDeserializationPhp
+    echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del LATEX_INJECTION_V2${endColour}"
+    sudo docker build -t latexinjection_v2 $pwd/LaTeXInjection
     if [ $? -ne 0 ]; then
-        echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen INSECURE_DESERIALIZATION_PHP_V2${endColour}"
+        echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen LATEX_INJECTION_V2${endColour}"
         exit 1;
     fi
     echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-    echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker INSECURE_DESERIALIZATION_PHP_V2${endColour}"
-    sudo docker run --name insecuredeserializationphp_v2 -d -v $pwd/insecureDeserializationPhp/src:/var/www/html -p 8011:80 insecuredeserializationphp_v2
+    echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker LATEX_INJECTION_V2${endColour}"
+    sudo docker run --name latexinjection_v2 -d -v $pwd/LaTeXInjection/src:/var/www/html -p 8011:80 latexinjection_v2
     if [ $? -ne 0 ]; then
-        echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor INSECURE_DESERIALIZATION_PHP_V2${endColour}"
+        echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor LATEX_INJECTION_V2${endColour}"
         exit 1;
     fi 
-    echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker INSECURE_DESERIALIZATION_PHP_V2 iniciado correctamente${endColour}"
+    echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker LATEX_INJECTION_V2 iniciado correctamente${endColour}"
 
     echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del XPATH_INJECTION_V2${endColour}"
     sudo docker build -t xpathinjection_v2 $pwd/xpathinjection

@@ -61,6 +61,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | XSS                  | http://xss.local/                          |Funcional                              |
 | XXE                  | http://xxe.local/                          |Funcional                              |
 | XPath Injection      | http://xpathinjection.local/               |Funcional                              |
+| LaTeX Injection      | http://latexinjection.local/               |Funcional                              |
 | Blind XXE            | http://blindxxe.local                      |Desárrollandose (pero se puede probar) |
 | SQL Injection (Error)| http://sqli.local/                         |Desárrollandose (pero se puede probar) |
 | Domain Zone Transfer | http://domainzonetransfer.local/           |Desárrollandose (pero se puede probar) |
