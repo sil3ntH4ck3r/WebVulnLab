@@ -32,7 +32,7 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
         curl_close($ch);
 
         if ($statusCode === 204) {
-            header('Location: ' . $_SERVER['PHP_SELF']);
+            header('Location: ' . "http://tablero.local/");
             exit();
         } else {
             echo "<script>alert('Error al eliminar el contenedor');</script>";
@@ -46,7 +46,7 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
         curl_close($ch);
 
         if ($statusCode === 204) {
-            header('Location: ' . $_SERVER['PHP_SELF']);
+            header('Location: ' . "http://tablero.local/");
             exit();
         } else {
             echo "<script>alert('Error al $action el contenedor');</script>";
