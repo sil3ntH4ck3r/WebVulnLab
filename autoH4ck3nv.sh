@@ -272,7 +272,7 @@ if [ "$ignore_errors" = "s" ]; then
         echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
     fi
     echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker SHELLSHOCK_V2${endColour}"
-    sudo docker run --name shellshock_v2 -d -v $pwd/shellshock/src:/var/www/html -p 8013:80 shellshock_v2
+    sudo docker run --name shellshock_v2 -d -p 8013:80 shellshock_v2 #-v $pwd/shellshock/src:/var/www/html
     if [ $? -ne 0 ]; then
         echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor SHELLSHOCK_V2${endColour}"
     else 
@@ -495,7 +495,7 @@ else #--------------------------------------------------------------------------
     fi
     echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
     echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker SHELLSHOCK_V2${endColour}"
-    sudo docker run --name shellshock_v2 -d -v $pwd/shellshock/src:/var/www/html -p 8013:80 shellshock_v2
+    sudo docker run --name shellshock_v2 -d -p 8013:80 shellshock_v2 #-v $pwd/shellshock/src:/var/www/html
     if [ $? -ne 0 ]; then
         echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor SHELLSHOCK_V2${endColour}"
         exit 1;
