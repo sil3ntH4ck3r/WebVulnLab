@@ -60,6 +60,7 @@ This script will download and install all the necessary dependencies, create the
 | XXE                  | http://xxe.local/                          |Functional                            |
 | XPath Injection      | http://xpathinjection.local/               |Functional                            |
 | LaTeX Injection      | http://latexinjection.local/               |Functional                            |
+| ShellShock           | http://shellshock.local (vulnerable file -> /cgi-bin/system_info.cgi)|In development (but can be tested)|
 | Blind XXE            | http://blindxxe.local                      |In development (but can be tested)    |
 | SQL Injection (Error)| http://sqli.local/                         |In development (but can be tested)    |
 | Domain Zone Transfer | http://domainzonetransfer.local/           |In development (but can be tested)    |
@@ -69,7 +70,6 @@ This script will download and install all the necessary dependencies, create the
 | HTML Injection       |                    -                       |                   -                  |
 | SSRF                 |                    -                       |                   -                  |
 | SQL Injection (Time) |                    -                       |                   -                  |
-| ShellShock           |                    -                       |                   -                  |
 
 Note that it is still in development, and not all containers are working correctly. This repository is updated frequently.
 
