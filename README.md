@@ -57,7 +57,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | LFI                  | http://lfi.local/                          |Funcional                              |
 | Padding Oracle Attack| http://paddingoracleattack.local/          |Funcional                              |
 | Type Juggling        | http://typejuggling.local                  |Funcional                              |
-| Remote File Lnclusion| http://rfi.local                           |Funcional                              |
+| Remote File Inclusion| http://rfi.local                           |Funcional                              |
 | XSS                  | http://xss.local/                          |Funcional                              |
 | XXE                  | http://xxe.local/                          |Funcional                              |
 | XPath Injection      | http://xpathinjection.local/               |Funcional                              |
