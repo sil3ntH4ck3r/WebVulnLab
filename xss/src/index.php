@@ -17,10 +17,10 @@
             <div class="container">
                 <h1 class="logo">Cybertec</h1>
                 <ul class="menu">
-                <li><a href="http://xss.local/xss.php#">Inicio</a></li>
-                    <li><a href="http://xss.local/xss.php#services">Servicios</a></li>
-                    <li><a href="http://xss.local/xss.php#about">Sobre Nosotros</a></li>
-                    <li><a href="http://xss.local/xss.php#contact">Contacto</a></li>
+                <li><a href="http://xss.local/#">Inicio</a></li>
+                    <li><a href="http://xss.local/#services">Servicios</a></li>
+                    <li><a href="http://xss.local/#about">Sobre Nosotros</a></li>
+                    <li><a href="http://xss.local/#contact">Contacto</a></li>
                 </ul>
             </div>
         </nav>
