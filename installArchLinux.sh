@@ -136,20 +136,20 @@ if [ "$hide_output" = "s" ]; then
         fi
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del PADDING_V2${endColour}"
-        sudo docker build -t padding_v2 $pwd/paddingOracleAttack > /dev/null 2>&1
+        sudo docker build -t paddingoracleattack_v2 $pwd/paddingOracleAttack > /dev/null 2>&1
         if [ $? -ne 0 ]; then
             echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen PADDING_V2${endColour}"
         else
             echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
         fi
         echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker PADDING_V2 i PADDING_DB_V2${endColour}"
-        sudo docker run --name padding_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7 > /dev/null 2>&1
+        sudo docker run --name paddingoracleattack_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7 > /dev/null 2>&1
         if [ $? -ne 0 ]; then
             echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor PADDING_DB_V2${endColour}"
         else
             echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker PADDING_DB_V2 iniciado correctamente${endColour}"
         fi                                                             
-        sudo docker run --name padding_v2 --link padding_db_v2:db -p 8007:80 -v $pwd/paddingOracleAttack/src:/var/www/html/ -d padding_v2 > /dev/null 2>&1
+        sudo docker run --name paddingoracleattack_v2 --link paddingoracleattack_db_v2:db -p 8007:80 -v $pwd/paddingOracleAttack/src:/var/www/html/ -d paddingoracleattack_v2 > /dev/null 2>&1
         if [ $? -ne 0 ]; then
             echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor PADDING_V2${endColour}"
         else 
@@ -360,19 +360,19 @@ if [ "$hide_output" = "s" ]; then
         echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker SQLI_V2 iniciado correctamente${endColour}"
 
         echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del PADDING_V2${endColour}"
-        sudo docker build -t padding_v2 $pwd/paddingOracleAttack > /dev/null 2>&1
+        sudo docker build -t paddingoracleattack_v2 $pwd/paddingOracleAttack > /dev/null 2>&1
         if [ $? -ne 0 ]; then
             echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen PADDING_V2${endColour}"
             exit 1;
         fi
         echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
         echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker PADDING_V2 i PADDING_DB_V2${endColour}"
-        sudo docker run --name padding_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7 > /dev/null 2>&1
+        sudo docker run --name paddingoracleattack_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7 > /dev/null 2>&1
         if [ $? -ne 0 ]; then
             echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor PADDING_DB_V2${endColour}"
             exit 1;
         fi                                                             
-        sudo docker run --name padding_v2 --link padding_db_v2:db -p 8007:80 -v $pwd/paddingOracleAttack/src:/var/www/html/ -d padding_v2 > /dev/null 2>&1
+        sudo docker run --name paddingoracleattack_v2 --link paddingoracleattack_db_v2:db -p 8007:80 -v $pwd/paddingOracleAttack/src:/var/www/html/ -d paddingoracleattack_v2 > /dev/null 2>&1
         if [ $? -ne 0 ]; then
             echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor PADDING_V2${endColour}"
             exit 1;
@@ -588,20 +588,20 @@ else
         fi
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del PADDING_V2${endColour}"
-        sudo docker build -t padding_v2 $pwd/paddingOracleAttack
+        sudo docker build -t paddingoracleattack_v2 $pwd/paddingOracleAttack
         if [ $? -ne 0 ]; then
             echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen PADDING_V2${endColour}"
         else
             echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
         fi
         echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker PADDING_V2 i PADDING_DB_V2${endColour}"
-        sudo docker run --name padding_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7
+        sudo docker run --name paddingoracleattack_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7
         if [ $? -ne 0 ]; then
             echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor PADDING_DB_V2${endColour}"
         else
             echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker PADDING_DB_V2 iniciado correctamente${endColour}"
         fi                                                             
-        sudo docker run --name padding_v2 --link padding_db_v2:db -p 8007:80 -v $pwd/paddingOracleAttack/src:/var/www/html/ -d padding_v2
+        sudo docker run --name paddingoracleattack_v2 --link paddingoracleattack_db_v2:db -p 8007:80 -v $pwd/paddingOracleAttack/src:/var/www/html/ -d paddingoracleattack_v2
         if [ $? -ne 0 ]; then
             echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor PADDING_V2${endColour}"
         else 
@@ -812,19 +812,19 @@ else
         echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker SQLI_V2 iniciado correctamente${endColour}"
 
         echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del PADDING_V2${endColour}"
-        sudo docker build -t padding_v2 $pwd/paddingOracleAttack
+        sudo docker build -t paddingoracleattack_v2 $pwd/paddingOracleAttack
         if [ $? -ne 0 ]; then
             echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen PADDING_V2${endColour}"
             exit 1;
         fi
         echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
         echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker PADDING_V2 i PADDING_DB_V2${endColour}"
-        sudo docker run --name padding_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7
+        sudo docker run --name paddingoracleattack_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7
         if [ $? -ne 0 ]; then
             echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor PADDING_DB_V2${endColour}"
             exit 1;
         fi                                                             
-        sudo docker run --name padding_v2 --link padding_db_v2:db -p 8007:80 -v $pwd/paddingOracleAttack/src:/var/www/html/ -d padding_v2
+        sudo docker run --name paddingoracleattack_v2 --link paddingoracleattack_db_v2:db -p 8007:80 -v $pwd/paddingOracleAttack/src:/var/www/html/ -d paddingoracleattack_v2
         if [ $? -ne 0 ]; then
             echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor PADDING_V2${endColour}"
             exit 1;

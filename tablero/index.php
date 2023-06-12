@@ -1,4 +1,15 @@
 <?php
+
+function processContainerName($containerName) {
+    $containerName = substr($containerName, 1); // Elimina el primer caracter '/'
+    
+    if (strpos($containerName, '_db_') === false) {
+        $containerName = str_replace('_v2', '', $containerName); // Elimina '_v2' del nombre si no contiene '_db_'
+    }
+    
+    return $containerName;
+}
+
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, "http://localhost:2375/containers/json?all=1");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -98,8 +109,14 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
 <ul>
     <?php foreach ($containers as $container): ?>
         <li>
-            <h2><?php echo $container['Names'][0]; ?></h2>
-
+            <?php
+                $processedName = processContainerName($container['Names'][0]);
+                if (strpos($processedName, '_db_') === false):
+            ?>
+                <h2><a href="http://<?php echo $processedName; ?>.local" target="_blank"><?php echo $container['Names'][0]; ?></a></h2>
+            <?php else: ?>
+                <h2><?php echo $container['Names'][0]; ?></h2>
+            <?php endif; ?>
             <?php if (strpos($container['Status'], 'Up') !== false): ?>
                 <form method="POST">
                     <input type="hidden" name="action" value="stop">
