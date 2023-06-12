@@ -112,8 +112,16 @@ If you want to contribute to the development of Pentesting-Web-Lab, you are welc
 - Proposing new features or improvements.
 - Helping to solve problems or developing new vulnerabilities.
 
-## Things for the next updates
-Migrate everything to the second version (when everything is migrated, development of new vulnerabilities will be advanced).
-- Add more containers and vulnerabilities.
-- Improve documentation to make it easier to understand and follow.
-- Refactor the code to make it more readable and maintainable.
+## Things for the upcoming updates:
+
+- Add more vulnerabilities.
+- ~~Display on the dashboard which machines are turned on and which machines are turned off.~~
+- ~~Implement Traefik for setting up subdomains instead of using IP addresses.~~
+  - (**Note**: Eventually, Traefik wasn't used, and Virtual Hosting was applied instead. Now, the links to the containers are easier to remember.)
+- ~~Improve the aesthetics.~~
+- ~~Add the ability to restart containers.~~
+- Include a CTF machine.
+- On each machine, add a learning option where users can discover more about the specific vulnerability.
+- Create a version of this project (WebVulnLab) for Windows.
+- Enhance the documentation to make it more user-friendly and easy to follow.
+- Refactor the code to improve readability and maintainability.
