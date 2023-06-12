@@ -1,4 +1,4 @@
-# Pentesting-Web-Lab
+# WebVulnLab (2.0v)
 
 [Spanish Version](README.md)
 
@@ -17,12 +17,12 @@ In this new version, you will find a more attractive and user-friendly interface
 
 **IMPORTANT NOTE**: Run the installation script with superuser privileges.
 
-To install and use the Pentesting-Web-Lab tool, follow these steps:
+To install and use the WebVulnLab tool, follow these steps:
 
 1. Download the GitHub repository using the following command in your terminal:
 
 ```
-git clone -b dev https://github.com/sil3ntH4ck3r/Pentesting-Web-Lab.git
+git clone -b dev https://github.com/sil3ntH4ck3r/WebVulnLab.git
 ```
 > If you don't have Git installed yet, download and install it from its [official website](https://git-scm.com/downloads).
 
@@ -34,14 +34,14 @@ sudo apt-get install git
 2. Navigate to the directory where you cloned the repository and give execution permissions to the installation script:
 
 ```bash
-cd Pentesting-Web-Lab
-chmod +x autoH4ck3nv.sh
+cd WebVulnLab
+chmod +x install.sh
 ```
 
 3. Run the installation script:
 
 ```bash
-sudo ./autoH4ck3nv.sh
+sudo ./install.sh
 ```
 
 This script will download and install all the necessary dependencies, create the Docker containers, and configure the tool so you can start using it.
