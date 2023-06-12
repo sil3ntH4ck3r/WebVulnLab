@@ -115,7 +115,15 @@ Si deseas contribuir al desarrollo de WebVulnLab, ¡eres bienvenido! Puedes hace
 - Ayudando a solucionar problemas o desarrollando nuevas vulnerabilidades.
 
 ## Cosas para las siguientes actualizaciones
-Migrar todo a la segunda versión (cuando ya esté todo migrado, se avanzará en el desarrollo de nuevas vulnerabilidades).
-- Añadir más contenedores y vulnerabilidades.
+
+Añadir más vulnerabilidades.
+- ~~Ver en el tablero que máquinas están encendidas y que máquinas están apagadas.~~
+- ~~Uso de Traefik para poner subdominios, y que no sea por IP~~
+  - Al final no se ha echo con Traefik, sino que se ha aplicado Virtual Hosting. Ahora los enlaces a los contenedores son más fáciles de recordar.
+- ~~Mejorar la estética~~.
+- ~~Añadir la posibilidad de reiniciar los contenedores.~~
+- Añadir alguna máquina CTF
+- En cada máquina, añadir la opción de aprender, donde podrás descubrir más sobre dicha vulnerabilidad.
+    Hacer este mismo proyecto (WebVulnLab), pero para Windows.
 - Mejorar la documentación para que sea más fácil de entender y seguir.
 - Refactorizar el código para hacerlo más legible y mantenible.
