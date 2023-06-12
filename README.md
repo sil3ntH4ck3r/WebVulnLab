@@ -116,7 +116,7 @@ Si deseas contribuir al desarrollo de WebVulnLab, ¡eres bienvenido! Puedes hace
 
 ## Cosas para las siguientes actualizaciones
 
-Añadir más vulnerabilidades.
+- Añadir más vulnerabilidades.
 - ~~Ver en el tablero que máquinas están encendidas y que máquinas están apagadas.~~
 - ~~Uso de Traefik para poner subdominios, y que no sea por IP~~
   - Al final no se ha echo con Traefik, sino que se ha aplicado Virtual Hosting. Ahora los enlaces a los contenedores son más fáciles de recordar.
