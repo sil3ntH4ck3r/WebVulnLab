@@ -24,6 +24,8 @@ RUN wget https://ftp.gnu.org/gnu/bash/bash-4.3.tar.gz --no-check-certificate && 
     make && \
     make install
 
+RUN mkdir /var/www/html/website
+
 EXPOSE 80
 
 CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
