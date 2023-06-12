@@ -50,7 +50,7 @@ This script will download and install all the necessary dependencies, create the
 
 | Docker               | Container Link                             |Status                                |
 |:---------------------|:-------------------------------------------|--------------------------------------|
-| Dashboard            | http://localhost/tablero/tablero.php       |Functional                            |
+| Dashboard            | http://tablero.local                       |Functional                            |
 | Main Server          | http://menu.local/                         |Functional                            |
 | LFI                  | http://lfi.local/                          |Functional                            |
 | Padding Oracle Attack| http://paddingoracleattack.local/          |Functional                            |
@@ -60,12 +60,12 @@ This script will download and install all the necessary dependencies, create the
 | XXE                  | http://xxe.local/                          |Functional                            |
 | XPath Injection      | http://xpathinjection.local/               |Functional                            |
 | LaTeX Injection      | http://latexinjection.local/               |Functional                            |
-| ShellShock           | http://shellshock.local (vulnerable file -> /cgi-bin/system_info.cgi)|In development (but can be tested)|
+| ShellShock           | http://shellshock.local                    |Functional                            |
 | Blind XXE            | http://blindxxe.local                      |In development (but can be tested)    |
 | SQL Injection (Error)| http://sqli.local/                         |In development (but can be tested)    |
 | Domain Zone Transfer | http://domainzonetransfer.local/           |In development (but can be tested)    |
-| Insecure Deseralization | http://insecuredeseralization.local/    |In development (but can be tested)    |
 | CSRF                 | http://csrf.local                          |In development (but can be tested)    |
+| Insecure Deseralization | http://insecuredeseralization.local/    |In development                        |
 | Blind XSS            |                    -                       |In development                        |
 | HTML Injection       |                    -                       |                   -                  |
 | SSRF                 |                    -                       |                   -                  |

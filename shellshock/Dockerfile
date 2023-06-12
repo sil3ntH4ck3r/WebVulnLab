@@ -7,8 +7,8 @@ RUN a2enmod cgi && \
     mkdir /var/www/html/cgi-bin && \
  chown www-data:www-data /var/www/html/cgi-bin
 
-COPY system_info.cgi /var/www/html/cgi-bin/
-RUN chmod +x /var/www/html/cgi-bin/system_info.cgi
+COPY register.cgi /var/www/html/cgi-bin/
+RUN chmod +x /var/www/html/cgi-bin/register.cgi
 
 COPY 000-default.conf /etc/apache2/sites-available/
 
