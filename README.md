@@ -94,6 +94,7 @@ Puedes utilizar el siguiente script para verificar y aplicar actualizaciones del
   ```shell
   git --version
   ```
+  Si Git no está instalado, puedes seguir las instrucciones de instalación en [este enlace](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 ### Pasos para actualizar el proyecto
 
 1. Abre la terminal y navega hasta el directorio del proyecto:
