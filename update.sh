@@ -17,6 +17,17 @@ print_error() {
     printf "\e[1;31m[-] $1\e[0m\n"
 }
 
+# Utilizar Here Document para imprimir el banner
+cat << "EOF"
+  __      __         ___.    ____   ____       .__           .____             ___.    
+ /  \    /  \  ____  \_ |__  \   \ /   / __ __ |  |    ____  |    |    _____   \_ |__  
+ \   \/\/   /_/ __ \  | __ \  \   Y   / |  |  \|  |   /    \ |    |    \__  \   | __ \ 
+  \        / \  ___/  | \_\ \  \     /  |  |  /|  |__|   |  \|    |___  / __ \_ | \_\ \
+   \__/\  /   \___  > |___  /   \___/   |____/ |____/|___|  /|_______ \(____  / |___  /
+        \/        \/      \/                              \/         \/     \/      \/ 
+EOF
+echo "                              Created by sil3nth4ck3r"
+
 # Obtiene la ruta del directorio actual
 PROJECT_DIR="$(dirname "$(readlink -f "$0")")"
 
