@@ -81,6 +81,37 @@ If you want to contribute to the development of Pentesting-Web-Lab, you are welc
 - Proposing new features or improvements.
 - Helping to solve problems or developing new vulnerabilities.
 
+## Project Update
+
+You can use the following script to check and apply updates to the project from the console.
+
+### Requirements
+
+- Git: Make sure you have Git installed on your system. You can check if Git is installed by running the following command in the terminal:
+```shell
+git --version
+```
+If Git is not installed, you can follow the installation instructions provided [here](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+
+### Steps to Update the Project
+
+1. Open the terminal and navigate to the project directory:
+```shell
+cd path/to/project
+```
+2. Execute the script ***update.sh*** to check for available updates:
+```shell
+./update.sh
+```
+The script will check if there are new versions available and display a message indicating the presence of updates.
+3. If updates are available and you wish to install them, follow the instructions provided by the script. For example, you can enter ***s*** and press Enter to perform the update. If you decide not to install the updates, you can enter ***n*** and press Enter.
+
+***NOTE***: Make sure to carefully read the instructions and messages displayed by the script before taking any action.
+
+4. If the update is successfully completed, the script will display a message indicating the successful update. In case of any issues during the update, an appropriate error message will be shown.
+
+By following these steps, you will be able to check and apply updates to the project using the provided script.
+
 ## Things for the next updates
 Migrate everything to the second version (when everything is migrated, development of new vulnerabilities will be advanced).
 - Add more containers and vulnerabilities.
