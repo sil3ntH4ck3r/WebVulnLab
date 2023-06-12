@@ -124,6 +124,6 @@ Si deseas contribuir al desarrollo de WebVulnLab, ¡eres bienvenido! Puedes hace
 - ~~Añadir la posibilidad de reiniciar los contenedores.~~
 - Añadir alguna máquina CTF
 - En cada máquina, añadir la opción de aprender, donde podrás descubrir más sobre dicha vulnerabilidad.
-    Hacer este mismo proyecto (WebVulnLab), pero para Windows.
+- Hacer este mismo proyecto (WebVulnLab), pero para Windows.
 - Mejorar la documentación para que sea más fácil de entender y seguir.
 - Refactorizar el código para hacerlo más legible y mantenible.
