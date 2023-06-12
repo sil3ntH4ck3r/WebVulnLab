@@ -75,14 +75,6 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 
 Cabe destacar que aún está en desarrollo, y que no todos los contenedores están funcionando correctamente. Este repositorio se actualiza a menudo.
 
-## Contribuir
-
-Si deseas contribuir al desarrollo de Pentesting-Web-Lab, ¡eres bienvenido! Puedes hacerlo de varias maneras:
-
-- Informando de bugs o problemas que encuentres en la herramienta a través de la sección de "Issues" en el repositorio de GitHub.
-- Proponiendo nuevas características o mejoras.
-- Ayudando a solucionar problemas o desarrollando nuevas vulnerabilidades.
-
 ## Actualización del proyecto
 
 Puedes utilizar el siguiente script para verificar y aplicar actualizaciones del proyecto desde la consola.
@@ -113,6 +105,14 @@ cd ruta/al/proyecto
 El script verificará si hay nuevas versiones disponibles y te mostrará un mensaje indicando si hay actualizaciones.
 
 4. Si la actualización se completa con éxito, el script mostrará un mensaje indicando que la actualización ha sido exitosa. En caso de algún problema durante la actualización, se mostrará un mensaje de error correspondiente.
+
+## Contribuir
+
+Si deseas contribuir al desarrollo de WebVulnLab, ¡eres bienvenido! Puedes hacerlo de varias maneras:
+
+- Informando de bugs o problemas que encuentres en la herramienta a través de la sección de "Issues" en el repositorio de GitHub.
+- Proponiendo nuevas características o mejoras.
+- Ayudando a solucionar problemas o desarrollando nuevas vulnerabilidades.
 
 ## Cosas para las siguientes actualizaciones
 Migrar todo a la segunda versión (cuando ya esté todo migrado, se avanzará en el desarrollo de nuevas vulnerabilidades).
