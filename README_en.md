@@ -73,14 +73,6 @@ This script will download and install all the necessary dependencies, create the
 
 Note that it is still in development, and not all containers are working correctly. This repository is updated frequently.
 
-## Contribute
-
-If you want to contribute to the development of Pentesting-Web-Lab, you are welcome to do so! You can do it in several ways:
-
-- Reporting bugs or issues you find in the tool through the "Issues" section in the GitHub repository.
-- Proposing new features or improvements.
-- Helping to solve problems or developing new vulnerabilities.
-
 ## Project Update
 
 You can use the following script to check and apply updates to the project from the console.
@@ -111,6 +103,14 @@ The script will check if there are new versions available and display a message 
 4. If the update is successfully completed, the script will display a message indicating the successful update. In case of any issues during the update, an appropriate error message will be shown.
 
 By following these steps, you will be able to check and apply updates to the project using the provided script.
+
+## Contribute
+
+If you want to contribute to the development of Pentesting-Web-Lab, you are welcome to do so! You can do it in several ways:
+
+- Reporting bugs or issues you find in the tool through the "Issues" section in the GitHub repository.
+- Proposing new features or improvements.
+- Helping to solve problems or developing new vulnerabilities.
 
 ## Things for the next updates
 Migrate everything to the second version (when everything is migrated, development of new vulnerabilities will be advanced).
