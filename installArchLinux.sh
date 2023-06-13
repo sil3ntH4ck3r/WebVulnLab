@@ -50,9 +50,6 @@ sudo systemctl reload httpd
 
 echo "127.0.0.1 tablero.local lfi.local menu.local sqli.local paddingoracleattack.local typejuggling.local rfi.local xss.local xxe.local blindxxe.local insecuredeserializationphp.local domainzonetransfer.local csrf.local xpathinjection.local shellshock.local" | sudo tee -a /etc/hosts > /dev/null
 
-# MEJORAS
-
-# Establecer valor predeterminado para ignore_errors
 ignore_errors="n"
 hide_output="s"
 
@@ -68,1003 +65,281 @@ if [ "$user_input_hide_output" = "n" ] || [ "$user_input_hide_output" = "N" ]; t
     ignore_errors="n"
 fi
 
-echo -e "\n${yellowColour}[${endColour}${Colour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}¿Desea ocultar el output de los comandos ejecutados durante la ejeciccion del script? (S/n)${endColour}"
-read user_input_hide_output
+containers=(
+  "lfi_v2;$PWD/lfi;8000:80"
+  "menu_v2;$PWD/menu;8080:80"
+  "csrf_v2;$PWD/csrf;8001:80"
+  "blindxxe_v2;$PWD/blindxxe;8002:80"
+  "xxe_v2;$PWD/xxe;8003:80"
+  "xss_v2;$PWD/xss;8004:80"
+  "domainzonetransfer_v2;$PWD/domainzonetransfer;53:53/tcp"
+  "typejuggling_v2;$PWD/typejuggling;8008:80"
+  "rfi_v2;$PWD/rfi;8009:80"
+  "latexinjection_v2;$PWD/latexinjection;8011:80"
+  "xpathinjection_v2;$PWD/xpathinjection;8012:80"
+  "shellshock_v2;$PWD/shellshock;8013:80"
+)
+database=(
+    "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
+    "blind_sqli_db_v2;$PWD/blindsqli;8014:80;blindsqli_v2"
+    "paddingoracleattack_db_v2;$PWD/paddingoracleattack;8007:80;paddingoracleattack_v2"
+)
 
-if [ "$user_input_hide_output" = "s" ] || [ "$user_input_hide_output" = "S" ]; then
-    hide_output="s"
-fi
-if [ "$user_input_hide_output" = "n" ] || [ "$user_input_hide_output" = "N" ]; then
-    hide_output="n"
-fi
+# Construir e iniciar sontenedores segun las opciones del usuario
 
 if [ "$hide_output" = "s" ]; then
 
     if [ "$ignore_errors" = "s" ]; then
-    
-        # CONFIGURANDO CONTENEDORES (ignorando errores y sin mostrar output)
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del LFI_V2${endColour}"
-        sudo docker build -t lfi_v2 $pwd/lfi > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen LFI_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker LFI_V2${endColour}"
-        sudo docker run --name lfi_v2 -d -v $pwd/lfi/src:/var/www/html -p 8000:80 lfi_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor LFI_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker LFI_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del MENU_V2${endColour}"
-        sudo docker build -t menu_v2 $pwd/menu > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen MENU_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker MENU_V2${endColour}"
-        sudo docker run --name menu_v2 -d -v $pwd/menu/src:/var/www/html -p 8080:80 menu_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor MENU_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker MENU_V2 iniciado correctamente${endColour}"
-        fi
-    #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del SQLI_V2${endColour}"
-        sudo docker build -t sqli_v2 $pwd/sqli > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen SQLI_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker SQLI_V2 y SQLI_DB_V2${endColour}"
-        sudo docker run --name sqli_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor SQLI_DB_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker SQLI_DB_V2 iniciado correctamente${endColour}"
-        fi                                                             
-        sudo docker run --name sqli_v2 --link sqli_db_v2:db -p 8005:80 -v $pwd/sqli/src:/var/www/html/ -d sqli_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor SQLI_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker SQLI_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del BLIND_SQLI_V2${endColour}"
-        sudo docker build -t blindsqli_v2 $pwd/blindsqli > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen BLIND_SQLI_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker BLIND_SQLI_V2 y BLIND_SQLI_DB_V2${endColour}"
-        sudo docker run --name blind_sqli_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor BLIND_SQLI_DB_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker BLIND_SQLI_DB_V2 iniciado correctamente${endColour}"
-        fi                                                             
-        sudo docker run --name blindsqli_v2 --link blind_sqli_db_v2:db -p 8014:80 -v $pwd/blindsqli/src:/var/www/html/ -d blindsqli_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor BLIND_SQLI_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker BLIND_SQLI_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del PADDING_V2${endColour}"
-        sudo docker build -t paddingoracleattack_v2 $pwd/paddingOracleAttack > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen PADDING_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker PADDING_V2 y PADDING_DB_V2${endColour}"
-        sudo docker run --name paddingoracleattack_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor PADDING_DB_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker PADDING_DB_V2 iniciado correctamente${endColour}"
-        fi                                                             
-        sudo docker run --name paddingoracleattack_v2 --link paddingoracleattack_db_v2:db -p 8007:80 -v $pwd/paddingOracleAttack/src:/var/www/html/ -d paddingoracleattack_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor PADDING_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker PADDING_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del TYPEJUGGLING_V2${endColour}"
-        sudo docker build -t typejuggling_v2 $pwd/typeJuggling > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen TYPEJUGGLING_V22${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker TYPEJUGGLING_V2${endColour}"
-        sudo docker run --name typejuggling_v2 -d -v $pwd/typeJuggling/src:/var/www/html -p 8008:80 typejuggling_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor TYPEJUGGLING_V2${endColour}"
-        else    
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker TYPEJUGGLING_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del RFI_V2${endColour}"
-        sudo docker build -t rfi_v2 $pwd/rfi > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen RFI_V22${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker RFI_V2${endColour}"
-        sudo docker run --name rfi_v2 -d -v $pwd/rfi/src:/var/www/html -p 8009:80 rfi_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor RFI_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker RFI_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del XSS_V2${endColour}"
-        sudo docker build -t xss_v2 $pwd/xss > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen XSS_V22${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker XSS_V2${endColour}"
-        sudo docker run --name xss_v2 -d -v $pwd/xss/src:/var/www/html -p 8004:80 xss_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor XSS_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker XSS_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del XXE_V2${endColour}"
-        sudo docker build -t xxe_v2 $pwd/xxe > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen XXE_V22${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker XXE_V2${endColour}"
-        sudo docker run --name xxe_v2 -d -v $pwd/xxe/src:/var/www/html -p 8003:80 xxe_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor XXE_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker XXE_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del BLIND_XXE_V2${endColour}"
-        sudo docker build -t blindxxe_v2 $pwd/blindxxe > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen BLINDXXE_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker BLIND_XXE_V2${endColour}"
-        sudo docker run --name blindxxe_v2 -d -v $pwd/blindxxe/src:/var/www/html -p 8002:80 blindxxe_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor BLINDXXE_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker BLIND_XXE_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del CSRF_V2${endColour}"
-        sudo docker build -t csrf_v2 $pwd/csrf > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen CSRF_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker CSRF_V2${endColour}"
-        sudo docker run --name csrf_v2 -d -v $pwd/csrf/src:/var/www/html -p 8001:80 csrf_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor CSRF_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker CSRF_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del DOMAIN_ZONE_TRANSFER_V2${endColour}"
-        sudo docker build -t domainzonetransfer_v2 $pwd/domainZoneTransfer > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen DOMAIN_ZONE_TRANSFER_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker DOMAIN_ZONE_TRANSFER_V2${endColour}"
-        sudo docker run --name domainzonetransfer_v2 -d -p 53:53/udp -p 53:53/tcp domainzonetransfer_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor DOMAIN_ZONE_TRANSFER_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker DOMAIN_ZONE_TRANSFER_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del LATEX_INJECTION_V2${endColour}"
-        sudo docker build -t latexinjection_v2 $pwd/LaTeXInjection > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen LATEX_INJECTION_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker LATEX_INJECTION_V2${endColour}"
-        sudo docker run --name latexinjection_v2 -d -v $pwd/LaTeXInjection/src:/var/www/html -p 8011:80 latexinjection_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor LATEX_INJECTION_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker LATEX_INJECTION_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del XPATH_INJECTION_V2${endColour}"
-        sudo docker build -t xpathinjection_v2 $pwd/xpathinjection > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen XPATH_INJECTION_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker XPATH_INJECTION_V2${endColour}"
-        sudo docker run --name xpathinjection_v2 -d -v $pwd/xpathinjection/src:/var/www/html -p 8012:80 xpathinjection_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor XPATH_INJECTION_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker XPATH_INJECTION_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del SHELLSHOCK_V2${endColour}"
-        sudo docker build -t shellshock_v2 $pwd/shellshock > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen SHELLSHOCK_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker SHELLSHOCK_V2${endColour}"
-        sudo docker run --name shellshock_v2 -d -v $pwd/shellshock/src:/var/www/html/website -p 8013:80 shellshock_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor SHELLSHOCK_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker SHELLSHOCK_V2 iniciado correctamente${endColour}"
-        fi
-    else #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        # Si ha escogido ocultar el output y saltar los errores
 
-        # CONFIGURANDO CONTENEDORES (sin ignorar errores y sin mostrar output) -------------------------------------------------------------------------------------------------------------------------------------------------------
+        for container in "${containers[@]}"; do
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del LFI_V2${endColour}"
-        sudo docker build -t lfi_v2 $pwd/lfi > /dev/null 2>&1 
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen LFI_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker LFI_V2${endColour}"
-        sudo docker run --name lfi_v2 -d -v $pwd/lfi/src:/var/www/html -p 8000:80 lfi_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor LFI_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker LFI_V2 iniciado correctamente${endColour}"
+            IFS=';' read -ra container_info <<< "$container"
+            container_name=${container_info[0]}
+            container_dir=${container_info[1]}
+            container_ports=${container_info[2]}
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del MENU_V2${endColour}"
-        sudo docker build -t menu_v2 $pwd/menu > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen MENU_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker MENU_V2${endColour}"
-        sudo docker run --name menu_v2 -d -v $pwd/menu/src:/var/www/html -p 8080:80 menu_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor MENU_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker MENU_V2 iniciado correctamente${endColour}"
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del $container_name${endColour}"
+            sudo docker build -t $container_name $container_dir > /dev/null 2>&1
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen $container_name${endColour}"
+            else
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
+            fi
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del SQLI_V2${endColour}"
-        sudo docker build -t sqli_v2 $pwd/sqli > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen SQLI_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker SQLI_V2 y SQLI_DB_V2${endColour}"
-        sudo docker run --name sqli_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor SQLI_DB_V2${endColour}"
-            exit 1;
-        fi                                                             
-        sudo docker run --name sqli_v2 --link sqli_db_v2:db -p 8005:80 -v $pwd/sqli/src:/var/www/html/ -d sqli_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor SQLI_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker SQLI_DB_V2 y SQLI_V2 iniciado correctamente${endColour}"
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $container_name${endColour}"
+            sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name > /dev/null 2>&1
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor $container_name${endColour}"
+            else
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $container_name iniciado correctamente${endColour}"
+            fi
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del BLIND_SQLI_V2${endColour}"
-        sudo docker build -t blindsqli_v2 $pwd/blindsqli > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen BLIND_SQLI_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker BLIND_SQLI_V2 y BLIND_SQLI_DB_V2${endColour}"
-        sudo docker run --name blind_sqli_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor BLIND_SQLI_DB_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker BLIND_SQLI_DB_V2 iniciado correctamente${endColour}"
-                                                                     
-        sudo docker run --name blindsqli_v2 --link blind_sqli_db_v2:db -p 8014:80 -v $pwd/blindsqli/src:/var/www/html/ -d blindsqli_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor BLIND_SQLI_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker BLIND_SQLI_V2 iniciado correctamente${endColour}"
+        done
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del PADDING_V2${endColour}"
-        sudo docker build -t paddingoracleattack_v2 $pwd/paddingOracleAttack > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen PADDING_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker PADDING_V2 y PADDING_DB_V2${endColour}"
-        sudo docker run --name paddingoracleattack_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor PADDING_DB_V2${endColour}"
-            exit 1;
-        fi                                                             
-        sudo docker run --name paddingoracleattack_v2 --link paddingoracleattack_db_v2:db -p 8007:80 -v $pwd/paddingOracleAttack/src:/var/www/html/ -d paddingoracleattack_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor PADDING_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker PADDING_V2 iniciado correctamente${endColour}"
+        for database in "${database[@]}"; do
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del TYPEJUGGLING_V2${endColour}"
-        sudo docker build -t typejuggling_v2 $pwd/typeJuggling > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen TYPEJUGGLING_V22${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker TYPEJUGGLING_V2${endColour}"
-        sudo docker run --name typejuggling_v2 -d -v $pwd/typeJuggling/src:/var/www/html -p 8008:80 typejuggling_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor TYPEJUGGLING_V2${endColour}"
-            exit 1;
-        fi    
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker TYPEJUGGLING_V2 iniciado correctamente${endColour}"
+            IFS=';' read -ra database_info <<< "$database"
+            database_name=${database_info[0]}
+            container_dir=${database_info[1]}
+            container_ports=${database_info[2]}
+            container_name=${database_info[3]}
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del RFI_V2${endColour}"
-        sudo docker build -t rfi_v2 $pwd/rfi > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen RFI_V22${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker RFI_V2${endColour}"
-        sudo docker run --name rfi_v2 -d -v $pwd/rfi/src:/var/www/html -p 8009:80 rfi_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor RFI_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker RFI_V2 iniciado correctamente${endColour}"
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del $container_name${endColour}"
+            sudo docker build -t $container_name $container_dir > /dev/null 2>&1
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen $container_name${endColour}"
+            else
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
+            fi
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $database_name${endColour}"
+            sudo docker run --name $database_name -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7 > /dev/null 2>&1
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor $database_name${endColour}"
+            else
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $database_name iniciado correctamente${endColour}"
+            fi                                                             
+            sudo docker run --name $container_name --link $database_name:db -p $container_ports -v $container_dir/src:/var/www/html/ -d $container_name > /dev/null 2>&1
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor $container_name${endColour}"
+            else 
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $container_name iniciado correctamente${endColour}"
+            fi
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del XSS_V2${endColour}"
-        sudo docker build -t xss_v2 $pwd/xss > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen XSS_V22${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker XSS_V2${endColour}"
-        sudo docker run --name xss_v2 -d -v $pwd/xss/src:/var/www/html -p 8004:80 xss_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor XSS_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker XSS_V2 iniciado correctamente${endColour}"
+        done
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del XXE_V2${endColour}"
-        sudo docker build -t xxe_v2 $pwd/xxe > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen XXE_V22${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker XXE_V2${endColour}"
-        sudo docker run --name xxe_v2 -d -v $pwd/xxe/src:/var/www/html -p 8003:80 xxe_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor XXE_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker XXE_V2 iniciado correctamente${endColour}"
+    else
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del BLIND_XXE_V2${endColour}"
-        sudo docker build -t blindxxe_v2 $pwd/blindxxe > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen BLINDXXE_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker BLIND_XXE_V2${endColour}"
-        sudo docker run --name blindxxe_v2 -d -v $pwd/blindxxe/src:/var/www/html -p 8002:80 blindxxe_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor BLINDXXE_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker BLIND_XXE_V2 iniciado correctamente${endColour}"
+        # Si ha escogido esconder el output pero no saltar los errores
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del CSRF_V2${endColour}"
-        sudo docker build -t csrf_v2 $pwd/csrf > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen CSRF_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker CSRF_V2${endColour}"
-        sudo docker run --name csrf_v2 -d -v $pwd/csrf/src:/var/www/html -p 8001:80 csrf_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor CSRF_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker CSRF_V2 iniciado correctamente${endColour}"
+        for container in "${containers[@]}"; do
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del DOMAIN_ZONE_TRANSFER_V2${endColour}"
-        sudo docker build -t domainzonetransfer_v2 $pwd/domainZoneTransfer > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen DOMAIN_ZONE_TRANSFER_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker DOMAIN_ZONE_TRANSFER_V2${endColour}"
-        sudo docker run --name domainzonetransfer_v2 -d -p 53:53/udp -p 53:53/tcp domainzonetransfer_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor DOMAIN_ZONE_TRANSFER_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker DOMAIN_ZONE_TRANSFER_V2 iniciado correctamente${endColour}"
+            IFS=';' read -ra container_info <<< "$container"
+            container_name=${container_info[0]}
+            container_dir=${container_info[1]}
+            container_ports=${container_info[2]}
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del LATEX_INJECTION_V2${endColour}"
-        sudo docker build -t latexinjection_v2 $pwd/LaTeXInjection > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen LATEX_INJECTION_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker LATEX_INJECTION_V2${endColour}"
-        sudo docker run --name latexinjection_v2 -d -v $pwd/LaTeXInjection/src:/var/www/html -p 8011:80 latexinjection_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor LATEX_INJECTION_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker LATEX_INJECTION_V2 iniciado correctamente${endColour}"
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del $container_name${endColour}"
+            sudo docker build -t $container_name $container_dir > /dev/null 2>&1
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen $container_name${endColour}"
+                exit 1;
+            else
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
+            fi
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del XPATH_INJECTION_V2${endColour}"
-        sudo docker build -t xpathinjection_v2 $pwd/xpathinjection > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen XPATH_INJECTION_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker XPATH_INJECTION_V2${endColour}"
-        sudo docker run --name xpathinjection_v2 -d -v $pwd/xpathinjection/src:/var/www/html -p 8012:80 xpathinjection_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor XPATH_INJECTION_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker XPATH_INJECTION_V2 iniciado correctamente${endColour}"
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $container_name${endColour}"
+            sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name > /dev/null 2>&1
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor $container_name${endColour}"
+                exit 1;
+            else
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $container_name iniciado correctamente${endColour}"
+            fi
+        done
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del SHELLSHOCK_V2${endColour}"
-        sudo docker build -t shellshock_v2 $pwd/shellshock > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen SHELLSHOCK_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker SHELLSHOCK_V2${endColour}"
-        sudo docker run --name shellshock_v2 -d -v $pwd/shellshock/src:/var/www/html/website -p 8013:80 shellshock_v2 > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor SHELLSHOCK_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker SHELLSHOCK_V2 iniciado correctamente${endColour}"
+        for database in "${database[@]}"; do
+
+            IFS=';' read -ra database_info <<< "$database"
+            database_name=${database_info[0]}
+            container_dir=${database_info[1]}
+            container_ports=${database_info[2]}
+            container_name=${database_info[3]}
+
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del $container_name${endColour}"
+            sudo docker build -t $container_name $container_dir > /dev/null 2>&1
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen $container_name${endColour}"
+                exit 1;
+            else
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
+            fi
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $database_name${endColour}"
+            sudo docker run --name $database_name -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7 > /dev/null 2>&1
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor $database_name${endColour}"
+                exit 1;
+            else
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $database_name iniciado correctamente${endColour}"
+            fi                                                             
+            sudo docker run --name $container_name --link $database_name:db -p $container_ports -v $container_dir/src:/var/www/html/ -d $container_name > /dev/null 2>&1
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor $container_name${endColour}"
+                exit 1;
+            else 
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $container_name iniciado correctamente${endColour}"
+            fi
+
+        done
 
     fi
 else
 
     if [ "$ignore_errors" = "s" ]; then
-    
-        # CONFIGURANDO CONTENEDORES (ignorando errores y mostrando output)
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del LFI_V2${endColour}"
-        sudo docker build -t lfi_v2 $pwd/lfi
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen LFI_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker LFI_V2${endColour}"
-        sudo docker run --name lfi_v2 -d -v $pwd/lfi/src:/var/www/html -p 8000:80 lfi_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor LFI_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker LFI_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del MENU_V2${endColour}"
-        sudo docker build -t menu_v2 $pwd/menu
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen MENU_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker MENU_V2${endColour}"
-        sudo docker run --name menu_v2 -d -v $pwd/menu/src:/var/www/html -p 8080:80 menu_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor MENU_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker MENU_V2 iniciado correctamente${endColour}"
-        fi
-    #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del SQLI_V2${endColour}"
-        sudo docker build -t sqli_v2 $pwd/sqli
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen SQLI_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker SQLI_V2 y SQLI_DB_V2${endColour}"
-        sudo docker run --name sqli_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor SQLI_DB_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker SQLI_DB_V2 iniciado correctamente${endColour}"
-        fi                                                             
-        sudo docker run --name sqli_v2 --link sqli_db_v2:db -p 8005:80 -v $pwd/sqli/src:/var/www/html/ -d sqli_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor SQLI_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker SQLI_V2 iniciado correctamente${endColour}"
-        fi
-     #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del BLIND_SQLI_V2${endColour}"
-        sudo docker build -t blindsqli_v2 $pwd/blindsqli 
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen BLIND_SQLI_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker BLIND_SQLI_V2 y BLIND_SQLI_DB_V2${endColour}"
-        sudo docker run --name blind_sqli_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7 
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor BLIND_SQLI_DB_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker BLIND_SQLI_DB_V2 iniciado correctamente${endColour}"
-        fi                                                             
-        sudo docker run --name blindsqli_v2 --link blind_sqli_db_v2:db -p 8014:80 -v $pwd/blindsqli/src:/var/www/html/ -d blindsqli_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor BLIND_SQLI_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker BLIND_SQLI_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del PADDING_V2${endColour}"
-        sudo docker build -t paddingoracleattack_v2 $pwd/paddingOracleAttack
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen PADDING_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker PADDING_V2 y PADDING_DB_V2${endColour}"
-        sudo docker run --name paddingoracleattack_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor PADDING_DB_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker PADDING_DB_V2 iniciado correctamente${endColour}"
-        fi                                                             
-        sudo docker run --name paddingoracleattack_v2 --link paddingoracleattack_db_v2:db -p 8007:80 -v $pwd/paddingOracleAttack/src:/var/www/html/ -d paddingoracleattack_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor PADDING_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker PADDING_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del TYPEJUGGLING_V2${endColour}"
-        sudo docker build -t typejuggling_v2 $pwd/typeJuggling
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen TYPEJUGGLING_V22${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker TYPEJUGGLING_V2${endColour}"
-        sudo docker run --name typejuggling_v2 -d -v $pwd/typeJuggling/src:/var/www/html -p 8008:80 typejuggling_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor TYPEJUGGLING_V2${endColour}"
-        else    
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker TYPEJUGGLING_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del RFI_V2${endColour}"
-        sudo docker build -t rfi_v2 $pwd/rfi
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen RFI_V22${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker RFI_V2${endColour}"
-        sudo docker run --name rfi_v2 -d -v $pwd/rfi/src:/var/www/html -p 8009:80 rfi_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor RFI_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker RFI_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del XSS_V2${endColour}"
-        sudo docker build -t xss_v2 $pwd/xss
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen XSS_V22${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker XSS_V2${endColour}"
-        sudo docker run --name xss_v2 -d -v $pwd/xss/src:/var/www/html -p 8004:80 xss_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor XSS_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker XSS_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del XXE_V2${endColour}"
-        sudo docker build -t xxe_v2 $pwd/xxe
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen XXE_V22${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker XXE_V2${endColour}"
-        sudo docker run --name xxe_v2 -d -v $pwd/xxe/src:/var/www/html -p 8003:80 xxe_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor XXE_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker XXE_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del BLIND_XXE_V2${endColour}"
-        sudo docker build -t blindxxe_v2 $pwd/blindxxe
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen BLINDXXE_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker BLIND_XXE_V2${endColour}"
-        sudo docker run --name blindxxe_v2 -d -v $pwd/blindxxe/src:/var/www/html -p 8002:80 blindxxe_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor BLINDXXE_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker BLIND_XXE_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del CSRF_V2${endColour}"
-        sudo docker build -t csrf_v2 $pwd/csrf
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen CSRF_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker CSRF_V2${endColour}"
-        sudo docker run --name csrf_v2 -d -v $pwd/csrf/src:/var/www/html -p 8001:80 csrf_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor CSRF_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker CSRF_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del DOMAIN_ZONE_TRANSFER_V2${endColour}"
-        sudo docker build -t domainzonetransfer_v2 $pwd/domainZoneTransfer
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen DOMAIN_ZONE_TRANSFER_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker DOMAIN_ZONE_TRANSFER_V2${endColour}"
-        sudo docker run --name domainzonetransfer_v2 -d -p 53:53/udp -p 53:53/tcp domainzonetransfer_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor DOMAIN_ZONE_TRANSFER_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker DOMAIN_ZONE_TRANSFER_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del LATEX_INJECTION_V2${endColour}"
-        sudo docker build -t latexinjection_v2 $pwd/LaTeXInjection
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen LATEX_INJECTION_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker LATEX_INJECTION_V2${endColour}"
-        sudo docker run --name latexinjection_v2 -d -v $pwd/LaTeXInjection/src:/var/www/html -p 8011:80 latexinjection_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor LATEX_INJECTION_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker LATEX_INJECTION_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del XPATH_INJECTION_V2${endColour}"
-        sudo docker build -t xpathinjection_v2 $pwd/xpathinjection
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen XPATH_INJECTION_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker XPATH_INJECTION_V2${endColour}"
-        sudo docker run --name xpathinjection_v2 -d -v $pwd/xpathinjection/src:/var/www/html -p 8012:80 xpathinjection_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor XPATH_INJECTION_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker XPATH_INJECTION_V2 iniciado correctamente${endColour}"
-        fi
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del SHELLSHOCK_V2${endColour}"
-        sudo docker build -t shellshock_v2 $pwd/shellshock
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen SHELLSHOCK_V2${endColour}"
-        else
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        fi
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker SHELLSHOCK_V2${endColour}"
-        sudo docker run --name shellshock_v2 -d -p 8013:80 shellshock_v2 #-v $pwd/shellshock/src:/var/www/html
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor SHELLSHOCK_V2${endColour}"
-        else 
-            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker SHELLSHOCK_V2 iniciado correctamente${endColour}"
-        fi
-    else #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        # Si ha escogido no ocultar el output y saltar los errores
 
-        # CONFIGURANDO CONTENEDORES (sin ignorar errores y mostrando output) -------------------------------------------------------------------------------------------------------------------------------------------------------
+        for container in "${containers[@]}"; do
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del LFI_V2${endColour}"
-        sudo docker build -t lfi_v2 $pwd/lfi
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen LFI_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker LFI_V2${endColour}"
-        sudo docker run --name lfi_v2 -d -v $pwd/lfi/src:/var/www/html -p 8000:80 lfi_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor LFI_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker LFI_V2 iniciado correctamente${endColour}"
+            IFS=';' read -ra container_info <<< "$container"
+            container_name=${container_info[0]}
+            container_dir=${container_info[1]}
+            container_ports=${container_info[2]}
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del MENU_V2${endColour}"
-        sudo docker build -t menu_v2 $pwd/menu
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen MENU_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker MENU_V2${endColour}"
-        sudo docker run --name menu_v2 -d -v $pwd/menu/src:/var/www/html -p 8080:80 menu_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor MENU_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker MENU_V2 iniciado correctamente${endColour}"
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del $container_name${endColour}"
+            sudo docker build -t $container_name $container_dir
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen $container_name${endColour}"
+            else
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
+            fi
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del SQLI_V2${endColour}"
-        sudo docker build -t sqli_v2 $pwd/sqli
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen SQLI_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker SQLI_V2 y SQLI_DB_V2${endColour}"
-        sudo docker run --name sqli_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor SQLI_DB_V2${endColour}"
-            exit 1;
-        fi                                                             
-        sudo docker run --name sqli_v2 --link sqli_db_v2:db -p 8005:80 -v $pwd/sqli/src:/var/www/html/ -d sqli_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor SQLI_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker SQLI_V2 iniciado correctamente${endColour}"
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $container_name${endColour}"
+            sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor $container_name${endColour}"
+            else
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $container_name iniciado correctamente${endColour}"
+            fi
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del BLIND_SQLI_V2${endColour}"
-        sudo docker build -t blindsqli_v2 $pwd/blindsqli 
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen BLIND_SQLI_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker BLIND_SQLI_V2 y BLIND_SQLI_DB_V2${endColour}"
-        sudo docker run --name blind_sqli_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7 
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor BLIND_SQLI_DB_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker BLIND_SQLI_DB_V2 iniciado correctamente${endColour}"                                                             
-        sudo docker run --name blindsqli_v2 --link blind_sqli_db_v2:db -p 8014:80 -v $pwd/blindsqli/src:/var/www/html/ -d blindsqli_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor BLIND_SQLI_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker BLIND_SQLI_V2 iniciado correctamente${endColour}"
+        done
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del PADDING_V2${endColour}"
-        sudo docker build -t paddingoracleattack_v2 $pwd/paddingOracleAttack
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen PADDING_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker PADDING_V2 y PADDING_DB_V2${endColour}"
-        sudo docker run --name paddingoracleattack_db_v2 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor PADDING_DB_V2${endColour}"
-            exit 1;
-        fi                                                             
-        sudo docker run --name paddingoracleattack_v2 --link paddingoracleattack_db_v2:db -p 8007:80 -v $pwd/paddingOracleAttack/src:/var/www/html/ -d paddingoracleattack_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor PADDING_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker PADDING_V2 iniciado correctamente${endColour}"
+        for database in "${database[@]}"; do
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del TYPEJUGGLING_V2${endColour}"
-        sudo docker build -t typejuggling_v2 $pwd/typeJuggling
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen TYPEJUGGLING_V22${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker TYPEJUGGLING_V2${endColour}"
-        sudo docker run --name typejuggling_v2 -d -v $pwd/typeJuggling/src:/var/www/html -p 8008:80 typejuggling_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor TYPEJUGGLING_V2${endColour}"
-            exit 1;
-        fi    
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker TYPEJUGGLING_V2 iniciado correctamente${endColour}"
+            IFS=';' read -ra database_info <<< "$database"
+            database_name=${database_info[0]}
+            container_dir=${database_info[1]}
+            container_ports=${database_info[2]}
+            container_name=${database_info[3]}
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del RFI_V2${endColour}"
-        sudo docker build -t rfi_v2 $pwd/rfi
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen RFI_V22${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker RFI_V2${endColour}"
-        sudo docker run --name rfi_v2 -d -v $pwd/rfi/src:/var/www/html -p 8009:80 rfi_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor RFI_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker RFI_V2 iniciado correctamente${endColour}"
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del $container_name${endColour}"
+            sudo docker build -t $container_name $container_dir
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen $container_name${endColour}"
+            else
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
+            fi
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $database_name${endColour}"
+            sudo docker run --name $database_name -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor $database_name${endColour}"
+            else
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $database_name iniciado correctamente${endColour}"
+            fi                                                             
+            sudo docker run --name $container_name --link $database_name:db -p $container_ports -v $container_dir/src:/var/www/html/ -d $container_name
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor $container_name${endColour}"
+            else 
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $container_name iniciado correctamente${endColour}"
+            fi
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del XSS_V2${endColour}"
-        sudo docker build -t xss_v2 $pwd/xss
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen XSS_V22${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker XSS_V2${endColour}"
-        sudo docker run --name xss_v2 -d -v $pwd/xss/src:/var/www/html -p 8004:80 xss_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor XSS_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker XSS_V2 iniciado correctamente${endColour}"
+        done
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del XXE_V2${endColour}"
-        sudo docker build -t xxe_v2 $pwd/xxe
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen XXE_V22${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker XXE_V2${endColour}"
-        sudo docker run --name xxe_v2 -d -v $pwd/xxe/src:/var/www/html -p 8003:80 xxe_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor XXE_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker XXE_V2 iniciado correctamente${endColour}"
+    else
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del BLIND_XXE_V2${endColour}"
-        sudo docker build -t blindxxe_v2 $pwd/blindxxe
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen BLINDXXE_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker BLIND_XXE_V2${endColour}"
-        sudo docker run --name blindxxe_v2 -d -v $pwd/blindxxe/src:/var/www/html -p 8002:80 blindxxe_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor BLINDXXE_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker BLIND_XXE_V2 iniciado correctamente${endColour}"
+        # Si ha escogido no esconder el output pero no saltar los errores
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del CSRF_V2${endColour}"
-        sudo docker build -t csrf_v2 $pwd/csrf
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen CSRF_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker CSRF_V2${endColour}"
-        sudo docker run --name csrf_v2 -d -v $pwd/csrf/src:/var/www/html -p 8001:80 csrf_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor CSRF_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker CSRF_V2 iniciado correctamente${endColour}"
+        for container in "${containers[@]}"; do
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del DOMAIN_ZONE_TRANSFER_V2${endColour}"
-        sudo docker build -t domainzonetransfer_v2 $pwd/domainZoneTransfer
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen DOMAIN_ZONE_TRANSFER_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker DOMAIN_ZONE_TRANSFER_V2${endColour}"
-        sudo docker run --name domainzonetransfer_v2 -d -p 53:53/udp -p 53:53/tcp domainzonetransfer_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor DOMAIN_ZONE_TRANSFER_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker DOMAIN_ZONE_TRANSFER_V2 iniciado correctamente${endColour}"
+            IFS=';' read -ra container_info <<< "$container"
+            container_name=${container_info[0]}
+            container_dir=${container_info[1]}
+            container_ports=${container_info[2]}
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del LATEX_INJECTION_V2${endColour}"
-        sudo docker build -t latexinjection_v2 $pwd/LaTeXInjection
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen LATEX_INJECTION_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker LATEX_INJECTION_V2${endColour}"
-        sudo docker run --name latexinjection_v2 -d -v $pwd/LaTeXInjection/src:/var/www/html -p 8011:80 latexinjection_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor LATEX_INJECTION_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker LATEX_INJECTION_V2 iniciado correctamente${endColour}"
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del $container_name${endColour}"
+            sudo docker build -t $container_name $container_dir
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen $container_name${endColour}"
+                exit 1;
+            else
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
+            fi
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del XPATH_INJECTION_V2${endColour}"
-        sudo docker build -t xpathinjection_v2 $pwd/xpathinjection
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen XPATH_INJECTION_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker XPATH_INJECTION_V2${endColour}"
-        sudo docker run --name xpathinjection_v2 -d -v $pwd/xpathinjection/src:/var/www/html -p 8012:80 xpathinjection_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor XPATH_INJECTION_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker XPATH_INJECTION_V2 iniciado correctamente${endColour}"
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $container_name${endColour}"
+            sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor $container_name${endColour}"
+                exit 1;
+            else
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $container_name iniciado correctamente${endColour}"
+            fi
+        done
 
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del SHELLSHOCK_V2${endColour}"
-        sudo docker build -t shellshock_v2 $pwd/shellshock
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen SHELLSHOCK_V2${endColour}"
-            exit 1;
-        fi
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
-        echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker SHELLSHOCK_V2${endColour}"
-        sudo docker run --name shellshock_v2 -d -v $pwd/shellshock/src:/var/www/html/website -p 8013:80 shellshock_v2
-        if [ $? -ne 0 ]; then
-            echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor SHELLSHOCK_V2${endColour}"
-            exit 1;
-        fi 
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker SHELLSHOCK_V2 iniciado correctamente${endColour}"
+        for database in "${database[@]}"; do
+
+            IFS=';' read -ra database_info <<< "$database"
+            database_name=${database_info[0]}
+            container_dir=${database_info[1]}
+            container_ports=${database_info[2]}
+            container_name=${database_info[3]}
+
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo imagen del $container_name${endColour}"
+            sudo docker build -t $container_name $container_dir
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al construir la imagen $container_name${endColour}"
+                exit 1;
+            else
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Imagen construida correctamente${endColour}"
+            fi
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $database_name${endColour}"
+            sudo docker run --name $database_name -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor $database_name${endColour}"
+                exit 1;
+            else
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $database_name iniciado correctamente${endColour}"
+            fi                                                             
+            sudo docker run --name $container_name --link $database_name:db -p $container_ports -v $container_dir/src:/var/www/html/ -d $container_name
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor $container_name${endColour}"
+                exit 1;
+            else 
+                echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $container_name iniciado correctamente${endColour}"
+            fi
+
+        done
 
     fi
+
 fi
