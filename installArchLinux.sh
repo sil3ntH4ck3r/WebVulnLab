@@ -81,7 +81,7 @@ sudo systemctl reload httpd
         hosts_entries+=("$db_container_name.local")
     done
 
-    echo "127.0.0.1 ${hosts_entries[*]} tablero.local"
+    echo "127.0.0.1 ${hosts_entries[*]} tablero.local" >> /etc/hosts
 
 ignore_errors="n"
 hide_output="s"
