@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>XXE</title>
+    <title>Padding Oracle Attack</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="padding.css">
@@ -77,7 +77,7 @@ body {
   
 .login-box {
     width: 360px;
-    height: 450px;
+    height: 400px;
     background: #ffffff;
     color: #000000;
     top: 50%;
@@ -156,77 +156,94 @@ body {
     color: #000000;
     border: 1px solid #000000;
 }
-.mensaje {
-    text-align: center;
-    font-size: 24px;
-    color: #4CAF50;
-    margin-bottom: 20px;
+#mensaje-error {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0.25rem;
 }
-    </style>
+.oculto {
+  display: none;
+}
+</style>
 
 </head>
 <body>
-<!-- HEADER -->
+
     <header>
         <nav>
             <div class="container">
                 <h1 class="logo">Cybertec</h1>
                 <ul class="menu">
-
+                <li><a href="http://paddingoracleattack.local/index.php">Login</a></li>
+                    <li><a href="http://paddingoracleattack.local/register.php">Register</a></li>
+                    <li><a href="http://paddingoracleattack.local/reiniciar.php">Reiniciar Base de Datos</a></li>
+                    
                 </ul>
             </div>
         </nav>
     </header>
-<!-- Panel de inicio de sesion -->
+   
     <div class="login-box">
       <h2>Registro</h2>
-      <form id="formulario-inicio" method="post">
+      <form id="formulario-registro" action="newuser.php" method="post">
         <div class="user-box">
-            <input type="text" id="name" name="name" required>
-            <label for="username">Nombre</label>
+            <input id="nombre" type="text" name="nombre" required="">
+            <label>Nombre de usuario</label>
         </div>
         <div class="user-box">
-            <input id="tel" name="tel" type="tel" required>
-            <label for="tel">Numero de Telefono</label>
+            <input id="email" type="email" name="email" required="">
+            <label>Correo Electrónico</label>
         </div>
         <div class="user-box">
-            <input id="email" name="email" type="email" required>
-            <label for="email">Correo Electornico</label>
+            <input id="contraseña" type="password" name="contraseña" required="">
+            <label>Contraseña</label>
         </div>
-        <div class="user-box">
-			<input id="password" name="password" type="password" required>
-            <label for="password">Contraseña</label>
-        </div>
-        <button id="registerNew" type="button" onclick="XMLFunction()">
-            Registrarse
+        <button type="submit">
+        Registrarse
         </button>
-      </form>
+    </form>
     </div>
-<!-- Mostrar mensaje -->
-    <div class="mensaje" id="mensaje"></div>
-<!-- Funcion XML -->
+
+    <div id="mensaje-error" class="oculto"></div>
+
     <script>
-		function XMLFunction(){
-			var xml = '' +
-				'\<\?xml version="1.0" encoding="UTF-8"\?\>' +
-				'<root>' +
-				'<name>' + document.getElementById('name').value + '</name>' +
-				'<tel>' + document.getElementById('tel').value + '</tel>' +
-				'<email>' + document.getElementById('email').value + '</email>' +
-				'<password>' + document.getElementById('password').value + '</password>' +
-			'</root>';
-			var xmlhttp = new XMLHttpRequest();
-			xmlhttp.onreadystatechange = function () {
-				if(xmlhttp.readyState == 4){
-					console.log(xmlhttp.readyState);
-					console.log(xmlhttp.responseText);
-					document.getElementById('mensaje').innerHTML = xmlhttp.responseText;
-				}
-			}
-			xmlhttp.open('POST', 'process.php', true);
-			xmlhttp.send(xml);
-		}
-	</script>
+        // Obtener una referencia al formulario
+        const mensajeError = document.getElementById('mensaje-error');
+        var formulario = document.getElementById("formulario-registro");
+        mensajeError.classList.add('oculto');
+
+        // Agregar un controlador de eventos para el envío del formulario
+        formulario.addEventListener("submit", function(evento) {
+        // Prevenir el comportamiento predeterminado del formulario (recargar la página)
+        evento.preventDefault();
+
+        // Obtener los valores ingresados por el usuario
+        var nombre = document.getElementById("nombre").value;
+        var email = document.getElementById("email").value;
+        var contraseña = document.getElementById("contraseña").value;
+
+        // Crear un objeto FormData para enviar los datos del formulario al servidor
+        var datos = new FormData();
+        datos.append("nombre", nombre);
+        datos.append("email", email);
+        datos.append("contraseña", contraseña);
+
+        // Enviar los datos al servidor utilizando AJAX
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+            // Actualizar el contenido de la página con el mensaje recibido del servidor
+            mensajeError.classList.remove('oculto');
+            document.getElementById("mensaje-error").innerHTML = this.responseText;
+            }
+        };
+        xhr.open("POST", "newuser.php");
+        xhr.send(datos);
+        });
+  </script>
 
 </body>
 
