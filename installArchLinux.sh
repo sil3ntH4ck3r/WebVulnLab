@@ -10,6 +10,26 @@ purpleColour="\e[0;35m\033[1m"
 turquoiseColour="\e[0;36m\033[1m"
 grayColour="\e[0;37m\033[1m"
 
+containers=(
+  "lfi_v2;$PWD/lfi;8000:80"
+  "menu_v2;$PWD/menu;8080:80"
+  "csrf_v2;$PWD/csrf;8001:80"
+  "blindxxe_v2;$PWD/blindxxe;8002:80"
+  "xxe_v2;$PWD/xxe;8003:80"
+  "xss_v2;$PWD/xss;8004:80"
+  "domainzonetransfer_v2;$PWD/domainzonetransfer;53:53/tcp"
+  "typejuggling_v2;$PWD/typejuggling;8008:80"
+  "rfi_v2;$PWD/rfi;8009:80"
+  "latexinjection_v2;$PWD/latexinjection;8011:80"
+  "xpathinjection_v2;$PWD/xpathinjection;8012:80"
+  "shellshock_v2;$PWD/shellshock;8013:80"
+)
+database=(
+    "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
+    "blind_sqli_db_v2;$PWD/blindsqli;8014:80;blindsqli_v2"
+    "paddingoracleattack_db_v2;$PWD/paddingoracleattack;8007:80;paddingoracleattack_v2"
+)
+
 if [ "$(id -u)" != "0" ]; then
    echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Este script debe ser ejecutado con permisos de superusuario${endColour}"
    exit 1
@@ -48,7 +68,20 @@ sudo cp WebVulnLabArchLinux.conf /etc/httpd/conf/extra/
 echo "Include conf/extra/WebVulnLabArchLinux.conf" | sudo tee -a /etc/httpd/conf/httpd.conf > /dev/null
 sudo systemctl reload httpd
 
-echo "127.0.0.1 tablero.local lfi.local menu.local sqli.local paddingoracleattack.local typejuggling.local rfi.local xss.local xxe.local blindxxe.local insecuredeserializationphp.local domainzonetransfer.local csrf.local xpathinjection.local shellshock.local" | sudo tee -a /etc/hosts > /dev/null
+# Añadir entradas al archivo /etc/hosts
+    hosts_entries=()
+    for container in "${containers[@]}"; do
+        container_info=($(echo "$container" | tr ';' ' '))
+        container_name=${container_info[0]%%_v2}
+        hosts_entries+=("$container_name.local")
+    done
+    for db_container in "${database[@]}"; do
+        db_container_info=($(echo "$db_container" | tr ';' ' '))
+        db_container_name=${db_container_info[0]%%_db_v2}
+        hosts_entries+=("$db_container_name.local")
+    done
+
+    echo "127.0.0.1 ${hosts_entries[*]} tablero.local"
 
 ignore_errors="n"
 hide_output="s"
@@ -64,26 +97,6 @@ fi
 if [ "$user_input_hide_output" = "n" ] || [ "$user_input_hide_output" = "N" ]; then
     ignore_errors="n"
 fi
-
-containers=(
-  "lfi_v2;$PWD/lfi;8000:80"
-  "menu_v2;$PWD/menu;8080:80"
-  "csrf_v2;$PWD/csrf;8001:80"
-  "blindxxe_v2;$PWD/blindxxe;8002:80"
-  "xxe_v2;$PWD/xxe;8003:80"
-  "xss_v2;$PWD/xss;8004:80"
-  "domainzonetransfer_v2;$PWD/domainzonetransfer;53:53/tcp"
-  "typejuggling_v2;$PWD/typejuggling;8008:80"
-  "rfi_v2;$PWD/rfi;8009:80"
-  "latexinjection_v2;$PWD/latexinjection;8011:80"
-  "xpathinjection_v2;$PWD/xpathinjection;8012:80"
-  "shellshock_v2;$PWD/shellshock;8013:80"
-)
-database=(
-    "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
-    "blind_sqli_db_v2;$PWD/blindsqli;8014:80;blindsqli_v2"
-    "paddingoracleattack_db_v2;$PWD/paddingoracleattack;8007:80;paddingoracleattack_v2"
-)
 
 # Construir e iniciar sontenedores segun las opciones del usuario
 
