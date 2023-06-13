@@ -61,8 +61,9 @@ This script will download and install all the necessary dependencies, create the
 | XPath Injection      | http://xpathinjection.local/               |Functional                            |
 | LaTeX Injection      | http://latexinjection.local/               |Functional                            |
 | ShellShock           | http://shellshock.local                    |Functional                            |
+| SQL Injection (Error)| http://sqli.local/                         |Functional                            |
+| Blind SQL Injection (Error)| http://blindsqli.local/              |Functional                            |
 | Blind XXE            | http://blindxxe.local                      |In development (but can be tested)    |
-| SQL Injection (Error)| http://sqli.local/                         |In development (but can be tested)    |
 | Domain Zone Transfer | http://domainzonetransfer.local/           |In development (but can be tested)    |
 | CSRF                 | http://csrf.local                          |In development (but can be tested)    |
 | Insecure Deseralization | http://insecuredeseralization.local/    |In development                        |
