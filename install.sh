@@ -5,6 +5,28 @@
 ignore_errors="n"
 hide_output="s"
 
+# Arrays
+
+containers=(
+  "lfi_v2;$PWD/lfi;8000:80"
+  "menu_v2;$PWD/menu;8080:80"
+  "csrf_v2;$PWD/csrf;8001:80"
+  "blindxxe_v2;$PWD/blindxxe;8002:80"
+  "xxe_v2;$PWD/xxe;8003:80"
+  "xss_v2;$PWD/xss;8004:80"
+  "domainzonetransfer_v2;$PWD/domainzonetransfer;53:53/tcp"
+  "typejuggling_v2;$PWD/typejuggling;8008:80"
+  "rfi_v2;$PWD/rfi;8009:80"
+  "latexinjection_v2;$PWD/latexinjection;8011:80"
+  "xpathinjection_v2;$PWD/xpathinjection;8012:80"
+  "shellshock_v2;$PWD/shellshock;8013:80"
+)
+database=(
+    "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
+    "blindsqli_db_v2;$PWD/blindsqli;8014:80;blindsqli_v2"
+    "paddingoracleattack_db_v2;$PWD/paddingoracleattack;8007:80;paddingoracleattack_v2"
+)
+
 # Colores
 greenColour="\e[0;32m\033[1m"
 endColour="\033[0m\e[0m"
@@ -26,32 +48,164 @@ cat << "EOF"
 EOF
 echo "                              Created by sil3nth4ck3r"
 
+# Función para crear archivo de virtual hosting
+
+setup_file_virtual_hosting() {
+    config_file="WebVulnLab.conf"
+    error_file="error.log"
+
+    # Create the Apache config file
+    echo > "$config_file"
+
+    # Create the Apache config file
+    echo > "$config_file"
+
+    # Add VirtualHost entry for tablero.local
+    {
+        echo "<VirtualHost *:80>"
+        echo "    ServerName tablero.local"
+        echo "    ProxyPass / http://localhost/tablero/"
+        echo "    ProxyPassReverse / http://localhost/tablero/"
+        echo "</VirtualHost>"
+        echo
+    } >> "$config_file" 2>> "$error_file"
+
+    # Añadir las entradas de VirtualHost
+    for container in "${containers[@]}"; do
+        container_info=($(echo "$container" | tr ';' ' '))
+        container_name=${container_info[0]%%_v2}
+        container_dir=${container_info[1]}
+        container_ports=${container_info[2]}
+
+        container_port=$(echo "$container_ports" | cut -d ':' -f 1)
+
+        {
+            echo "<VirtualHost *:80>"
+            echo "    ServerName $container_name.local"
+            echo "    ProxyPass / http://localhost:$container_port/"
+            echo "    ProxyPassReverse / http://localhost:$container_port/"
+            echo "</VirtualHost>"
+            echo
+        } >> "$config_file" 2>> "$error_file"
+    done
+
+    # Añadir las entradas de VirtualHost
+    for db_container in "${database[@]}"; do
+        db_container_info=($(echo "$db_container" | tr ';' ' '))
+        db_container_name=${db_container_info[0]%%_db_v2}
+        db_container_dir=${db_container_info[1]}
+        db_container_ports=${db_container_info[2]}
+        db_container_link=${db_container_info[3]}
+
+        db_container_port=$(echo "$db_container_ports" | cut -d ':' -f 1)
+
+        {
+            echo "<VirtualHost *:80>"
+            echo "    ServerName $db_container_name.local"
+            echo "    ProxyPass / http://localhost:$db_container_port/"
+            echo "    ProxyPassReverse / http://localhost:$db_container_port/"
+            echo "</VirtualHost>"
+            echo
+        } >> "$config_file" 2>> "$error_file"
+    done
+
+    if [ -s "$error_file" ]; then
+        echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Se encontraron errores. Por favor, revise el archivo $error_file para más detalles.${endColour}"
+    else
+        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Archivo WebVulnLab.conf generado correctamente.${endColour}"
+    fi
+
+    # Eliminar el archivo de errores si está vacío
+    [ -s "$error_file" ] || rm "$error_file"
+}
+
 # Función para construir el servidor local
 build_local_server() {
+    log_file="build_server.log"
+
     echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Construyendo Tablero${endColour}"
-    sudo cp -R tablero /var/www/html
-    echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Tablero construido correctamente${endColour}"
+    sudo cp -R tablero /var/www/html >> "$log_file" 2>&1
+    if [ $? -eq 0 ]; then
+        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Tablero construido correctamente${endColour}"
+    else
+        echo -e "\n${yellowColour}[${endColour}${redColour}!${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Ocurrió un error durante la construcción del Tablero. Por favor, revise el archivo $log_file para más detalles.${endColour}"
+        return 1
+    fi
+
     echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando Tablero${endColour}"
-    sudo sed -i 's/\-\-containerd=\/run\/containerd\/containerd.sock/\-H=tcp\:\/\/0\.0\.0\.0\:2375/' /lib/systemd/system/docker.service
-    sudo systemctl daemon-reload
-    sudo systemctl restart docker
+    sudo sed -i 's/\-\-containerd=\/run\/containerd\/containerd.sock/\-H=tcp\:\/\/0\.0\.0\.0\:2375/' /lib/systemd/system/docker.service >> "$log_file" 2>&1
+    sudo systemctl daemon-reload >> "$log_file" 2>&1
+    sudo systemctl restart docker >> "$log_file" 2>&1
 
     version=$(php -v | sed -nr 's/PHP[[:space:]]+([0-9]+\.[0-9]+).*/\1/p')
-    sudo apt-get install php$version-curl
-    sudo service apache2 restart
+    sudo apt-get install php$version-curl >> "$log_file" 2>&1
+    sudo service apache2 restart >> "$log_file" 2>&1
 
-    echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Tablero iniciado correctamente${endColour}"
+    if [ $? -eq 0 ]; then
+        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Tablero iniciado correctamente${endColour}"
+    else
+        echo -e "\n${yellowColour}[${endColour}${redColour}!${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Ocurrió un error al iniciar el Tablero. Por favor, revise el archivo $log_file para más detalles.${endColour}"
+        return 1
+    fi
+
+    echo "Tablero construido e iniciado correctamente."
+    # Eliminar el archivo de registro de errores si no contiene errores
+    [ -s "$log_file" ] || rm "$log_file"
 }
 
 # Función para configurar el virtual host
 configure_virtual_host() {
-    sudo a2enmod proxy proxy_http
-    sudo cp WebVulnLab.conf /etc/apache2/sites-available 
-    sudo a2ensite WebVulnLab.conf
-    sudo systemctl reload apache2
+    log_file="configure_virtual_host.log"
 
-    echo "127.0.0.1 tablero.local lfi.local menu.local sqli.local paddingoracleattack.local typejuggling.local rfi.local xss.local xxe.local blindxxe.local latexinjection.local domainzonetransfer.local csrf.local xpathinjection.local shellshock.local blindsqli.local" >> /etc/hosts
+    sudo a2enmod proxy proxy_http >> "$log_file" 2>&1
+    if [ $? -ne 0 ]; then
+        echo -e "\n${yellowColour}[${endColour}${redColour}!${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Ocurrió un error al habilitar los módulos de proxy. Por favor, revise el archivo $log_file para más detalles.${endColour}"
+        return 1
+    fi
+
+    sudo cp WebVulnLab.conf /etc/apache2/sites-available >> "$log_file" 2>&1
+    if [ $? -ne 0 ]; then
+        echo -e "\n${yellowColour}[${endColour}${redColour}!${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Ocurrió un error al copiar el archivo de configuración. Por favor, revise el archivo $log_file para más detalles.${endColour}"
+        return 1
+    fi
+
+    sudo a2ensite WebVulnLab.conf >> "$log_file" 2>&1
+    if [ $? -ne 0 ]; then
+        echo -e "\n${yellowColour}[${endColour}${redColour}!${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Ocurrió un error al habilitar el sitio virtual. Por favor, revise el archivo $log_file para más detalles.${endColour}"
+        return 1
+    fi
+
+    sudo systemctl reload apache2 >> "$log_file" 2>&1
+    if [ $? -ne 0 ]; then
+        echo -e "\n${yellowColour}[${endColour}${redColour}!${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Ocurrió un error al recargar Apache. Por favor, revise el archivo $log_file para más detalles.${endColour}"
+        return 1
+    fi
+
+    # Añadir entradas al archivo /etc/hosts
+    hosts_entries=()
+    for container in "${containers[@]}"; do
+        container_info=($(echo "$container" | tr ';' ' '))
+        container_name=${container_info[0]%%_v2}
+        hosts_entries+=("$container_name.local")
+    done
+    for db_container in "${database[@]}"; do
+        db_container_info=($(echo "$db_container" | tr ';' ' '))
+        db_container_name=${db_container_info[0]%%_db_v2}
+        hosts_entries+=("$db_container_name.local")
+    done
+
+    echo "127.0.0.1 ${hosts_entries[*]} tablero.local"
+
+
+    if [ $? -ne 0 ]; then
+        echo -e "\n${yellowColour}[${endColour}${redColour}!${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Ocurrió un error al modificar el archivo de hosts. Por favor, revise el archivo $log_file para más detalles.${endColour}"
+        return 1
+    fi
+    echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Configuración de Virtual Host completada correctamente.${endColour}"
+    # Eliminar el archivo de registro de errores si no contiene errores
+    [ -s "$log_file" ] || rm "$log_file"
 }
+
 
 # Comprobar si se esta ejecutando como usuario administrador
 
@@ -63,6 +217,7 @@ fi
 # Llamada a la funciones
 
 build_local_server
+setup_file_virtual_hosting
 configure_virtual_host
 
 # Preguntar al usuario si desea ignorar errores
@@ -86,26 +241,6 @@ fi
 if [ "$user_input_hide_output" = "n" ] || [ "$user_input_hide_output" = "N" ]; then
     hide_output="n"
 fi
-
-containers=(
-  "lfi_v2;$PWD/lfi;8000:80"
-  "menu_v2;$PWD/menu;8080:80"
-  "csrf_v2;$PWD/csrf;8001:80"
-  "blindxxe_v2;$PWD/blindxxe;8002:80"
-  "xxe_v2;$PWD/xxe;8003:80"
-  "xss_v2;$PWD/xss;8004:80"
-  "domainzonetransfer_v2;$PWD/domainzonetransfer;53:53/tcp"
-  "typejuggling_v2;$PWD/typejuggling;8008:80"
-  "rfi_v2;$PWD/rfi;8009:80"
-  "latexinjection_v2;$PWD/latexinjection;8011:80"
-  "xpathinjection_v2;$PWD/xpathinjection;8012:80"
-  "shellshock_v2;$PWD/shellshock;8013:80"
-)
-database=(
-    "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
-    "blind_sqli_db_v2;$PWD/blindsqli;8014:80;blindsqli_v2"
-    "paddingoracleattack_db_v2;$PWD/paddingoracleattack;8007:80;paddingoracleattack_v2"
-)
 
 # Construir e iniciar sontenedores segun las opciones del usuario
 
