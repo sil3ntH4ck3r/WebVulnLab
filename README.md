@@ -63,6 +63,8 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | XPath Injection      | http://xpathinjection.local/               |Funcional                              |
 | LaTeX Injection      | http://latexinjection.local/               |Funcional                              |
 | ShellShock           | http://shellshock.local                    |Funcional                              |
+| SQL Injection (Error)| http://sqli.local/                         |Funcional                              |
+| Blind SQL Injection (Error)| http://blindsqli.local/              |Funcional                              |
 | Blind XXE            | http://blindxxe.local                      |Desárrollandose (pero se puede probar) |
 | SQL Injection (Error)| http://sqli.local/                         |Desárrollandose (pero se puede probar) |
 | Domain Zone Transfer | http://domainzonetransfer.local/           |Desárrollandose (pero se puede probar) |

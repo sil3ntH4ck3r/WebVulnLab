@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SQL Injection</title>
+    <title>Blind SQL Injection</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="sqli.css">
+    <link rel="stylesheet" href="blindsqli.css">
 </head>
 <body>
 
@@ -93,7 +93,7 @@ mysqli_close($conexion);
         if (empty($busqueda)) {
             $result = mysqli_query($db, "SELECT * FROM productos");
         } else {
-            $result = mysqli_query($db, "SELECT * FROM productos WHERE nombre LIKE '%" . $busqueda . "%' OR descripcion LIKE '%" . $busqueda . "%'") or die(mysqli_error($db)); //or die(mysqli_error($db)) <- Quitar eso para que sea Blind
+            $result = mysqli_query($db, "SELECT * FROM productos WHERE nombre LIKE '%" . $busqueda . "%' OR descripcion LIKE '%" . $busqueda . "%'"); //or die(mysqli_error($db)) <- Quitar eso para que sea Blind, y poner para que sea normal
         }
         echo '<div class="productos-container">';
         // Mostrar los productos
