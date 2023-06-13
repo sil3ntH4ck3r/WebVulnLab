@@ -1,21 +1,22 @@
 FROM ubuntu:14.04
 
-RUN apt-get update && \
-    apt-get install -y apache2
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_LOG_DIR /var/log/apache2
+ENV APACHE_LOCK_DIR /var/run/apache2
+ENV APACHE_PID_FILE /var/run/apache2.pid
+ENV APACHE_RUN_DIR /var/run/apache2
 
-RUN a2enmod cgi && \
-    mkdir /var/www/html/cgi-bin && \
- chown www-data:www-data /var/www/html/cgi-bin
+RUN apt-get update && apt-get install -y apache2
 
-COPY register.cgi /var/www/html/cgi-bin/
-RUN chmod +x /var/www/html/cgi-bin/register.cgi
+RUN mkdir /var/run/apache2
 
-COPY 000-default.conf /etc/apache2/sites-available/
+ADD register.cgi /usr/lib/cgi-bin/
+RUN chmod +x /usr/lib/cgi-bin/register.cgi
 
-COPY serve-cgi-bin.conf /etc/apache2/conf-available/
+RUN a2enmod cgid
 
 # Install vulnerable bash
-
 RUN apt-get install -y build-essential wget
 RUN wget https://ftp.gnu.org/gnu/bash/bash-4.3.tar.gz --no-check-certificate && \
     tar zxvf bash-4.3.tar.gz && \
@@ -24,8 +25,10 @@ RUN wget https://ftp.gnu.org/gnu/bash/bash-4.3.tar.gz --no-check-certificate && 
     make && \
     make install
 
-RUN mkdir /var/www/html/website
+COPY src/ /var/www/html
 
 EXPOSE 80
 
-CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+ENTRYPOINT ["/usr/sbin/apache2"]
+
+CMD ["-D", "FOREGROUND"]

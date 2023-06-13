@@ -1,7 +1,29 @@
+<?php
+$USER = "admin";
+$PASSWORD = "e2b8200d5e85ca5674a6d0254acd15ce";
+
+if(isset($_POST['username']) && isset($_POST['password'])){
+    if($_POST['username'] == $USER){
+        if(strcmp($_POST['password'],$PASSWORD) == 0){
+            $_SESSION['mensaje'] = "Has iniciado sesión correctamente";
+            $_SESSION['loggedin']==true;
+        } else{
+            $_SESSION['mensaje'] = "Contraseña o usuario incorrectos";
+            $_SESSION['loggedin']==false;
+        }
+    }else{
+        $_SESSION['mensaje'] = "Contraseña o usuario incorrectos";
+        $_SESSION['loggedin']==false;
+    }
+}
+?>
+
+<!------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Padding Oracle Attack</title>
+    <title>type Juggling</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="padding.css">
@@ -156,18 +178,13 @@ body {
     color: #000000;
     border: 1px solid #000000;
 }
-#mensaje-error {
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  color: #721c24;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 0.25rem;
+.mensaje {
+    text-align: center;
+    font-size: 24px;
+    color: #4CAF50;
+    margin-bottom: 20px;
 }
-.oculto {
-  display: none;
-}
-</style>
+    </style>
 
 </head>
 <body>
@@ -177,77 +194,35 @@ body {
             <div class="container">
                 <h1 class="logo">Cybertec</h1>
                 <ul class="menu">
-                <li><a href="http://paddingoracleattack.local/index.php">Login</a></li>
-                    <li><a href="http://paddingoracleattack.local/register.php">Register</a></li>
-                    <li><a href="http://paddingoracleattack.local/reiniciar.php">Reiniciar Base de Datos</a></li>
-                    
+
                 </ul>
             </div>
         </nav>
     </header>
-   
+
     <div class="login-box">
-      <h2>Registro</h2>
-      <form id="formulario-registro" action="newuser.php" method="post">
+      <h2>Iniciar sesión</h2>
+      <form id="formulario-inicio" method="post">
         <div class="user-box">
-            <input id="nombre" type="text" name="nombre" required="">
-            <label>Nombre de usuario</label>
+          <input type="text" id="username" name="username" required="">
+          <label for="username">Nombre de usuario</label>
         </div>
         <div class="user-box">
-            <input id="email" type="email" name="email" required="">
-            <label>Correo Electrónico</label>
-        </div>
-        <div class="user-box">
-            <input id="contraseña" type="password" name="contraseña" required="">
-            <label>Contraseña</label>
+          <input type="password" id="password" name="password" required="">
+          <label for="password">Contraseña</label>
         </div>
         <button type="submit">
-        Registrarse
+            Iniciar sesión
         </button>
-    </form>
+      </form>
     </div>
-
-    <div id="mensaje-error" class="oculto"></div>
-
-    <script>
-        // Obtener una referencia al formulario
-        const mensajeError = document.getElementById('mensaje-error');
-        var formulario = document.getElementById("formulario-registro");
-        mensajeError.classList.add('oculto');
-
-        // Agregar un controlador de eventos para el envío del formulario
-        formulario.addEventListener("submit", function(evento) {
-        // Prevenir el comportamiento predeterminado del formulario (recargar la página)
-        evento.preventDefault();
-
-        // Obtener los valores ingresados por el usuario
-        var nombre = document.getElementById("nombre").value;
-        var email = document.getElementById("email").value;
-        var contraseña = document.getElementById("contraseña").value;
-
-        // Crear un objeto FormData para enviar los datos del formulario al servidor
-        var datos = new FormData();
-        datos.append("nombre", nombre);
-        datos.append("email", email);
-        datos.append("contraseña", contraseña);
-
-        // Enviar los datos al servidor utilizando AJAX
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-            // Actualizar el contenido de la página con el mensaje recibido del servidor
-            mensajeError.classList.remove('oculto');
-            document.getElementById("mensaje-error").innerHTML = this.responseText;
-            }
-        };
-        xhr.open("POST", "newuser.php");
-        xhr.send(datos);
-        });
-  </script>
+    <?php if (isset($_SESSION['mensaje'])): ?>
+    <p class="mensaje"><?php echo $_SESSION['mensaje']; ?></p>
+    <?php unset($_SESSION['mensaje']); endif; ?>
 
 </body>
 
 <footer>
-    <p>Derechos de autor © 2023. Todos los derechos reservados.</p>
+<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0
 </footer>
 </html>

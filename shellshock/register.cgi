@@ -76,7 +76,7 @@ a {
     <h1>Confirmación de Registro</h1>
     <p>¡Gracias por registrarte!</p>
     <p>Tu dirección de correo electrónico ($email_clean) ha sido registrada con éxito.</p>
-    <a href="http://shellshock.local/website/">Volver a la página principal</a>
+    <a href="http://shellshock.local/">Volver a la página principal</a>
  </div>
 </body>
 </html>
