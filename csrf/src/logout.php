@@ -1,8 +1,8 @@
 <?php
 session_start();
-// Unset all session variables
+// Desactivar todas las variables de sesión
 $_SESSION = array();
-// Delete the session cookie
+// Eliminar la cookie de sesión
 if (ini_get('session.use_cookies')) {
     $params = session_get_cookie_params();
     setcookie(
@@ -15,9 +15,9 @@ if (ini_get('session.use_cookies')) {
         $params['httponly']
     );
 }
-// Destroy the session
+// Destruir la sesión
 session_destroy();
-// Redirect the user to the login page
-header('Location: index.html');
+// Redirigir al usuario a la página de inicio de sesión
+header('Location: index.php');
 exit;
 ?>

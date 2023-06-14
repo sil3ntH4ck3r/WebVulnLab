@@ -17,7 +17,7 @@ containers=(
   "blindxxe_v2;$PWD/blindxxe;8002:80"
   "xxe_v2;$PWD/xxe;8003:80"
   "xss_v2;$PWD/xss;8004:80"
-  "domainzonetransfer_v2;$PWD/domainzonetransfer;53:53/tcp"
+  "domainzonetransfer_v2;$PWD/domainzonetransfer;53:53/udp -p 53:53/tcp"
   "typejuggling_v2;$PWD/typejuggling;8008:80"
   "rfi_v2;$PWD/rfi;8009:80"
   "latexinjection_v2;$PWD/latexinjection;8011:80"
