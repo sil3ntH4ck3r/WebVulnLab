@@ -14,7 +14,7 @@ containers=(
   "blindxxe_v2;$PWD/blindxxe;8002:80"
   "xxe_v2;$PWD/xxe;8003:80"
   "xss_v2;$PWD/xss;8004:80"
-  "domainzonetransfer_v2;$PWD/domainzonetransfer;53:53/tcp"
+  "domainzonetransfer_v2;$PWD/domainzonetransfer;53:53/udp -p 53:53/tcp"
   "typejuggling_v2;$PWD/typejuggling;8008:80"
   "rfi_v2;$PWD/rfi;8009:80"
   "latexinjection_v2;$PWD/latexinjection;8011:80"
@@ -107,6 +107,9 @@ setup_file_virtual_hosting() {
             echo "</VirtualHost>"
             echo
         } >> "$config_file" 2>> "$error_file"
+
+        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Apache configurado correctamente.${endColour}"
+
     done
 
     if [ -s "$error_file" ]; then
@@ -142,13 +145,12 @@ build_local_server() {
     sudo service apache2 restart >> "$log_file" 2>&1
 
     if [ $? -eq 0 ]; then
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Tablero iniciado correctamente${endColour}"
+        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}API REST de Docker configurada correctamente.${endColour}"
     else
-        echo -e "\n${yellowColour}[${endColour}${redColour}!${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Ocurrió un error al iniciar el Tablero. Por favor, revise el archivo $log_file para más detalles.${endColour}"
+        echo -e "\n${yellowColour}[${endColour}${redColour}!${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Ocurrió un error al configurar el API REST de Docker. Por favor, revise el archivo $log_file para más detalles.${endColour}"
         return 1
     fi
 
-    echo "Tablero construido e iniciado correctamente."
     # Eliminar el archivo de registro de errores si no contiene errores
     [ -s "$log_file" ] || rm "$log_file"
 }
@@ -216,9 +218,9 @@ fi
 
 # Llamada a la funciones
 
-build_local_server
-setup_file_virtual_hosting
-configure_virtual_host
+#build_local_server
+#setup_file_virtual_hosting
+#configure_virtual_host
 
 # Preguntar al usuario si desea ignorar errores
 echo -e "\n${yellowColour}[${endColour}${Colour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}¿Desea ignorar los errores, a la hora de construirlos? (s/N)${endColour}"

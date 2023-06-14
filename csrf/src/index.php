@@ -1,34 +1,6 @@
-<?php
-session_start();
-if (isset($_GET['new_password']) && isset($_GET['confirm_password'])) {
-    $new_password = $_GET['new_password'];
-    $confirm_password = $_GET['confirm_password'];
-    if ($new_password == $confirm_password) {
-        // Leer el nombre de usuario de la sesión
-        $username = $_SESSION['username'];
-        // Leer el archivo que contiene los nombres de usuario y contraseñas
-        $lines = file('users.txt');
-        foreach ($lines as $i => $line) {
-            list($stored_username, $stored_password) = explode(',', $line);
-            if ($username == $stored_username) {
-                // Cambiar la contraseña del usuario
-                $message = 'Cambio de contraseña exitoso';
-                $message_class = 'success-message';
-                $lines[$i] = $username . ',' . trim($new_password) . "\n";
-                break;
-            }
-        }
-        // Sobrescribir el archivo con las nuevas contraseñas
-        file_put_contents('users.txt', implode('', $lines));
-    } else {
-        $message = 'Las contraseñas no coinciden';
-        $message_class = 'error-message';
-    }
-}
-?>
-
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>CSRF</title>
     <style>
@@ -203,32 +175,41 @@ if (isset($_GET['new_password']) && isset($_GET['confirm_password'])) {
         <h1>Cybertec</h1>
     </header>
 
-    <nav>
-        <ul>
-            <li><a href="welcome.php">Bienvenido</a></li>
-            <li><a href="logout.php">Cerrar sesión</a></li>
-            <li><a href="change.php">Cambiar Contraseña</a></li>
-        </ul>
-    </nav>
-
-    <?php if (isset($message)): ?>
-        <p class="mensaje <?php echo $message_class; ?>"><?php echo $message; ?></p>
+    <?php if ($_SESSION['login_successful']): ?>
+        <nav>
+            <ul>
+                <li><a href="welcome.php">Bienvenido</a></li>
+                <li><a href="logout.php">Cerrar sesión</a></li>
+                <li><a href="change.php">Cambiar contraseña</a></li>
+            </ul>
+        </nav>
     <?php endif; ?>
 
     <div class="login-box">
-        <h2>Cambiar contraseña</h2>
-        <form method="GET" action="change_password.php">
+        <h2>Iniciar sesión</h2>
+        <form method="POST" action="login.php">
             <div class="user-box">
-                <input type="password" name="new_password" required>
-                <label>Contraseña nueva</label>
+                <input type="text" name="username" required>
+                <label>Usuario</label>
             </div>
             <div class="user-box">
-                <input type="password" name="confirm_password" required>
-                <label>Repita la contraseña</label>
+                <input type="password" name="password" required>
+                <label>Contraseña</label>
             </div>
-            <button type="submit">Cambiar contraseña</button>
+            <button type="submit">Iniciar sesión</button>
+            <button type="button" onclick="accederComoInvitado()">Acceder como invitado</button>
         </form>
+        <?php if (isset($message)): ?>
+            <p class="mensaje <?php echo $message_class; ?>"><?php echo $message; ?></p>
+        <?php endif; ?>
     </div>
+
+    <script>
+        function accederComoInvitado() {
+            document.getElementsByName('username')[0].value = 'invitado';
+            document.getElementsByName('password')[0].value = 'invitado';
+        }
+    </script>
 
     <footer>
     <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0

@@ -63,9 +63,9 @@ This script will download and install all the necessary dependencies, create the
 | ShellShock           | http://shellshock.local                    |Functional                            |
 | SQL Injection (Error)| http://sqli.local/                         |Functional                            |
 | Blind SQL Injection (Error)| http://blindsqli.local/              |Functional                            |
+| Domain Zone Transfer | http://domainzonetransfer.local/           |Functional                            |
+| CSRF                 | http://csrf.local                          |Functional                            |
 | Blind XXE            | http://blindxxe.local                      |In development (but can be tested)    |
-| Domain Zone Transfer | http://domainzonetransfer.local/           |In development (but can be tested)    |
-| CSRF                 | http://csrf.local                          |In development (but can be tested)    |
 | Insecure Deseralization | http://insecuredeseralization.local/    |In development                        |
 | Blind XSS            |                    -                       |In development                        |
 | HTML Injection       |                    -                       |                   -                  |

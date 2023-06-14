@@ -7,4 +7,6 @@ RUN  chmod +x /usr/local/bin/startup.sh
 
 RUN chmod 666 /var/www/html/comments.txt
 
+CMD ["/usr/local/bin/startup.sh"]
+
 EXPOSE 80

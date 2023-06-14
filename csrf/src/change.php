@@ -1,30 +1,12 @@
 <?php
 session_start();
-if (isset($_GET['new_password']) && isset($_GET['confirm_password'])) {
-    $new_password = $_GET['new_password'];
-    $confirm_password = $_GET['confirm_password'];
-    if ($new_password == $confirm_password) {
-        // Leer el nombre de usuario de la sesión
-        $username = $_SESSION['username'];
-        // Leer el archivo que contiene los nombres de usuario y contraseñas
-        $lines = file('users.txt');
-        foreach ($lines as $i => $line) {
-            list($stored_username, $stored_password) = explode(',', $line);
-            if ($username == $stored_username) {
-                // Cambiar la contraseña del usuario
-                $message = 'Cambio de contraseña exitoso';
-                $message_class = 'success-message';
-                $lines[$i] = $username . ',' . trim($new_password) . "\n";
-                break;
-            }
-        }
-        // Sobrescribir el archivo con las nuevas contraseñas
-        file_put_contents('users.txt', implode('', $lines));
-    } else {
-        $message = 'Las contraseñas no coinciden';
-        $message_class = 'error-message';
-    }
+
+if (!isset($_SESSION['username'])) {
+    header('Location: index.php');
+    exit;
 }
+
+$username = $_SESSION['username'];
 ?>
 
 <!DOCTYPE html>
@@ -186,15 +168,8 @@ if (isset($_GET['new_password']) && isset($_GET['confirm_password'])) {
         .mensaje {
             text-align: center;
             font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        .success-message {
             color: #4CAF50;
-        }
-
-        .error-message {
-            color: #FF0000;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -207,13 +182,9 @@ if (isset($_GET['new_password']) && isset($_GET['confirm_password'])) {
         <ul>
             <li><a href="welcome.php">Bienvenido</a></li>
             <li><a href="logout.php">Cerrar sesión</a></li>
-            <li><a href="change.php">Cambiar Contraseña</a></li>
+            <li><a href="change.html">Cambiar contraseña</a></li>
         </ul>
     </nav>
-
-    <?php if (isset($message)): ?>
-        <p class="mensaje <?php echo $message_class; ?>"><?php echo $message; ?></p>
-    <?php endif; ?>
 
     <div class="login-box">
         <h2>Cambiar contraseña</h2>
@@ -226,7 +197,7 @@ if (isset($_GET['new_password']) && isset($_GET['confirm_password'])) {
                 <input type="password" name="confirm_password" required>
                 <label>Repita la contraseña</label>
             </div>
-            <button type="submit">Cambiar contraseña</button>
+            <button type="submit">Cambiar la contraseña</button>
         </form>
     </div>
 

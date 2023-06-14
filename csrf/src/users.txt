@@ -1,1 +1,2 @@
 admin,admin
+invitado,invitado
