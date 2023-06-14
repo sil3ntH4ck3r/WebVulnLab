@@ -141,7 +141,7 @@ build_local_server() {
     sudo systemctl restart docker >> "$log_file" 2>&1
 
     version=$(php -v | sed -nr 's/PHP[[:space:]]+([0-9]+\.[0-9]+).*/\1/p')
-    sudo apt-get install php$version-curl >> "$log_file" 2>&1
+    sudo apt-get install php$version-curl -y >> "$log_file" 2>&1
     sudo service apache2 restart >> "$log_file" 2>&1
 
     if [ $? -eq 0 ]; then
@@ -218,9 +218,9 @@ fi
 
 # Llamada a la funciones
 
-#build_local_server
-#setup_file_virtual_hosting
-#configure_virtual_host
+build_local_server
+setup_file_virtual_hosting
+configure_virtual_host
 
 # Preguntar al usuario si desea ignorar errores
 echo -e "\n${yellowColour}[${endColour}${Colour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}¿Desea ignorar los errores, a la hora de construirlos? (s/N)${endColour}"
