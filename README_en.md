@@ -65,11 +65,11 @@ This script will download and install all the necessary dependencies, create the
 | Blind SQL Injection (Error)| http://blindsqli.local/              |Functional                            |
 | Domain Zone Transfer | http://domainzonetransfer.local/           |Functional                            |
 | CSRF                 | http://csrf.local                          |Functional                            |
+| SSRF                 | http://ssrf.local/                         |In development (but can be tested)    |
 | Blind XXE            | http://blindxxe.local                      |In development (but can be tested)    |
 | Insecure Deseralization | http://insecuredeseralization.local/    |In development                        |
 | Blind XSS            |                    -                       |In development                        |
 | HTML Injection       |                    -                       |                   -                  |
-| SSRF                 |                    -                       |                   -                  |
 | SQL Injection (Time) |                    -                       |                   -                  |
 
 Note that it is still in development, and not all containers are working correctly. This repository is updated frequently.
