@@ -6,7 +6,7 @@ html, body {
   font-family: 'Montserrat', sans-serif;
   scroll-behavior: smooth; /* hace que el desplazamiento por la página sea suave */
 }
-/*
+
 body {
   display: flex;
   flex-direction: column;
@@ -16,7 +16,7 @@ body {
 main {
   flex: 1;
 }
-*/
+
 /* Estilos del encabezado */
 
 header {
@@ -65,13 +65,13 @@ li {
 }*/
 
 footer {
-  background-color: #333;
-  color: #fff;
-  height: 20%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        height: 100px; /* Ajusta la altura deseada */
+        font-weight: bold; /* Ajusta el estilo de fuente deseado */
+    }
 
 footer p {
   margin: 0;

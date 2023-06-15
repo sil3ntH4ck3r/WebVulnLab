@@ -107,10 +107,9 @@ setup_file_virtual_hosting() {
             echo "</VirtualHost>"
             echo
         } >> "$config_file" 2>> "$error_file"
-
-        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Apache configurado correctamente.${endColour}"
-
     done
+
+    echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Apache configurado correctamente.${endColour}"
 
     if [ -s "$error_file" ]; then
         echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Se encontraron errores. Por favor, revise el archivo $error_file para más detalles.${endColour}"
