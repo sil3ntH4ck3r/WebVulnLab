@@ -188,7 +188,7 @@ footer {
       <h3>Suscríbase a nuestro boletín</h3>
       <form action="/cgi-bin/register.cgi" method="post">
         <div class="subscribe-form">
-          <input type="email" name="email" id="email" placeholder="Enter your email address" required>
+          <input type="email" name="email" id="email" placeholder="Ingrese su correo electrónico" required>
           <button type="submit">Suscríbase</button>
         </div>
       </form>
