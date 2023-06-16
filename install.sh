@@ -226,22 +226,17 @@ configure_virtual_host
 echo -e "\n${yellowColour}[${endColour}${Colour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}¿Desea ignorar los errores, a la hora de construirlos? (s/N)${endColour}"
 read user_input_hide_output
 
+#Pregustar si desea ocultar el output de los comandos
+
+echo -e "\n${yellowColour}[${endColour}${Colour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}¿Desea ocultar el output de los comandos ejecutados durante la ejecución del script? (S/n)${endColour}"
+read user_input_hide_output
+
 # Verificar si el usuario ingresó una respuesta válida
 if [ "$user_input_hide_output" = "s" ] || [ "$user_input_hide_output" = "S" ]; then
     ignore_errors="s"
 fi
 if [ "$user_input_hide_output" = "n" ] || [ "$user_input_hide_output" = "N" ]; then
     ignore_errors="n"
-fi
-
-echo -e "\n${yellowColour}[${endColour}${Colour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}¿Desea ocultar el output de los comandos ejecutados durante la ejecución del script? (S/n)${endColour}"
-read user_input_hide_output
-
-if [ "$user_input_hide_output" = "s" ] || [ "$user_input_hide_output" = "S" ]; then
-    hide_output="s"
-fi
-if [ "$user_input_hide_output" = "n" ] || [ "$user_input_hide_output" = "N" ]; then
-    hide_output="n"
 fi
 
 # Construir e iniciar sontenedores segun las opciones del usuario

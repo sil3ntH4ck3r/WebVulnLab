@@ -91,6 +91,11 @@ hide_output="s"
 echo -e "\n${yellowColour}[${endColour}${Colour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}¿Desea ignorar los errores, a la hora de construirlos? (s/N)${endColour}"
 read user_input_hide_output
 
+#Pregustar si desea ocultar el output de los comandos
+
+echo -e "\n${yellowColour}[${endColour}${Colour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}¿Desea ocultar el output de los comandos ejecutados durante la ejecución del script? (S/n)${endColour}"
+read user_input_hide_output
+
 # Verificar si el usuario ingresó una respuesta válida
 if [ "$user_input_hide_output" = "s" ] || [ "$user_input_hide_output" = "S" ]; then
     ignore_errors="s"
