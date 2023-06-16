@@ -234,7 +234,7 @@ if [ "$user_input_hide_output" = "n" ] || [ "$user_input_hide_output" = "N" ]; t
     ignore_errors="n"
 fi
 
-echo -e "\n${yellowColour}[${endColour}${Colour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}¿Desea ocultar el output de los comandos ejecutados durante la ejeciccion del script? (S/n)${endColour}"
+echo -e "\n${yellowColour}[${endColour}${Colour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}¿Desea ocultar el output de los comandos ejecutados durante la ejecución del script? (S/n)${endColour}"
 read user_input_hide_output
 
 if [ "$user_input_hide_output" = "s" ] || [ "$user_input_hide_output" = "S" ]; then
