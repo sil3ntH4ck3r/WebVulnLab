@@ -2,71 +2,208 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="description" content="A la hora de escribir una meta descripción, mantenla entre 140 y 160 caracteres para que Google pueda mostrar tu mensaje completo. ¡No olvides incluir tu palabra clave!">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Link Preview Service</title>
+    <title>SSRF</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* Estilo general */
+        html, body {
+            height: 100%;
             margin: 0;
-            padding: 0;
         }
+        .wrapper {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        #container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+        /* Encabezado */
         header {
-            background-color: #4CAF50;
-            color: white;
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
             text-align: center;
-            padding: 1em;
         }
+
+        header h1 {
+            font-size: 3em;
+            margin: 0;
+        }
+
+        /* Contenido principal */
         main {
-            padding: 2em;
+            padding: 50px 0;
+            text-align: center;
+            flex: 1;
+            padding-bottom: 80px; /* Ajusta el valor según la altura del footer */
         }
+
         form {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
         input[type="text"] {
             width: 100%;
             max-width: 500px;
-            padding: 0.5em;
-            margin-bottom: 1em;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            border-radius: 3px;
+            border: 1px solid #ccc;
         }
+
         input[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
+            display: block;
+            margin: 0 auto;
+            padding: 10px 30px;
+            font-size: 1.1em;
+            background-color: #333;
+            color: #fff;
             border: none;
-            padding: 0.5em 1em;
-            cursor: pointer;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+            margin-bottom: 4em; /* agregar un margen inferior */
         }
+
         input[type="submit"]:hover {
-            background-color: #45a049;
+            background-color: #555;
         }
+
         #preview {
             border: 1px solid #ccc;
             padding: 1em;
-            margin-top: 1em;
+            margin-top: 2em; /* aumentar el margen superior */
             width: 100%;
             max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
         }
+
+        #preview h2 {
+            text-align: left;
+            margin-bottom: 0.5em;
+        }
+
+        #preview p {
+            text-align: left;
+            margin-top: 0.5em;
+        }
+
+        footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-top: 100px; /* Añade margen superior */
+        }
+        .content {
+    margin-top: 20px; /* Agrega margen superior */
+    margin-bottom: 20px; /* Agrega margen inferior */
+}
+
+    .content iframe {
+        width: 100%;
+        max-height: 1200px; /* Ajusta el valor según tus necesidades */
+        border: none;
+    }
+
+    .content iframe.sandboxed {
+        height: auto;
+    }
     </style>
 </head>
 <body>
+<div class="wrapper">
     <header>
-        <h1>Link Preview Service</h1>
+        <h1>Servicio de previsualización de enlaces</h1>
     </header>
+
     <main>
-        <p>Welcome to our Link Preview Service! Enter a URL below to see a preview of the content.</p>
-        <form action="index.php" method="get">
-            <label for="url">URL:</label>
-            <input type="text" id="url" name="url">
-            <input type="submit" value="Fetch Preview">
-        </form>
-        <?php
-        if (isset($_GET['url'])) {
-            $url = $_GET['url'];
-            $content = file_get_contents($url);
-            echo '<div id="preview">' . $content . '</div>';
+    <p>Bienvenido a nuestro servicio de previsualización de enlaces. Introduzca una URL a continuación para ver una vista previa del contenido.</p>
+    <form action="index.php" method="get">
+        <label for="url">URL:</label>
+        <input type="text" id="url" name="url">
+        <input type="submit" value="Vista previa de la búsqueda">
+    </form>
+    <?php
+    error_reporting(0);
+
+    function get_preview($url) {
+        $html = file_get_contents($url);
+        if (empty($html)) {
+            return [
+                'title' => 'Error',
+                'description' => 'No se pudo obtener el contenido de la URL proporcionada.'
+            ];
         }
-        ?>
-    </main>
+    
+        $dom = new DOMDocument();
+        @$dom->loadHTML($html);
+    
+        $title = $dom->getElementsByTagName('title')->item(0)->textContent;
+        $metaTags = $dom->getElementsByTagName('meta');
+    
+        $description = '';
+        foreach ($metaTags as $metaTag) {
+            if ($metaTag->getAttribute('name') === 'description') {
+                $description = $metaTag->getAttribute('content');
+                break;
+            }
+        }
+        
+        $content = $dom->saveHTML();
+    
+        return [
+            'title' => $title,
+            'description' => $description,
+            'content' => $content
+        ];
+    }
+
+    if (isset($_GET['url'])) {
+        $url = $_GET['url'];
+        if (filter_var($url, FILTER_VALIDATE_URL)) {
+            $preview = get_preview($url);
+            echo '<div id="preview">';
+            echo '<h2>' . htmlspecialchars($preview['title']) . '</h2>';
+            echo '<p>' . htmlspecialchars($preview['description']) . '</p>';
+            echo '<div class="content"><iframe class="sandboxed" srcdoc="' . htmlspecialchars($preview['content']) . '"></iframe></div>';
+            echo '</div>';
+        } else {
+            echo '<p>La URL introducida no es válida.</p>';
+        }
+    }
+    ?>
+</main>
+<footer>
+    <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/">
+        <a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by
+        <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a>
+        is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0
+    </p>
+</footer>
+</div>
 </body>
 </html>
