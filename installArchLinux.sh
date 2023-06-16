@@ -89,7 +89,7 @@ hide_output="s"
 
 # Preguntar al usuario si desea ignorar errores
 echo -e "\n${yellowColour}[${endColour}${Colour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}¿Desea ignorar los errores, a la hora de construirlos? (s/N)${endColour}"
-read user_input_hide_output
+read user_input_ignore_errors
 
 #Pregustar si desea ocultar el output de los comandos
 
@@ -97,11 +97,17 @@ echo -e "\n${yellowColour}[${endColour}${Colour}+${endColour}${yellowColour}]${e
 read user_input_hide_output
 
 # Verificar si el usuario ingresó una respuesta válida
-if [ "$user_input_hide_output" = "s" ] || [ "$user_input_hide_output" = "S" ]; then
+if [ "$user_input_ignore_errors" = "s" ] || [ "$user_input_ignore_errors" = "S" ]; then
     ignore_errors="s"
 fi
-if [ "$user_input_hide_output" = "n" ] || [ "$user_input_hide_output" = "N" ]; then
+if [ "$user_input_ignore_errors" = "n" ] || [ "$user_input_ignore_errors" = "N" ]; then
     ignore_errors="n"
+fi
+if [ "$user_input_hide_output" = "n" ] || [ "$user_input_hide_output" = "N" ]; then
+    hide_output="n"
+fi
+if [ "$user_input_hide_output" = "s" ] || [ "$user_input_hide_output" = "S" ]; then
+    hide_output="s"
 fi
 
 # Construir e iniciar sontenedores segun las opciones del usuario
