@@ -8,8 +8,8 @@ hide_output="s"
 # Arrays
 
 containers=(
-  "lfi_v2;$PWD/lfi;8000:80"
   "menu_v2;$PWD/menu;8080:80"
+  "lfi_v2;$PWD/lfi;8000:80"
   "csrf_v2;$PWD/csrf;8001:80"
   "blindxxe_v2;$PWD/blindxxe;8002:80"
   "xxe_v2;$PWD/xxe;8003:80"
