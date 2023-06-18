@@ -66,8 +66,8 @@ This script will download and install all the necessary dependencies, create the
 | Domain Zone Transfer | http://domainzonetransfer.local/           |Functional                            |
 | CSRF                 | http://csrf.local                          |Functional                            |
 | SSRF                 | http://ssrf.local/                         |Functional                            |
+| PHP Insecure Deseralization | http://insecuredeseralizationphp.local/    |Functional                        |
 | Blind XXE            | http://blindxxe.local                      |In development (but can be tested)    |
-| Insecure Deseralization | http://insecuredeseralization.local/    |In development                        |
 | Blind XSS            |                    -                       |In development                        |
 | HTML Injection       |                    -                       |                   -                  |
 | SQL Injection (Time) |                    -                       |                   -                  |
