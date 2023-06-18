@@ -10,7 +10,7 @@ $tel = $info->tel;
 $email = $info->email;
 $password = $info->password;
 
-echo "Error, $email ya esta registrado!";
+echo "Error, el correo, ya esta registrado!";
 ?>
 
 
