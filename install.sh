@@ -18,6 +18,7 @@ containers=(
   "ssrf_v2;$PWD/ssrf;8006:80"
   "typejuggling_v2;$PWD/typejuggling;8008:80"
   "rfi_v2;$PWD/rfi;8009:80"
+  "insecuredeseralizationphp_v2;$PWD/insecuredeseralizationphp;8010:80"
   "latexinjection_v2;$PWD/latexinjection;8011:80"
   "xpathinjection_v2;$PWD/xpathinjection;8012:80"
   "shellshock_v2;$PWD/shellshock;8013:80"
