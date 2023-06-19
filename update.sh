@@ -55,6 +55,10 @@ else
     exit 1
 fi
 
+# Muestra los commits de la actualización
+print_info "Commits de la actualización:"
+git log HEAD..origin/dev --oneline
+
 # Comprueba si hay actualizaciones disponibles
 UPDATES_AVAILABLE=$(git log HEAD..origin/dev --oneline)
 
