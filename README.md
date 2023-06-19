@@ -8,12 +8,20 @@
 
 En esta nueva versión, encontrarás una interfaz más atractiva y fácil de usar, así como nuevas funcionalidades que te permitirán desplegar y configurar los contenedores a tu gusto. Aunque todavía está en desarrollo, ya puedes descargarla y probar las primeras características. ¡Te sorprenderás!
 
-## Requisitos
+## Contenido
+- [Requisitos](#requisitos)
+- [Instalación](#instalación)
+- [Actualización del proyecto](#actualización)
+- [Errores comunes](#errores)
+- [Contribuir](#contribuir)
+- [Cosas para las siguientes actualizaciones](#cosasparalassiguientesactulizaciones)
+
+## Requisitos <a name="requisitos"></a>
 
 - docker (comando para instalar docker en Kali Linux: `sudo apt-get install docker.io`)
 - php
 
-## Instalación
+## Instalación <a name="instalación"></a>
 
 **IMPORTANTE:** Ejecutar el script de instalación con permisos de superusuario.
 
@@ -76,7 +84,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 
 Cabe destacar que aún está en desarrollo, y que no todos los contenedores están funcionando correctamente. Este repositorio se actualiza a menudo.
 
-## Actualización del proyecto
+## Actualización del proyecto <a name="actualización"></a>
 
 Puedes utilizar el siguiente script para verificar y aplicar actualizaciones del proyecto desde la consola.
 
@@ -107,9 +115,9 @@ El script verificará si hay nuevas versiones disponibles y te mostrará un mens
 
 4. Si la actualización se completa con éxito, el script mostrará un mensaje indicando que la actualización ha sido exitosa. En caso de algún problema durante la actualización, se mostrará un mensaje de error correspondiente.
 
-## Errores comunes
+## Errores comunes  <a name="errores"></a>
 
-### Error al resolver la URL de la vulnerabilidad <a name="tablero"></a>
+### Error al resolver la URL de la vulnerabilidad
 
 Si no puedes resolver la URL de la vulnerabilidad, pueden existir varios factores que contribuyan a este problema. Aquí hay algunas posibles soluciones:
 
@@ -144,7 +152,7 @@ Si el contenedor no está en ejecución, puedes seguir estos pasos adicionales:
     - Utiliza las funcionalidades provistas por el tablero para reiniciar el contenedor específico que no está en funcionamiento.
     - Verifica si el reinicio del contenedor a través de tablero.local resuelve el problema y permite el acceso al dominio.
 
-    **NOTA:** Si no puedes acceder al dominio tablero.local, te recomiendo seguir los pasos mencionados en la sección anterior de "Errores Comunes" del README, puede clicar [aquí](#tablero). Puedes encontrar información sobre cómo solucionar si la configuración de Apache esta inactiva, entre otros.
+    **NOTA:** Si no puedes acceder al dominio tablero.local, te recomiendo seguir los pasos mencionados en la sección anterior de "Errores Comunes" del README, puede clicar [aquí](#errores). Puedes encontrar información sobre cómo solucionar si la configuración de Apache esta inactiva, entre otros.
 
 Si después de reiniciar el contenedor aún enfrentas el error "Service Unavailable", considera estas posibles soluciones adicionales:
 
@@ -157,7 +165,7 @@ Si después de reiniciar el contenedor aún enfrentas el error "Service Unavaila
 
 Si has intentado las soluciones anteriores y aún no puedes resolver el problema, puedes pedir ayuda a través de la sección de "Issues" en el repositorio de GitHub del proyecto. Describe detalladamente el problema que estás enfrentando, incluyendo cualquier mensaje de error relevante, y proporciona información sobre tu entorno de ejecución (sistema operativo, versiones de software, etc.).
 
-## Contribuir
+## Contribuir <a name="contribuir"></a>
 
 Si deseas contribuir al desarrollo de WebVulnLab, ¡eres bienvenido! Puedes hacerlo de varias maneras:
 
@@ -165,7 +173,7 @@ Si deseas contribuir al desarrollo de WebVulnLab, ¡eres bienvenido! Puedes hace
 - Proponiendo nuevas características o mejoras.
 - Ayudando a solucionar problemas o desarrollando nuevas vulnerabilidades.
 
-## Cosas para las siguientes actualizaciones
+## Cosas para las siguientes actualizaciones <a name="cosasparalassiguientesactulizaciones"></a>
 
 - Añadir más vulnerabilidades.
 - ~~Ver en el tablero que máquinas están encendidas y que máquinas están apagadas.~~
