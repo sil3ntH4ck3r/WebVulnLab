@@ -67,10 +67,10 @@ This script will download and install all the necessary dependencies, create the
 | CSRF                 | http://csrf.local                          |Functional                            |
 | SSRF                 | http://ssrf.local/                         |Functional                            |
 | Blind XXE            | http://blindxxe.local                      |Functional                            |
-| PHP Insecure Deseralization | http://insecuredeseralizationphp.local/    |Functional                        |
-| Blind XSS            |                    -                       |In development                        |
-| HTML Injection       |                    -                       |                   -                  |
-| SQL Injection (Time) |                    -                       |                   -                  |
+| Blind XSS            | http://blindxss.local                      |Functional                            |
+| HTML Injection       | http://htmlinjection.local                 |Functional                            |
+| PHP Insecure Deseralization | http://insecuredeseralizationphp.local/    |Functional                     |
+| SQL Injection (Time) |                    -                       |In development                        |
 
 Note that it is still in development, and not all containers are working correctly. This repository is updated frequently.
 

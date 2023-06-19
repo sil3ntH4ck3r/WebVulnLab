@@ -69,10 +69,10 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | CSRF                 | http://csrf.local                          |Funcional                              |
 | SSRF                 | http://ssrf.local/                         |Funcional                              |
 | Blind XXE            | http://blindxxe.local                      |Funcional                              |
-| PHP Insecure Deseralization | http://insecuredeseralizationphp.local/    |Funcional                        |
-| Blind XSS            |                    -                       |Desárrollandose                        |
-| HTML Injection       |                    -                       |                   -                   |
-| SQL Injection (Time) |                    -                       |                   -                   |
+| Blind XSS            | http://blindxss.local                      |Funcional                              |
+| HTML Injection       | http://htmlinjection.local                 |Funcional                              |
+| PHP Insecure Deseralization | http://insecuredeseralizationphp.local/    |Funcional                       |
+| SQL Injection (Time) |                    -                       |Desárrollandose                        |
 
 Cabe destacar que aún está en desarrollo, y que no todos los contenedores están funcionando correctamente. Este repositorio se actualiza a menudo.
 
