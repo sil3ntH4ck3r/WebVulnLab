@@ -97,6 +97,7 @@ cd path/to/project
 ./update.sh
 ```
 The script will check if there are new versions available and display a message indicating the presence of updates.
+
 3. If updates are available and you wish to install them, follow the instructions provided by the script. For example, you can enter ***s*** and press Enter to perform the update. If you decide not to install the updates, you can enter ***n*** and press Enter.
 
 ***NOTE***: Make sure to carefully read the instructions and messages displayed by the script before taking any action.
