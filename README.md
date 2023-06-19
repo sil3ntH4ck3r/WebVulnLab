@@ -80,7 +80,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Blind XSS            | http://blindxss.local                      |Funcional                              |
 | HTML Injection       | http://htmlinjection.local                 |Funcional                              |
 | PHP Insecure Deseralization | http://insecuredeseralizationphp.local/    |Funcional                       |
-| SQL Injection (Time) |                    -                       |Desárrollandose                        |
+| SQL Injection (Time) |                                           |Desárrollandose                        |
 
 Cabe destacar que aún está en desarrollo, y que no todos los contenedores están funcionando correctamente. Este repositorio se actualiza a menudo.
 
