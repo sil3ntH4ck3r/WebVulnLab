@@ -8,12 +8,21 @@ Would you like to learn how to detect and exploit web vulnerabilities safely and
 
 In this new version, you will find a more attractive and user-friendly interface, as well as new features that will allow you to deploy and configure the containers to your liking. Although it is still in development, you can already download it and try out the first features. You will be surprised!
 
-## Requirements
+
+## Content
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Steps to Update the Project](#update)
+- [Errores comunes](#errors)
+- [Contribute](#contribute)
+- [Things for the upcoming updates](#thingsfortheupcomingupdates)
+
+## Requirements <a name="requirements"></a>
 
 - docker (command to install docker on Kali Linux: `sudo apt-get install docker.io`)
 - php
 
-## Installation
+## Installation <a name="installation"></a>
 
 **IMPORTANT NOTE**: Run the installation script with superuser privileges.
 
@@ -74,7 +83,7 @@ This script will download and install all the necessary dependencies, create the
 
 Note that it is still in development, and not all containers are working correctly. This repository is updated frequently.
 
-## Project Update
+## Project Update <a name="update"></a>
 
 You can use the following script to check and apply updates to the project from the console.
 
@@ -107,9 +116,9 @@ The script will check if there are new versions available and display a message 
 By following these steps, you will be able to check and apply updates to the project using the provided script.
 
 
-## Common Errors
+## Common Errors <a name="errors"></a>
 
-### Error resolving vulnerability URL <a name="tablero"></a>
+### Error resolving vulnerability URL
 
 If you are unable to resolve the vulnerability URL, there may be several factors contributing to this problem. Here are some possible solutions:
 
@@ -144,7 +153,7 @@ If the container is not running, you can follow these additional steps:
    - Use the functionalities provided by the "tablero" to restart the specific container that is not functioning.
    - Verify if restarting the container through `tablero.local` resolves the issue and allows access to the domain.
 
-   **NOTE:** If you are unable to access the `tablero.local` domain, I recommend following the steps mentioned in the previous section of "Common Errors" in the README. You can click [here](#tablero) to navigate to that section. You can find information on how to address issues such as inactive Apache configuration, among others.
+   **NOTE:** If you are unable to access the `tablero.local` domain, I recommend following the steps mentioned in the previous section of "Common Errors" in the README. You can click [here](#errors) to navigate to that section. You can find information on how to address issues such as inactive Apache configuration, among others.
 
 If you still encounter the "Service Unavailable" error after restarting the container, consider these additional possible solutions:
 
@@ -157,7 +166,7 @@ If you still encounter the "Service Unavailable" error after restarting the cont
 
    - If you have tried the above solutions and still cannot resolve the issue, you can seek help through the "Issues" section in the project's GitHub repository. Provide a detailed description of the problem you are facing, including any relevant error messages, and provide information about your runtime environment (operating system, software versions, etc.).
 
-## Contribute
+## Contribute <a name="contribute"></a>
 
 If you want to contribute to the development of Pentesting-Web-Lab, you are welcome to do so! You can do it in several ways:
 
@@ -165,7 +174,7 @@ If you want to contribute to the development of Pentesting-Web-Lab, you are welc
 - Proposing new features or improvements.
 - Helping to solve problems or developing new vulnerabilities.
 
-## Things for the upcoming updates:
+## Things for the upcoming updates: <a name="thingsfortheupcomingupdates"></a>
 
 - Add more vulnerabilities.
 - ~~Display on the dashboard which machines are turned on and which machines are turned off.~~
