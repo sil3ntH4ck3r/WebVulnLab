@@ -93,7 +93,7 @@ mysqli_close($conexion);
         if (empty($busqueda)) {
             $result = mysqli_query($db, "SELECT * FROM productos");
         } else {
-            $result = mysqli_query($db, "SELECT * FROM productos WHERE nombre LIKE '%" . $busqueda . "%' OR descripcion LIKE '%" . $busqueda . "%'"); //or die(mysqli_error($db)) <- Quitar eso para que sea Blind, y poner para que sea normal
+            $result = mysqli_query($db, "SELECT * FROM productos WHERE descripcion LIKE '%" . $busqueda . "%'");
         }
         echo '<div class="productos-container">';
         // Mostrar los productos
