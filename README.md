@@ -72,7 +72,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | LaTeX Injection      | http://latexinjection.local/               |Funcional                              |
 | ShellShock           | http://shellshock.local                    |Funcional                              |
 | SQL Injection (Error)| http://sqli.local/                         |Funcional                              |
-| Blind SQL Injection (Error)| http://blindsqli.local/              |Funcional                              |
+| Blind SQL Injection (Time)| http://blindsqli.local/              |Funcional                              |
 | Domain Zone Transfer | http://domainzonetransfer.local/           |Funcional                              |
 | CSRF                 | http://csrf.local                          |Funcional                              |
 | SSRF                 | http://ssrf.local/                         |Funcional                              |
@@ -80,7 +80,6 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Blind XSS            | http://blindxss.local                      |Funcional                              |
 | HTML Injection       | http://htmlinjection.local                 |Funcional                              |
 | PHP Insecure Deseralization | http://insecuredeseralizationphp.local/    |Funcional                       |
-| SQL Injection (Time) |                    -                       |Desárrollandose                        |
 
 Cabe destacar que aún está en desarrollo, y que no todos los contenedores están funcionando correctamente. Este repositorio se actualiza a menudo.
 
