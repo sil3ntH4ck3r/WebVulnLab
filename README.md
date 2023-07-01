@@ -80,6 +80,26 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Blind XSS            | http://blindxss.local                      |Funcional                              |
 | HTML Injection       | http://htmlinjection.local                 |Funcional                              |
 | PHP Insecure Deseralization | http://insecuredeseralizationphp.local/    |Funcional                       |
+| Insecure Direct Object Reference (iDOR) | http://idor.local/      |Funcional                              |
+| Server-Side Template Injection (SSTI) | -                         |                  -                    |
+| Client-Side Template Injection (CSTI)| -                          |                  -                    |
+| NoSQL Injections     | -                                               |                  -                    |
+| LDAP Injections| - | - |
+| API's Abuse| - | - |
+| File Upload Abuse| - | - |
+| Prototype Pollution| - | - |
+| Mass-Asignament Atack| - | - |
+| Open Redirect| - | - |
+| WebDAV| - | - |
+| SquidProxies| - | - |
+| intercambio de recursos de origen cruzado (CORS)| - | - |
+| SQL TruncationSession Puzzling / Session Fixation / Session Variable Overloading| - | - |
+| Json Web Token| - | - |
+| Race Condition| - | - |
+| CSS Injection| - | - |
+| Python Deserelization (DES-Yaml)| - | - |
+| Python Deserelization (DES-Pickle)| - | - |
+| GraphQL Introspection, Mutations e IDORs| - | - |
 
 Cabe destacar que aún está en desarrollo, y que no todos los contenedores están funcionando correctamente. Este repositorio se actualiza a menudo.
 
