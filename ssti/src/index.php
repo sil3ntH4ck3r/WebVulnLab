@@ -5,7 +5,7 @@
     <meta name="description" content="A la hora de escribir una meta descripción, mantenla entre 140 y 160 caracteres para que Google pueda mostrar tu mensaje completo. ¡No olvides incluir tu palabra clave!">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSRF</title>
+    <title>SSTI</title>
     <style>
         /* Estilo general */
         html, body {
