@@ -27,6 +27,7 @@ containers=(
   "shellshock_v2;$PWD/shellshock;8013:80"
   "blindxss_v2;$PWD/blindxss;8015:80"
   "htmlinjection_v2;$PWD/htmlinjection;8016:80"
+  "ssti_v2;$PWD/ssti;8018:80"
 )
 database=(
     "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
