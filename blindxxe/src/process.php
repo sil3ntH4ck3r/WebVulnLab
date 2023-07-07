@@ -5,12 +5,10 @@ $xmlfile = file_get_contents('php://input');
 $dom = new DOMDocument();
 $dom->loadXML($xmlfile, LIBXML_NOENT | LIBXML_DTDLOAD);
 $info = simplexml_import_dom($dom);
-$name = $info->name;
-$tel = $info->tel;
 $email = $info->email;
 $password = $info->password;
 
-echo "Error, el correo, ya esta registrado!";
+echo "Error, contraseña incorrecta";
 ?>
 
 

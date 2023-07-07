@@ -177,18 +177,10 @@ body {
             </div>
         </nav>
     </header>
-<!-- Panel de inicio de sesion -->
+<!-- Panel de inicio de sesión -->
     <div class="login-box">
-      <h2>Registro</h2>
+      <h2>Login</h2>
       <form id="formulario-inicio" method="post">
-        <div class="user-box">
-            <input type="text" id="name" name="name" required>
-            <label for="username">Nombre</label>
-        </div>
-        <div class="user-box">
-            <input id="tel" name="tel" type="tel" required>
-            <label for="tel">Numero de Telefono</label>
-        </div>
         <div class="user-box">
             <input id="email" name="email" type="email" required>
             <label for="email">Correo Electornico</label>
@@ -198,7 +190,7 @@ body {
             <label for="password">Contraseña</label>
         </div>
         <button id="registerNew" type="button" onclick="XMLFunction()">
-            Registrarse
+            Iniciar sesión
         </button>
       </form>
     </div>
@@ -207,11 +199,17 @@ body {
 <!-- Funcion XML -->
     <script>
 		function XMLFunction(){
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+
+            // Verificar si los campos están vacíos
+            if (email === '' || password === '') {
+                alert('Por favor, completa todos los campos');
+                return;
+            }
 			var xml = '' +
 				'\<\?xml version="1.0" encoding="UTF-8"\?\>' +
 				'<root>' +
-				'<name>' + document.getElementById('name').value + '</name>' +
-				'<tel>' + document.getElementById('tel').value + '</tel>' +
 				'<email>' + document.getElementById('email').value + '</email>' +
 				'<password>' + document.getElementById('password').value + '</password>' +
 			'</root>';
