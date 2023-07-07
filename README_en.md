@@ -81,7 +81,7 @@ This script will download and install all the necessary dependencies, create the
 | PHP Insecure Deseralization | http://insecuredeseralizationphp.local/    |Functional                     |
 | Insecure Direct Object Reference (iDOR) | http://idor.local/      |Functional                            |
 | Server-Side Template Injection (SSTI) | http://ssti.local         |Functional                            |
-| Client-Side Template Injection (CSTI)| - | - |
+| Client-Side Template Injection (CSTI)| http://csti.local         |Functional                            |
 | NoSQL Injections| - | - |
 | LDAP Injections| - | - |
 | API's Abuse| - | - |
