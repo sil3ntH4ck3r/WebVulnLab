@@ -60,7 +60,7 @@ a {
     <?php $nombre_producto = $_POST['nombre_producto']; ?>
     <h1>Confirmación de correo electrónico</h1>
     <p>¡Gracias por confiar en nosotros!</p>
-    <p>Se ha enviado un correo electrónico con las instucciones para continuar (<?php echo "$email" ?>)</p>
+    <p>Se le enviará un correo electrónico cuando volvamos a estar disponibles (<?php echo "$email" ?>)</p>
     <a href="http://blindsqli.local/">Volver a la página principal</a>
  </div>
 </body>

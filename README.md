@@ -72,7 +72,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | LaTeX Injection      | http://latexinjection.local/               |Funcional                              |
 | ShellShock           | http://shellshock.local                    |Funcional                              |
 | SQL Injection (Error)| http://sqli.local/                         |Funcional                              |
-| Blind SQL Injection (Time)| http://blindsqli.local/              |Arreglando, para que se pueda hacer la inyección manual                              |
+| Blind SQL Injection (Time)| http://blindsqli.local/               |Funcional                              |
 | Domain Zone Transfer | http://domainzonetransfer.local/           |Funcional                              |
 | CSRF                 | http://csrf.local                          |Funcional                              |
 | SSRF                 | http://ssrf.local/                         |Funcional                              |
