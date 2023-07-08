@@ -29,6 +29,7 @@ containers=(
   "htmlinjection_v2;$PWD/htmlinjection;8016:80"
   "ssti_v2;$PWD/ssti;8018:80"
   "csti_v2;$PWD/csti;8019:80"
+  "nosqlinjection_v2;$PWD/nosqlinjection;8020:80"
 )
 database=(
     "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
