@@ -81,8 +81,8 @@ This script will download and install all the necessary dependencies, create the
 | PHP Insecure Deseralization | http://insecuredeseralizationphp.local/    |Functional                     |
 | Insecure Direct Object Reference (iDOR) | http://idor.local/      |Functional                            |
 | Server-Side Template Injection (SSTI) | http://ssti.local         |Functional                            |
-| Client-Side Template Injection (CSTI)| http://csti.local         |Functional                            |
-| NoSQL Injections| - | - |
+| Client-Side Template Injection (CSTI)| http://csti.local          |Functional                            |
+| NoSQL Injections     | http://nosqlinjection.local                |In development (but can be tested)    |
 | LDAP Injections| - | - |
 | API's Abuse| - | - |
 | File Upload Abuse| - | - |
@@ -91,7 +91,7 @@ This script will download and install all the necessary dependencies, create the
 | Open Redirect| - | - |
 | WebDAV| - | - |
 | SquidProxies| - | - |
-| intercambio de recursos de origen cruzado (CORS)| - | - |
+| Cross-Origin Resource Sharing (CORS)| - | - |
 | SQL TruncationSession Puzzling / Session Fixation / Session Variable Overloading| - | - |
 | Json Web Token| - | - |
 | Race Condition| - | - |
@@ -184,6 +184,28 @@ If you still encounter the "Service Unavailable" error after restarting the cont
 4. **Request assistance through the "Issues" section of the project:**
 
    - If you have tried the above solutions and still cannot resolve the issue, you can seek help through the "Issues" section in the project's GitHub repository. Provide a detailed description of the problem you are facing, including any relevant error messages, and provide information about your runtime environment (operating system, software versions, etc.).
+
+### Proxy Error
+
+If when entering the domain it shows the message "Proxy Error", it is likely that the corresponding container does not have the Apache service turned on. Here are some possible solutions:
+
+1. **Turn on Apache service**
+
+    - Inside the container, execute the following command to verify if the Apache service is running:
+
+        ```
+        service apache2 status
+        ```
+      This command will provide information about the status of the Apache service within the container.
+
+    - If the service is stopped, you can start it by executing:
+
+        ```
+        service apache2 start
+        ```
+      This command will start the Apache service within the container.
+
+    **NOTE:** To execute commands within a container and obtain an interactive console, you can use the command `docker exec -it <container_name> /bin/bash`. When you have finished executing commands in the container, you can exit the interactive console by typing `exit`.
 
 ## Contribute <a name="contribute"></a>
 

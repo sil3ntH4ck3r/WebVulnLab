@@ -83,7 +83,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Insecure Direct Object Reference (iDOR) | http://idor.local/      |Funcional                              |
 | Server-Side Template Injection (SSTI) | http://ssti.local         |Funcional                              |
 | Client-Side Template Injection (CSTI)| http://csti.local          |Funcional                              |
-| NoSQL Injections     | -                                               |                  -                    |
+| NoSQL Injections     | http://nosqlinjection.local                |Desárrollandose (pero se puede probar) |
 | LDAP Injections| - | - |
 | API's Abuse| - | - |
 | File Upload Abuse| - | - |
@@ -92,7 +92,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Open Redirect| - | - |
 | WebDAV| - | - |
 | SquidProxies| - | - |
-| intercambio de recursos de origen cruzado (CORS)| - | - |
+| Intercambio de recursos de origen cruzado (CORS)| - | - |
 | SQL TruncationSession Puzzling / Session Fixation / Session Variable Overloading| - | - |
 | Json Web Token| - | - |
 | Race Condition| - | - |
@@ -183,6 +183,27 @@ Si después de reiniciar el contenedor aún enfrentas el error "Service Unavaila
 4. **Solicitar ayuda a través de la sección "Issues" del proyecto:**
 
 Si has intentado las soluciones anteriores y aún no puedes resolver el problema, puedes pedir ayuda a través de la sección de "Issues" en el repositorio de GitHub del proyecto. Describe detalladamente el problema que estás enfrentando, incluyendo cualquier mensaje de error relevante, y proporciona información sobre tu entorno de ejecución (sistema operativo, versiones de software, etc.).
+
+### Error de Proxy
+
+Si al ingresar el dominio te muestra el mensaje "Proxy Error", es probable que el contenedor correspondiente no tenga el servicio Apahce encendido. Aquí hay algunas posibles soluciones:
+
+1. **Encender servicio Apache**
+
+    - Dentro del contenedor, ejecuta el siguiente comando para verificar si el servicio Apache está en funcionamiento:
+
+        ```
+        service apache2 status
+        ```
+
+    - Si el servicio está detenido, puedes iniciarlo ejecutando:
+
+        ```
+        service apache2 start
+        ```
+    **NOTA:** Para ejecutar comandos dentro de un contenedor y obtener una consola interactiva, puedes utilizar el comando `docker exec -it <nombre_del_contenedor> /bin/bash`. Cuando hayas terminado de ejecutar los comandos en el contenedor, puedes salir de la consola interactiva escribiendo `exit`.
+
+
 
 ## Contribuir <a name="contribuir"></a>
 
