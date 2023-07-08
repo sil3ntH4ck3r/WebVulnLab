@@ -20,9 +20,5 @@ RUN pecl install mongodb && docker-php-ext-enable mongodb
 # Crear directorio de datos y asignar permisos
 RUN mkdir -p /data/db && chown -R mongodb:mongodb /data/db
 
-# Iniciar servicio Apache
-
-RUN service apache2 start
-
 # Iniciar el servidor de MongoDB al ejecutar el contenedor
-CMD ["mongod", "--bind_ip_all", "--dbpath", "/data/db"]
+CMD service apache2 start && mongod --bind_ip_all --dbpath /data/db
