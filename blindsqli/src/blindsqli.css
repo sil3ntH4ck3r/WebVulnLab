@@ -25,7 +25,7 @@ h1 {
 body {
     font-family: Arial, sans-serif;
 }
-.producto {
+.usuario {
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 10px;
@@ -34,14 +34,14 @@ body {
     display: inline-block;
     vertical-align: top;
 }
-.productos-container {
+.usuarios-container {
     text-align: center;
 }
 
-.producto h2 {
+.usuario h2 {
     margin-top: 0;
 }
-.producto p {
+.usuario p {
     margin: 5px 0;
 }
 .precio {

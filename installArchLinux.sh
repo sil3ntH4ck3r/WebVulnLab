@@ -32,7 +32,7 @@ containers=(
 )
 database=(
     "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
-    #"blindsqli_db_v2;$PWD/blindsqli;8014:80;blindsqli_v2"
+    "blindsqli_db_v2;$PWD/blindsqli;8014:80;blindsqli_v2"
     "paddingoracleattack_db_v2;$PWD/paddingoracleattack;8007:80;paddingoracleattack_v2"
     "idor_db_v2;$PWD/idor;8017:80;idor_v2"
 )

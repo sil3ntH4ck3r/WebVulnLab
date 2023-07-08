@@ -2,8 +2,8 @@
 // Conexión a la base de datos
 $db = mysqli_connect("db", "usuario", "contraseña", "database");
 
-// Vaciar la tabla productos
-mysqli_query($db, "TRUNCATE TABLE productos");
+// Vaciar la tabla usuarios
+mysqli_query($db, "DROP TABLE usuarios");
 
 header("Location: index.php"); //redirigir al usuario a la página de inicio
 
