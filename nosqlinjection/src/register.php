@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset(
     // Insertar el documento en la base de datos
     $bulk = new MongoDB\Driver\BulkWrite();
     $bulk->insert($userDocument);
-    $manager->executeBulkWrite('test.users', $bulk);
+    $manager->executeBulkWrite('database.usuarios', $bulk);
 }
 
 // Mostrar el formulario de inserción
