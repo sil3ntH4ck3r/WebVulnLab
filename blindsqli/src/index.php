@@ -115,9 +115,9 @@ if (empty($busqueda)) {
     $result = mysqli_query($db, "SELECT * FROM usuarios WHERE id='$busqueda' LIMIT 1");
 }
 
-if ($result === false) {
+/*if ($result === false) {
     die("Error al obtener los usuarios: " . mysqli_error($db));
-}
+}*/
 
 echo '<div class="usuarios-container">';
 echo "<div id='counter' style='margin: auto;'>";

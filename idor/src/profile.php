@@ -53,6 +53,7 @@ $conn->close();
 <!DOCTYPE html>
 <html>
 <head>
+    <title>iDOR</title>
     <style>
         header {
             background-color: #333;

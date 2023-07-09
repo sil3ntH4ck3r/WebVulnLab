@@ -86,7 +86,7 @@ if (isset($_GET['new_password']) && isset($_GET['confirm_password'])) {
         footer {
             position: absolute;
             bottom: 0;
-            width: 100%;
+            width: 97.9vw;
             height: 50px;
             background-color: #333;
             color: #fff;

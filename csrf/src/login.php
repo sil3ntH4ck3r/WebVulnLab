@@ -84,7 +84,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         footer {
             position: absolute;
             bottom: 0;
-            width: 100%;
+            width: 97.9vw;
             height: 50px;
             background-color: #333;
             color: #fff;

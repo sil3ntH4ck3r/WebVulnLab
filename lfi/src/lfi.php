@@ -54,7 +54,7 @@
         <div class="container">
             <h2>Contacto</h2>
             <div class="contact-form">
-                <form action="submit-form.php" method="post">
+                <form action="#" method="post">
                     <input type="text" name="name" placeholder="Nombre Completo">
                     <input type="email" name="email" placeholder="Correo Electrónico">
                     <textarea name="message" placeholder="Mensaje"></textarea>
