@@ -82,9 +82,9 @@ This script will download and install all the necessary dependencies, create the
 | Insecure Direct Object Reference (iDOR) | http://idor.local/      |Functional                            |
 | Server-Side Template Injection (SSTI) | http://ssti.local         |Functional                            |
 | Client-Side Template Injection (CSTI)| http://csti.local          |Functional                            |
-| NoSQL Injections     | http://nosqlinjection.local                |In development (but can be tested)    |
-| LDAP Injections| - | - |
-| API's Abuse| - | - |
+| NoSQL Injections     | http://nosqlinjection.local                |Functional                            |
+| LDAP Injections      | -                                          |In development                        |
+| API's Abuse          | -                                          |In development                        |
 | File Upload Abuse| - | - |
 | Prototype Pollution| - | - |
 | Mass-Asignament Atack| - | - |

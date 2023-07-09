@@ -1,49 +1,43 @@
 <?php
 
-// Funcion para validar si tiene un ;. En caso de que lo tenga, la nota no sera valida
-	/* function validate() {
-		if (!$this->isValid) {
-			if (!empty($this->note) && strlen($this->note) > 5 && strpos($this->note, ';') === false) {
-				$this->isValid = true;
-			} else {
-				$this->output = "La nota no es válida.";
-				$this->isValid = false;
-			}
-		}
-	}*/
-
 	class noteSystem {
-		public $note = ""; // Contenido de la nota esta en blanco
-		public $isValid = false; // Por defecto la nota no es valida
-		public $output = ""; // Por defecto no hay ningun contenido que mostrar
+		public $note = "";
+		public $isValid = false;
+		public $output = "";
 	
 		function validate() {
 			if (!$this->isValid) {
-				if (!empty($this->note) && strlen($this->note) > 5) { // Valida que la nota al menos tenga 6 caracteres
-					$this->isValid = true; // En el caso de que sea asi, la nota sera valida
-				} else { // Sino, no sera valida
-					$this->output = "La nota no es válida. Asegúrate de que no esté vacía y tenga al menos 6 caracteres."; // Imprime mensaje de que la nota no es valida
-					$this->isValid = false; // Configura la variable, para que la nota no sea valida
+				if (!empty($this->note) && strlen($this->note) > 5 && strpos($this->note, ';') === false && strpos($this->note, '|') === false && strpos($this->note, '&') === false) {
+					$this->isValid = true;
+				} else {
+					$this->output = "La nota no es válida.";
+					$this->isValid = false;
 				}
 			}
 		}
 	
 		function save() {
-			if ($this->isValid) { // Solo gardara la nota si el valida
-				$this->output = shell_exec("echo Nota: $this->note >> note.txt"); // El conteneido que se ha introducido se guarda en el archivo note.txt
-				$this->output = file_get_contents("note.txt"); // Muestra el contenido de las notas anteriores
+			if ($this->isValid) {
+				$this->output = shell_exec("echo Nota: $this->note >> note.txt");
+				$this->output = file_get_contents("note.txt");
 			}
 		}
 	}
 	
 	if (isset($_POST['obj'])) {
-		$noteSystem = unserialize($_POST['obj']); // Unserializa lo que viaja por POST en el campo obj (object)
-		$noteSystem->validate(); // Valida que lo que ha deserializado sea correcto
-		$noteSystem->save(); // Y la guarda en el caso de que la validacion haya sido existosa
+		$noteSystemData = json_decode($_POST['obj'], true);
+		//var_dump($_POST['obj']);
+		if ($noteSystemData !== null) {
+			$noteSystem = new noteSystem();
+			$noteSystem->note = $noteSystemData['note'];
+			$noteSystem->isValid = $noteSystemData['isValid'];
+			$noteSystem->validate();
+			$noteSystem->save();
+		}
 	}
-
+	
 	if (isset($_POST['clear'])) {
-		file_put_contents('note.txt', ''); // Limpia en contenido del archivo note.txt, en el caso de que se haya presionado el boton de limpiar
+		file_put_contents('note.txt', '');
 	}
 	?>
 	
@@ -256,7 +250,8 @@
 	<script>
 		function submit_form() {
 			var note = document.forms["noteform"].note.value;
-			var object = "O:10:\"noteSystem\":1:{s:4:\"note\";s:" + note.length + ":\"" + note + "\";}";
+			var isValid = note.length > 5 && note.indexOf(';') === -1 && note.indexOf('|') === -1 && note.indexOf('&') === -1;
+			var object = JSON.stringify({ "note": note, "isValid": isValid });
 			document.forms["noteform"].obj.value = object;
 			document.getElementById('noteform').submit();
 		}

@@ -58,7 +58,7 @@
         footer {
             position: absolute;
             bottom: 0;
-            width: 100%;
+            width: 97.9vw; /* Cambio aquí */
             height: 50px;
             background-color: #333;
             color: #fff;

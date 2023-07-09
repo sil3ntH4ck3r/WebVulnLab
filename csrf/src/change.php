@@ -68,7 +68,7 @@ $username = $_SESSION['username'];
         footer {
             position: absolute;
             bottom: 0;
-            width: 100%;
+            width: 97.9vw;
             height: 50px;
             background-color: #333;
             color: #fff;
