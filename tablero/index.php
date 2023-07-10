@@ -111,7 +111,7 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
         <li>
             <?php
                 $processedName = processContainerName($container['Names'][0]);
-                if (strpos($processedName, '_db_') === false):
+                if (strpos($processedName, '_db_') === false && strpos($processedName, '_server') === false):
             ?>
                 <h2><a href="http://<?php echo $processedName; ?>.local" target="_blank"><?php echo $container['Names'][0]; ?></a></h2>
             <?php else: ?>
