@@ -27,6 +27,8 @@ containers=(
   "ssti_v2;$PWD/ssti;8018:80"
   "csti_v2;$PWD/csti;8019:80"
   "nosqlinjection_v2;$PWD/nosqlinjection;8020:80"
+  "ldap_server_v2;$PWD/ldapinjection/ldapserver;389:389"
+  "ldapinjection_v2;$PWD/ldapinjection/webserver;8021:80"
 )
 database=(
     "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
@@ -56,6 +58,69 @@ cat << "EOF"
 EOF
 echo "                              Created by sil3nth4ck3r"
 
+configure_ldap_files(){
+    for container in "${containers[@]}"; do
+
+            IFS=';' read -ra container_info <<< "$container"
+            container_name=${container_info[0]}
+            container_dir=${container_info[1]}
+            container_ports=${container_info[2]}
+
+            if [ "$container_name" == "ldap_server_v2" ]; then
+                echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Configurando archivos para LDAP Server${endColour}"
+                ldapadd -x -H ldap://localhost -D "cn=admin,dc=ldapinjection,dc=local" -w admin -f $PWD/ldapinjection/ldapserver/users.ldif
+                if [ $? -ne 0 ]; then
+                    echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al configurar users.ldif${endColour}"
+                else
+                    echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Configurado correctamente users.ldif${endColour}"
+                fi
+                ldapadd -x -D "cn=admin,dc=ldapinjection,dc=local" -w admin -f $PWD/ldapinjection/ldapserver/user1.ldif
+                if [ $? -ne 0 ]; then
+                    echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al configurar user1.ldif${endColour}"
+                else
+                    echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Configurado correctamente user1.ldif${endColour}"
+                fi
+            fi
+
+    done
+}
+
+configure_network() {
+
+    # Crear network
+    docker network create WebVulnLab-Network
+
+    # Añadir contenedores a la red WebVulnLab-Network
+    for container in "${containers[@]}"; do
+        container_info=($(echo "$container" | tr ';' ' '))
+        container_name=${container_info[0]%%_v2}
+        container_dir=${container_info[1]}
+        container_ports=${container_info[2]}
+
+        docker network connect WebVulnLab-Network $container_info     
+
+    done
+
+    for db_container in "${database[@]}"; do
+        db_container_info=($(echo "$db_container" | tr ';' ' '))
+        db_container_name=${db_container_info[0]%%_db_v2}
+        db_container_dir=${db_container_info[1]}
+        db_container_ports=${db_container_info[2]}
+        db_container_link=${db_container_info[3]}
+
+        docker network connect WebVulnLab-Network $db_container_info
+
+    done
+
+    if [ -s "$error_file" ]; then
+        echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Se encontraron errores. Por favor, revise el archivo $error_file para más detalles.${endColour}"
+    else
+        echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}WebVulnLab-Network configurada correctamente${endColour}"
+    fi
+
+    # Eliminar el archivo de errores si está vacío
+    [ -s "$error_file" ] || rm "$error_file"
+}
 # Función para crear archivo de virtual hosting
 
 setup_file_virtual_hosting() {
@@ -276,7 +341,11 @@ if [ "$hide_output" = "s" ]; then
             fi
 
             echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $container_name${endColour}"
-            sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name > /dev/null 2>&1
+            if [ "$container_name" == "ldapserver" ]; then
+                sudo docker run --name $container_name -d -v $container_dir/src:/var/lib/ldap -p $container_ports $container_name > /dev/null 2>&1
+            else
+                sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name > /dev/null 2>&1
+            fi
             if [ $? -ne 0 ]; then
                 echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor $container_name${endColour}"
             else
@@ -337,7 +406,11 @@ if [ "$hide_output" = "s" ]; then
             fi
 
             echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $container_name${endColour}"
-            sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name > /dev/null 2>&1
+            if [ "$container_name" == "ldapserver" ]; then
+                sudo docker run --name $container_name -d -v $container_dir/src:/var/lib/ldap -p $container_ports $container_name > /dev/null 2>&1
+            else
+                sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name > /dev/null 2>&1
+            fi
             if [ $? -ne 0 ]; then
                 echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor $container_name${endColour}"
                 exit 1;
@@ -403,7 +476,11 @@ else
             fi
 
             echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $container_name${endColour}"
-            sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name
+            if [ "$container_name" == "ldapserver" ]; then
+                sudo docker run --name $container_name -d -v $container_dir/src:/var/lib/ldap -p $container_ports $container_name
+            else
+                sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name
+            fi
             if [ $? -ne 0 ]; then
                 echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor $container_name${endColour}"
             else
@@ -464,7 +541,11 @@ else
             fi
 
             echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $container_name${endColour}"
-            sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name
+            if [ "$container_name" == "ldapserver" ]; then
+                sudo docker run --name $container_name -d -v $container_dir/src:/var/lib/ldap -p $container_ports $container_name
+            else
+                sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name
+            fi
             if [ $? -ne 0 ]; then
                 echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al iniciar el contenedor $container_name${endColour}"
                 exit 1;
@@ -510,3 +591,9 @@ else
     fi
 
 fi
+# Configurar archivos LDAP Server
+
+configure_ldap_files
+
+# Agregar contenedores a la red
+configure_network

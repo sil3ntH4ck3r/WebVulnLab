@@ -84,7 +84,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Server-Side Template Injection (SSTI) | http://ssti.local         |Funcional                              |
 | Client-Side Template Injection (CSTI)| http://csti.local          |Funcional                              |
 | NoSQL Injections     | http://nosqlinjection.local                |Funcional                              |
-| LDAP Injections      | -                                          |Desárrollandose                        |
+| LDAP Injections      | -                                          |Desárrollandose (pero se puede probar) |
 | API's Abuse          | -                                          |Desárrollandose                        |
 | File Upload Abuse| - | - |
 | Prototype Pollution| - | - |

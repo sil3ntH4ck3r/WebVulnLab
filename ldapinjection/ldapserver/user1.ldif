@@ -1,0 +1,7 @@
+dn: uid=user1,ou=users,dc=ldapinjection,dc=local
+objectClass: top
+objectClass: account
+objectClass: simpleSecurityObject
+userPassword: password1
+uid: user1
+description: User account
