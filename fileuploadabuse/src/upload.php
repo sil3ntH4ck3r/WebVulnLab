@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Verificar la extensión del archivo
         $file_extension = strtolower(pathinfo($resume['name'], PATHINFO_EXTENSION));
         if (in_array($file_extension, $blacklist)) {
-            echo '<script>alert("No se permiten CV con la extensión $file_extension.");</script>';
+            echo '<script>alert("Solo se permite PDF.");</script>';
         } else {
             // Verificar los primeros bytes del archivo
             $handle = fopen($resume['tmp_name'], 'rb');
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $mime_type = $resume['type'];
             if ($mime_type == 'application/pdf') {
                 if (strpos($magic_bytes, '<?php') !== false || strpos($magic_bytes, '<?=') !== false) {
-                    echo "<script>alert('No se permiten 'CV's PHP.');</script>";
+                    echo "<script>alert('No se permiten CV en PHP.');</script>";
                 } else {
                     $upload_dir = 'pdf/';
                     $upload_file = $upload_dir . basename($resume['name']);
