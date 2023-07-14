@@ -83,11 +83,11 @@ This script will download and install all the necessary dependencies, create the
 | Server-Side Template Injection (SSTI) | http://ssti.local         |Functional                            |
 | Client-Side Template Injection (CSTI)| http://csti.local          |Functional                            |
 | NoSQL Injections     | http://nosqlinjection.local                |Functional                            |
-| LDAP Injections      | -                                          |In development (but can be tested)    |
-| API's Abuse          | -                                          |In development                        |
-| File Upload Abuse| - | - |
-| Prototype Pollution| - | - |
-| Mass-Asignament Atack| - | - |
+| LDAP Injections      | http://ldapinjection.local                 |Functional                            |
+| API's Abuse          | http://apiabuse.local                      |Functional                            |
+| File Upload Abuse    | http://fileuploadabuse.local               |Functional                            |
+| Prototype Pollution  | -                                          |In development                        |
+| Mass-Asignament Atack| -                                          |In development                        |
 | Open Redirect| - | - |
 | WebDAV| - | - |
 | SquidProxies| - | - |

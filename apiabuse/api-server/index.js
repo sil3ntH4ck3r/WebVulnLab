@@ -7,7 +7,7 @@ const { Pool } = require('pg');
 
 const pool = new Pool({
   user: 'admin',
-  host: 'app-db',
+  host: 'apiabuse_db_v2',
   database: 'apiabuse_database',
   password: 'admin',
   port: 5432,
@@ -18,7 +18,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const mailTransporter = nodemailer.createTransport({
-  host: 'mailhog-container', // La dirección IP de tu servidor MailHog
+  host: 'mail_v2', // La dirección IP de tu servidor MailHog
   port: 1025, // El puerto de tu servidor MailHog
 });
 

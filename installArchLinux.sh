@@ -30,6 +30,7 @@ containers=(
   "ssti_v2;$PWD/ssti;8018:80"
   "csti_v2;$PWD/csti;8019:80"
   "nosqlinjection_v2;$PWD/nosqlinjection;8020:80"
+  "fileuploadabuse_v2;$PWD/fileuploadabuse;8024:80"
 )
 database=(
     "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"

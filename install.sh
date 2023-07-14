@@ -8,33 +8,34 @@ hide_output="s"
 # Arrays
 
 containers=(
-  "menu_v2;$PWD/menu;8080:80"
-  "lfi_v2;$PWD/lfi;8000:80"
-  "csrf_v2;$PWD/csrf;8001:80"
-  "blindxxe_v2;$PWD/blindxxe;8002:80"
-  "xxe_v2;$PWD/xxe;8003:80"
-  "xss_v2;$PWD/xss;8004:80"
-  "domainzonetransfer_v2;$PWD/domainzonetransfer;53:53/udp -p 53:53/tcp"
-  "ssrf_v2;$PWD/ssrf;8006:80"
-  "typejuggling_v2;$PWD/typejuggling;8008:80"
-  "rfi_v2;$PWD/rfi;8009:80"
-  "insecuredeseralizationphp_v2;$PWD/insecuredeseralizationphp;8010:80"
-  "latexinjection_v2;$PWD/latexinjection;8011:80"
-  "xpathinjection_v2;$PWD/xpathinjection;8012:80"
-  "shellshock_v2;$PWD/shellshock;8013:80"
-  "blindxss_v2;$PWD/blindxss;8015:80"
-  "htmlinjection_v2;$PWD/htmlinjection;8016:80"
-  "ssti_v2;$PWD/ssti;8018:80"
-  "csti_v2;$PWD/csti;8019:80"
-  "nosqlinjection_v2;$PWD/nosqlinjection;8020:80"
+  #"menu_v2;$PWD/menu;8080:80"
+  #"lfi_v2;$PWD/lfi;8000:80"
+  #"csrf_v2;$PWD/csrf;8001:80"
+  #"blindxxe_v2;$PWD/blindxxe;8002:80"
+  #"xxe_v2;$PWD/xxe;8003:80"
+  #"xss_v2;$PWD/xss;8004:80"
+  #"domainzonetransfer_v2;$PWD/domainzonetransfer;53:53/udp -p 53:53/tcp"
+  #"ssrf_v2;$PWD/ssrf;8006:80"
+  #"typejuggling_v2;$PWD/typejuggling;8008:80"
+  #"rfi_v2;$PWD/rfi;8009:80"
+  #"insecuredeseralizationphp_v2;$PWD/insecuredeseralizationphp;8010:80"
+  #"latexinjection_v2;$PWD/latexinjection;8011:80"
+  #"xpathinjection_v2;$PWD/xpathinjection;8012:80"
+  #"shellshock_v2;$PWD/shellshock;8013:80"
+  #"blindxss_v2;$PWD/blindxss;8015:80"
+  #"htmlinjection_v2;$PWD/htmlinjection;8016:80"
+  #"ssti_v2;$PWD/ssti;8018:80"
+  #"csti_v2;$PWD/csti;8019:80"
+  #"nosqlinjection_v2;$PWD/nosqlinjection;8020:80"
   "ldap_server_v2;$PWD/ldapinjection/ldapserver;389:389"
   "ldapinjection_v2;$PWD/ldapinjection/webserver;8021:80"
+  "fileuploadabuse_v2;$PWD/fileuploadabuse;8024:80"
 )
 database=(
-    "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
-    "blindsqli_db_v2;$PWD/blindsqli;8014:80;blindsqli_v2"
-    "paddingoracleattack_db_v2;$PWD/paddingoracleattack;8007:80;paddingoracleattack_v2"
-    "idor_db_v2;$PWD/idor;8017:80;idor_v2"
+    #"sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
+    #"blindsqli_db_v2;$PWD/blindsqli;8014:80;blindsqli_v2"
+    #"paddingoracleattack_db_v2;$PWD/paddingoracleattack;8007:80;paddingoracleattack_v2"
+    #"idor_db_v2;$PWD/idor;8017:80;idor_v2"
 )
 
 # Colores
@@ -143,14 +144,14 @@ setup_file_virtual_hosting() {
         echo
         echo "<VirtualHost *:80>"
         echo "    ServerName apiabuse.local"
-        echo "    ProxyPass / http://localhost:8022"
-        echo "    ProxyPassReverse / http://localhost:8022"
+        echo "    ProxyPass / http://localhost:8022/"
+        echo "    ProxyPassReverse / http://localhost:8022/"
         echo "</VirtualHost>"
         echo
         echo "<VirtualHost *:80>"
         echo "    ServerName mail.local"
-        echo "    ProxyPass / http://localhost:8023"
-        echo "    ProxyPassReverse / http://localhost:8023"
+        echo "    ProxyPass / http://localhost:8023/"
+        echo "    ProxyPassReverse / http://localhost:8023/"
         echo "</VirtualHost>"
         echo
     } >> "$config_file" 2>> "$error_file"
@@ -353,10 +354,8 @@ if [ "$hide_output" = "s" ]; then
             fi
 
             echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $container_name${endColour}"
-            if [ "$container_name" == "apiabuse_v2" ]; then
-                sudo docker run --name $container_name -d -v $container_dir/src/public:/var/www/html -p $container_ports $container_name > /dev/null 2>&1
-            elif [ "$container_name" == "ldap_server_v2" ]; then
-                sudo docker run --name $container_name -d -v $container_dir/src:/var/lib/ldap -p $container_ports $container_name > /dev/null 2>&1
+            if [ "$container_name" == "ldap_server_v2" ]; then
+                sudo docker run --name $container_name -d -p $container_ports $container_name > /dev/null 2>&1
             else
                 sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name > /dev/null 2>&1
             fi
@@ -420,10 +419,8 @@ if [ "$hide_output" = "s" ]; then
             fi
 
             echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $container_name${endColour}"
-            if [ "$container_name" == "apiabuse_v2" ]; then
-                sudo docker run --name $container_name -d -v $container_dir/src/public:/var/www/html -p $container_ports $container_name > /dev/null 2>&1
-            elif [ "$container_name" == "ldap_server_v2" ]; then
-                sudo docker run --name $container_name -d -v $container_dir/src:/var/lib/ldap -p $container_ports $container_name > /dev/null 2>&1
+            if [ "$container_name" == "ldap_server_v2" ]; then
+                sudo docker run --name $container_name -d -p $container_ports $container_name > /dev/null 2>&1
             else
                 sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name > /dev/null 2>&1
             fi
@@ -492,10 +489,8 @@ else
             fi
 
             echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $container_name${endColour}"
-            if [ "$container_name" == "apiabuse_v2" ]; then
-                sudo docker run --name $container_name -d -v $container_dir/src/public:/var/www/html -p $container_ports $container_name
-            elif [ "$container_name" == "ldap_server_v2" ]; then
-                sudo docker run --name $container_name -d -v $container_dir/src:/var/lib/ldap -p $container_ports $container_name
+            if [ "$container_name" == "ldap_server_v2" ]; then
+                sudo docker run --name $container_name -d -p $container_ports $container_name
             else
                 sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name
             fi
@@ -559,10 +554,8 @@ else
             fi
 
             echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $container_name${endColour}"
-           if [ "$container_name" == "apiabuse_v2" ]; then
-                sudo docker run --name $container_name -d -v $container_dir/src/public:/var/www/html -p $container_ports $container_name
-            elif [ "$container_name" == "ldap_server_v2" ]; then
-                sudo docker run --name $container_name -d -v $container_dir/src:/var/lib/ldap -p $container_ports $container_name
+           if [ "$container_name" == "ldap_server_v2" ]; then
+                sudo docker run --name $container_name -d -p $container_ports $container_name
             else
                 sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name
             fi

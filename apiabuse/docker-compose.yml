@@ -39,7 +39,7 @@ services:
   mailhog:
     image: mailhog/mailhog
     ports:
-      - 8022:8025
+      - 8023:8025
     networks:
       - app-network
     container_name: mail_v2
