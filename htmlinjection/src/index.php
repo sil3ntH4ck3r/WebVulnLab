@@ -50,7 +50,7 @@
 
             <?php
                 function sanitizeInput($input) {
-                    return strip_tags($input, '<br><p><a><h1><h2><h3><h4><h5><h6><ul><ol><li><strong><em><img>');
+                    return strip_tags($input, '<br><p><a><h1><h2><h3><h4><h5><h6><ul><ol><li><strong><em>');
                 }
 
                 if (isset($_POST['delete'])) {
