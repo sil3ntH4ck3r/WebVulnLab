@@ -1,0 +1,49 @@
+version: '3'
+services:
+  api:
+    build:
+      context: ./api-server
+      dockerfile: Dockerfile
+    ports:
+      - 3001:3001
+    depends_on:
+      - db
+    networks:
+      - app-network
+    container_name: api_server_v2
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: apiabuse_database
+    ports:
+      - 5432:5432
+    networks:
+      - app-network
+    container_name: apiabuse_db_v2
+
+  web:
+    build:
+      context: ./apiabuse
+      dockerfile: Dockerfile
+    ports:
+      - 8022:3000
+    volumes:
+      - ./apiabuse/src:/app/src
+    networks:
+      - app-network
+    container_name: apiabuse_v2
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 8022:8025
+    networks:
+      - app-network
+    container_name: mail_v2
+
+networks:
+  app-network:
+    driver: bridge

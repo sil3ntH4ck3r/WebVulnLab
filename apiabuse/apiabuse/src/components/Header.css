@@ -1,0 +1,44 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+  }
+  
+  .nav-right {
+    margin-left: auto;
+  }
+  
+  nav a.button {
+    display: inline-block;
+    padding: 10px;
+    background-color: #fff;
+    color: #007bff;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-left: 20px;
+  }
+  
+  h1 {
+    font-size: 30px;
+    margin: 0;
+    line-height: 20px; /* Ajusta la altura del encabezado */
+  }
+
+  .logo {
+    font-size: 30px;
+    margin: 0;
+    line-height: 20px;
+    color: #fff;
+    text-decoration: none;
+  }

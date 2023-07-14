@@ -1,0 +1,40 @@
+.dashboard-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.dashboard-card {
+  width: 300px;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: -150px; /* Ajusta la posición vertical del contenedor */
+}
+
+.dashboard-input {
+  width: 93%;
+  max-width: 650px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.dashboard-button {
+  margin-bottom: 10px;
+}
+
+.dashboard-label {
+  font-weight: bold;
+}
+.dashboard-message {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 50px;
+}
+  
+  

@@ -141,6 +141,18 @@ setup_file_virtual_hosting() {
         echo "    ProxyPassReverse / http://localhost/tablero/"
         echo "</VirtualHost>"
         echo
+        echo "<VirtualHost *:80>"
+        echo "    ServerName apiabuse.local"
+        echo "    ProxyPass / http://localhost:8022"
+        echo "    ProxyPassReverse / http://localhost:8022"
+        echo "</VirtualHost>"
+        echo
+        echo "<VirtualHost *:80>"
+        echo "    ServerName mail.local"
+        echo "    ProxyPass / http://localhost:8023"
+        echo "    ProxyPassReverse / http://localhost:8023"
+        echo "</VirtualHost>"
+        echo
     } >> "$config_file" 2>> "$error_file"
 
     # Añadir las entradas de VirtualHost
@@ -268,7 +280,7 @@ configure_virtual_host() {
         hosts_entries+=("$db_container_name.local")
     done
 
-    echo "127.0.0.1 ${hosts_entries[*]} tablero.local" >> /etc/hosts
+    echo "127.0.0.1 ${hosts_entries[*]} tablero.local apiabuse.local mail.local" >> /etc/hosts
 
 
     if [ $? -ne 0 ]; then
@@ -341,7 +353,9 @@ if [ "$hide_output" = "s" ]; then
             fi
 
             echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $container_name${endColour}"
-            if [ "$container_name" == "ldapserver" ]; then
+            if [ "$container_name" == "apiabuse_v2" ]; then
+                sudo docker run --name $container_name -d -v $container_dir/src/public:/var/www/html -p $container_ports $container_name > /dev/null 2>&1
+            elif [ "$container_name" == "ldap_server_v2" ]; then
                 sudo docker run --name $container_name -d -v $container_dir/src:/var/lib/ldap -p $container_ports $container_name > /dev/null 2>&1
             else
                 sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name > /dev/null 2>&1
@@ -406,7 +420,9 @@ if [ "$hide_output" = "s" ]; then
             fi
 
             echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $container_name${endColour}"
-            if [ "$container_name" == "ldapserver" ]; then
+            if [ "$container_name" == "apiabuse_v2" ]; then
+                sudo docker run --name $container_name -d -v $container_dir/src/public:/var/www/html -p $container_ports $container_name > /dev/null 2>&1
+            elif [ "$container_name" == "ldap_server_v2" ]; then
                 sudo docker run --name $container_name -d -v $container_dir/src:/var/lib/ldap -p $container_ports $container_name > /dev/null 2>&1
             else
                 sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name > /dev/null 2>&1
@@ -476,7 +492,9 @@ else
             fi
 
             echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $container_name${endColour}"
-            if [ "$container_name" == "ldapserver" ]; then
+            if [ "$container_name" == "apiabuse_v2" ]; then
+                sudo docker run --name $container_name -d -v $container_dir/src/public:/var/www/html -p $container_ports $container_name
+            elif [ "$container_name" == "ldap_server_v2" ]; then
                 sudo docker run --name $container_name -d -v $container_dir/src:/var/lib/ldap -p $container_ports $container_name
             else
                 sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name
@@ -541,7 +559,9 @@ else
             fi
 
             echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Iniciando docker $container_name${endColour}"
-            if [ "$container_name" == "ldapserver" ]; then
+           if [ "$container_name" == "apiabuse_v2" ]; then
+                sudo docker run --name $container_name -d -v $container_dir/src/public:/var/www/html -p $container_ports $container_name
+            elif [ "$container_name" == "ldap_server_v2" ]; then
                 sudo docker run --name $container_name -d -v $container_dir/src:/var/lib/ldap -p $container_ports $container_name
             else
                 sudo docker run --name $container_name -d -v $container_dir/src:/var/www/html -p $container_ports $container_name
@@ -591,9 +611,12 @@ else
     fi
 
 fi
-# Configurar archivos LDAP Server
+# 
 
+# Configurar archivos LDAP Server
 configure_ldap_files
 
 # Agregar contenedores a la red
 configure_network
+
+docker-compose -f $PWD/apiabuse/docker-compose.yml up
