@@ -8,6 +8,7 @@ import Dashboard from './components/Dashboard';
 import ChangePassword from './components/ChangePassword';
 import Shop from './components/Shop';
 import Home from './components/Home';
+import AdminDashboard from './components/AdminDashboard';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/changePassword" element={<ChangePassword />} />
         <Route path="/Shop" element={<Shop />} />
+        <Route path="/adminDashboard" element={<AdminDashboard />} />
       </Routes>
       <Footer />
     </Router>
