@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototype Pollution</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <header class="header">
+    <h1 class="header__title">Centro de Investigación Nacional (CIN)</h1>
+  </header>
+
+  <main class="main">
+    <section class="section section--password">
+      <h2 class="section__title">Introducir Contraseña</h2>
+      <p class="section__description">Para acceder a nuestros últimos avances, necesitará introducir la contraseña que hemos proporcionado exclusivamente a un selecto grupo de investigadores colaboradores. Esta contraseña es la clave para desbloquear información confidencial y valiosa. Si no pertenece a este grupo, le rogamos que se retire de esta página.</p>
+      <form id="password-form" action="/submit-password" method="POST" class="form form--password">
+        <label for="password" class="form__label">Contraseña:</label>
+        <input type="password" id="password" name="password" required class="form__input">
+        <button type="submit" class="form__button">Comprobar contraseña</button>
+      </form>
+    </section>
+
+    <section class="section section--content" style="display:none;">
+        <h2 class="section__title">Contenido protegido</h2>
+        <p class="section__description">Este es el contenido protegido que solo se muestra después de ingresar una contraseña válida.</p>
+        <ul class="section__list">
+          <li class="section__item">Descubrimos una nueva especie de planta que puede sobrevivir en condiciones extremas de sequía.</li>
+          <li class="section__item">Desarrollamos un nuevo método para detectar la presencia de contaminantes en el agua.</li>
+          <li class="section__item">Encontramos evidencia de vida microbiana en una región del océano que se creía estéril.</li>
+        </ul>
+      </section>
+  </main>
+
+  <script>
+    const passwordForm = document.getElementById('password-form');
+    const contentSection = document.querySelector('.section--content');
+    const passwordSection = document.querySelector('.section--password');
+
+    passwordForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const password = document.getElementById('password').value;
+
+      // Enviar el Contraseña al servidor
+      fetch('/submit-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ password: password })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.message === 'Contraseña correcta') {
+          // Mostrar el contenido protegido
+          contentSection.style.display = 'block';
+          // Ocultar el formulario de la Contraseña
+          passwordSection.style.display = 'none';
+        }
+        alert(data.message);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    });
+  </script>
+</body>
+<footer>
+    <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer">CC BY-NC-SA 4.0
+</footer>
+</html>
