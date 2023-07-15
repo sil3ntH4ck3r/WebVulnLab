@@ -36,7 +36,7 @@
 }
 
 .product-card button {
-  background-color: #4caf50;
+  background-color: #333;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -45,7 +45,7 @@
 }
 
 .product-card button:hover {
-  background-color: #8bc08d;
+  background-color: #434343;
 }
 
 .alert {
