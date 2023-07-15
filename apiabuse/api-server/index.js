@@ -54,14 +54,18 @@ app.post('/api/v2/register', async (req, res) => {
 });
 
 app.post('/api/v2/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, role } = req.body;
+
+  // Asignar el valor "user" al campo role si no se proporciona
+  const userRole = role || 'user';
+
   try {
     const result = await pool.query('SELECT * FROM users WHERE email = $1 AND password = $2', [email, password]);
     if (result.rows.length > 0) {
       // El inicio de sesión es exitoso
       const user = result.rows[0];
-      const token = jwt.sign({ userId: user.id, email: user.email }, 'secreto', { expiresIn: '1h' }); // Genera el token JWT
-      res.status(200).json({ message: 'Inicio de sesión exitoso', token });
+      const token = jwt.sign({ userId: user.id, email: user.email, role: userRole }, 'secreto', { expiresIn: '1h' }); // Genera el token JWT incluyendo el campo role
+      res.status(200).json({ message: 'Inicio de sesión exitoso', token, role: userRole });
     } else {
       // Credenciales inválidas
       res.status(401).json({ error: 'Credenciales inválidas' });
@@ -72,6 +76,11 @@ app.post('/api/v2/login', async (req, res) => {
 });
 
 app.get('/api/v2/user', async (req, res) => {
+  if (!req.headers.authorization) {
+    res.status(401).json({ error: 'Falta el encabezado de autorización' });
+    return;
+  }
+
   const token = req.headers.authorization.split(' ')[1]; // Obtén el token del encabezado de autorización
   try {
     const decoded = jwt.verify(token, 'secreto'); // Verifica y decodifica el token JWT
@@ -235,6 +244,36 @@ app.post('/api/v1/purchase', async (req, res) => {
     res.status(401).json({ error: 'Token inválido' });
   }
 })
+
+app.get('/api/v1/admin', async (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    res.status(401).json({ error: 'Falta el encabezado de autorización' });
+    return;
+  }
+
+  const token = authHeader.split(' ')[1];
+
+  try {
+    const decoded = jwt.verify(token, 'secreto'); // Reemplaza 'secreto' con tu clave secreta de JWT
+
+    if (decoded.role !== 'admin') {
+      res.status(403).json({ error: 'Acceso denegado' });
+      return;
+    }
+  } catch (error) {
+    res.status(401).json({ error: 'Token inválido' });
+    return;
+  }
+
+  try {
+    const result = await pool.query('SELECT * FROM users');
+    res.status(200).json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 async function initializeDatabase() {
   try {

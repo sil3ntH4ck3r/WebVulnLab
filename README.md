@@ -85,10 +85,9 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Client-Side Template Injection (CSTI)| http://csti.local          |Funcional                              |
 | NoSQL Injections     | http://nosqlinjection.local                |Funcional                              |
 | LDAP Injections      | http://ldapinjection.local                 |Functional                             |
-| API's Abuse          | http://apiabuse.local                      |Funcional                              |
+| API's Abuse y Mass-Asignament Attack| http://apiabuse.local                      |Funcional                              |
 | File Upload Abuse    | http://fileuploadabuse.local               |Funcional                              |
 | Prototype Pollution  | http://prototypepollution.local            |Funcional                              |
-| Mass-Asignament Atack| -                                          |En desarrollo                          |
 | Open Redirect| - | - |
 | WebDAV| - | - |
 | SquidProxies| - | - |
