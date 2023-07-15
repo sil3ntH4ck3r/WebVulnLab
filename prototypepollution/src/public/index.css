@@ -1,0 +1,126 @@
+/* Estilos generales */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    overflow-y: scroll;
+  }
+  
+  /* Estilos del encabezado */
+  .header {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+  
+  .header__title {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  /* Estilos del contenido principal */
+  .main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+  
+  /* Estilos de las secciones */
+  .section {
+    max-width: 600px;
+    margin: 2rem;
+    padding: 2rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .section__title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .section__description {
+    margin-bottom: 2rem;
+  }
+  
+  /* Estilos de los formularios */
+  .form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form__label {
+    margin-bottom: 0.5rem;
+  }
+  
+  .form__input {
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  .form__button {
+    padding: 0.5rem 1rem;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .form__button:hover {
+    background-color: #474545;
+  }
+  
+  /* Estilos del contenido protegido */
+  .section--content {
+    background-color: #f0f0f0;
+    text-align: center;
+  }
+  
+  /* Estilos para el footer */
+  footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  
+  footer p {
+    margin: 0;
+  }
+  
+  footer a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  footer a:hover {
+    text-decoration: underline;
+  }

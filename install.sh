@@ -30,6 +30,7 @@ containers=(
   "ldap_server_v2;$PWD/ldapinjection/ldapserver;389:389"
   "ldapinjection_v2;$PWD/ldapinjection/webserver;8021:80"
   "fileuploadabuse_v2;$PWD/fileuploadabuse;8024:80"
+  "prototypepollution_v2;$PWD/prototypepollution;8025:3000"
 )
 database=(
     "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"

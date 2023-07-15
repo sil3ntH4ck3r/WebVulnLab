@@ -87,7 +87,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | LDAP Injections      | http://ldapinjection.local                 |Functional                             |
 | API's Abuse          | http://apiabuse.local                      |Funcional                              |
 | File Upload Abuse    | http://fileuploadabuse.local               |Funcional                              |
-| Prototype Pollution  | -                                          |En desarrollo                          |
+| Prototype Pollution  | http://prototypepollution.local            |Funcional                              |
 | Mass-Asignament Atack| -                                          |En desarrollo                          |
 | Open Redirect| - | - |
 | WebDAV| - | - |
