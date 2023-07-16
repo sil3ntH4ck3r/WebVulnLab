@@ -21,6 +21,11 @@ In this new version, you will find a more attractive and user-friendly interface
 
 - docker (command to install docker on Kali Linux: `sudo apt-get install docker.io`)
 - php
+- Git: Make sure you have Git installed on your system. You can check if Git is installed by running the following command in the terminal:
+```shell
+git --version
+```
+If Git is not installed, you can follow the installation instructions provided [here](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
 ## Installation <a name="installation"></a>
 
@@ -104,14 +109,6 @@ Note that it is still in development, and not all containers are working correct
 ## Project Update <a name="update"></a>
 
 You can use the following script to check and apply updates to the project from the console.
-
-### Requirements
-
-- Git: Make sure you have Git installed on your system. You can check if Git is installed by running the following command in the terminal:
-```shell
-git --version
-```
-If Git is not installed, you can follow the installation instructions provided [here](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
 ### Steps to Update the Project
 
