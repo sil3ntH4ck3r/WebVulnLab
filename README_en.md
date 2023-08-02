@@ -64,37 +64,37 @@ This script will download and install all the necessary dependencies, create the
 
 | Docker               | Container Link                             |Status                                |
 |:---------------------|:-------------------------------------------|--------------------------------------|
-| Dashboard            | http://tablero.local                       |Functional                            |
+| Dashboard            | http://tablero.local/                      |Functional                            |
 | Main Server          | http://menu.local/                         |Functional                            |
 | LFI                  | http://lfi.local/                          |Functional                            |
 | Padding Oracle Attack| http://paddingoracleattack.local/          |Functional                            |
-| Type Juggling        | http://typejuggling.local                  |Functional                            |
-| Remote File Inclusion|http://rfi.local                            |Functional                            |
+| Type Juggling        | http://typejuggling.local/                 |Functional                            |
+| Remote File Inclusion|http://rfi.local/                           |Functional                            |
 | XSS                  | http://xss.local/                          |Functional                            |
 | XXE                  | http://xxe.local/                          |Functional                            |
 | XPath Injection      | http://xpathinjection.local/               |Functional                            |
 | LaTeX Injection      | http://latexinjection.local/               |Functional                            |
-| ShellShock           | http://shellshock.local                    |Functional                            |
+| ShellShock           | http://shellshock.local/                   |Functional                            |
 | SQL Injection (Error)| http://sqli.local/                         |Functional                            |
 | Blind SQL Injection (Time)| http://blindsqli.local/               |Functional                            |
 | Domain Zone Transfer | http://domainzonetransfer.local/           |Functional                            |
-| CSRF                 | http://csrf.local                          |Functional                            |
+| CSRF                 | http://csrf.local/                         |Functional                            |
 | SSRF                 | http://ssrf.local/                         |Functional                            |
-| Blind XXE            | http://blindxxe.local                      |Functional                            |
-| Blind XSS            | http://blindxss.local                      |Functional                            |
-| HTML Injection       | http://htmlinjection.local                 |Functional                            |
+| Blind XXE            | http://blindxxe.local/                     |Functional                            |
+| Blind XSS            | http://blindxss.local/                     |Functional                            |
+| HTML Injection       | http://htmlinjection.local/                |Functional                            |
 | PHP Insecure Deseralization | http://insecuredeseralizationphp.local/    |Functional                     |
 | Insecure Direct Object Reference (iDOR) | http://idor.local/      |Functional                            |
-| Server-Side Template Injection (SSTI) | http://ssti.local         |Functional                            |
-| Client-Side Template Injection (CSTI)| http://csti.local          |Functional                            |
-| NoSQL Injections     | http://nosqlinjection.local                |Functional                            |
-| LDAP Injections      | http://ldapinjection.local                 |Functional                            |
-| API's Abuse and Mass-Asignament Attack | http://apiabuse.local                      |Functional                            |
-| File Upload Abuse    | http://fileuploadabuse.local               |Functional                            |
-| Prototype Pollution  | http://prototypepollution.local            |Functional                            |
-| Open Redirect| - | - |
-| WebDAV| - | - |
-| SquidProxies| - | - |
+| Server-Side Template Injection (SSTI) | http://ssti.local/        |Functional                            |
+| Client-Side Template Injection (CSTI)| http://csti.local/         |Functional                            |
+| NoSQL Injections     | http://nosqlinjection.local/               |Functional                            |
+| LDAP Injections      | http://ldapinjection.local/                |Functional                            |
+| API's Abuse and Mass-Asignament Attack | http://apiabuse.local/                     |Functional                            |
+| File Upload Abuse    | http://fileuploadabuse.local/              |Functional                            |
+| Prototype Pollution  | http://prototypepollution.local/           |Functional                            |
+| Open Redirect| - | In development |
+| WebDAV| - | In development |
+| SquidProxies| http://squidproxy.local/| Funcional |
 | Cross-Origin Resource Sharing (CORS)| - | - |
 | SQL TruncationSession Puzzling / Session Fixation / Session Variable Overloading| - | - |
 | Json Web Token| - | - |

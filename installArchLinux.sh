@@ -31,6 +31,8 @@ containers=(
   "csti_v2;$PWD/csti;8019:80"
   "nosqlinjection_v2;$PWD/nosqlinjection;8020:80"
   "fileuploadabuse_v2;$PWD/fileuploadabuse;8024:80"
+  "prototypepollution_v2;$PWD/prototypepollution;8025:3000"
+  "squidproxy_v2;$PWD/squidproxy;8028:80 -p 3128:3128"
 )
 database=(
     "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
