@@ -2,7 +2,7 @@ FROM php:7.2-apache
 
 # Instalar Squid
 RUN apt-get update && \
-    apt-get install -y squid
+    apt-get install -y squid iptables
 
 # Copiar el código del servicio web al contenedor
 COPY ./src /var/www/html
@@ -17,7 +17,7 @@ COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY ./squid.conf /etc/squid/squid.conf
 
 # Copiar el script de inicio personalizado al contenedor
-COPY ./start.sh /start.sh
+COPY ./startup.sh /startup.sh
 
 # Exponer el puerto del proxy Squid
 EXPOSE 3128
