@@ -31,7 +31,7 @@ containers=(
   "ldapinjection_v2;$PWD/ldapinjection/webserver;8021:80"
   "fileuploadabuse_v2;$PWD/fileuploadabuse;8024:80"
   "prototypepollution_v2;$PWD/prototypepollution;8025:3000"
-  "squidproxy_v2;$PWD/squidproxy;8028:80 -p 3128:3128 --cap-add NET_ADMIN"
+  "squidproxy_v2;$PWD/squidproxy;8028:80 -p 3128:3128 --cap-add=NET_ADMIN"
 )
 database=(
     "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
