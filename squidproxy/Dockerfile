@@ -8,10 +8,10 @@ RUN apt-get update && \
 COPY ./src /var/www/html
 
 # Habilitar el módulo de reescritura de Apache
-RUN a2enmod rewrite
+#RUN a2enmod rewrite
 
 # Copiar la configuración personalizada de Apache al contenedor
-COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
+#COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
 
 # Copiar la configuración personalizada de Squid al contenedor
 COPY ./squid.conf /etc/squid/squid.conf
