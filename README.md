@@ -97,7 +97,8 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Open Redirect| - | En desarrollo |
 | WebDAV| - | En desarrollo |
 | SquidProxies| http://squidproxy.local/| Funcional |
-| Intercambio de recursos de origen cruzado (CORS)| - | - |
+| Intercambio de recursos de origen cruzado (CORS) | http://localhost:8029 | Semifuncional |
+|                                                | Nota: la vulnerabilidad CORS se debe practicar utilizando `localhost:8029`, ya que no hemos logrado que funcione a través de `cors.local`. |
 | SQL TruncationSession Puzzling / Session Fixation / Session Variable Overloading| - | - |
 | Json Web Token| - | - |
 | Race Condition| - | - |
