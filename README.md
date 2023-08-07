@@ -99,8 +99,8 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | SquidProxies| http://squidproxy.local/| Funcional |
 | Intercambio de recursos de origen cruzado (CORS) | http://localhost:8029 | Semifuncional |
 |                                                | Nota: la vulnerabilidad CORS se debe practicar utilizando `localhost:8029`, ya que no hemos logrado que funcione a través de `cors.local`. |
-| SQL Truncation| - | - |
-|Session Puzzling / Session Fixation / Session Variable Overloading| - | - |
+| SQL Truncation| http://sqltruncation.local/ | En desarrollo (pero se puede probar) |
+|Session Puzzling / Session Fixation / Session Variable Overloading| http://sessionpuzzling.local/ | En desarrollo (pero se puede probar) |
 | Json Web Token| - | - |
 | Race Condition| - | - |
 | CSS Injection| - | - |
