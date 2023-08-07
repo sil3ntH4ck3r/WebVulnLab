@@ -39,6 +39,8 @@ database=(
     "blindsqli_db_v2;$PWD/blindsqli;8014:80;blindsqli_v2"
     "paddingoracleattack_db_v2;$PWD/paddingoracleattack;8007:80;paddingoracleattack_v2"
     "idor_db_v2;$PWD/idor;8017:80;idor_v2"
+    "sqltruncation_db_v2;$PWD/sqltruncation;8030:80;sqltruncation_v2"
+    "sessionpuzzling_db_v2;$PWD/sessionpuzzling;8031:80;sessionpuzzling_v2"
 )
 
 # Colores
