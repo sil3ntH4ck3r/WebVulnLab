@@ -91,7 +91,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Client-Side Template Injection (CSTI)| http://csti.local/         |Funcional                              |
 | NoSQL Injections     | http://nosqlinjection.local/               |Funcional                              |
 | LDAP Injections      | http://ldapinjection.local/                |Functional                             |
-| API's Abuse y Mass-Asignament Attack| http://apiabuse.local/                      |Funcional                              |
+| API's Abuse y Mass-Asignament Attack| http://apiabuse.local/      |Funcional                              |
 | File Upload Abuse    | http://fileuploadabuse.local/              |Funcional                              |
 | Prototype Pollution  | http://prototypepollution.local/           |Funcional                              |
 | Open Redirect| - | En desarrollo |
@@ -99,7 +99,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | SquidProxies| http://squidproxy.local/| Funcional |
 | Intercambio de recursos de origen cruzado (CORS) | http://localhost:8029 | Semifuncional |
 |                                                | Nota: la vulnerabilidad CORS se debe practicar utilizando `localhost:8029`, ya que no hemos logrado que funcione a través de `cors.local`. |
-| SQL Truncation| http://sqltruncation.local/ | En desarrollo (pero se puede probar) |
+| SQL Truncation| http://sqltruncation.local/ | Funcional |
 |Session Puzzling / Session Fixation / Session Variable Overloading| http://sessionpuzzling.local/ | Funcional |
 | Json Web Token| - | - |
 | Race Condition| - | - |

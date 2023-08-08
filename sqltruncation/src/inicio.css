@@ -1,0 +1,237 @@
+/* Header */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Footer */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Body Content */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background: #ffffff;
+    padding-top: 120px; /* Ajusta esta altura según el tamaño de tu header */
+    padding-bottom: 80px; /* Ajusta esta altura según el tamaño de tu footer */
+}
+
+
+nav {
+    background-color: #444;
+    padding: 10px;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+nav ul li {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+nav ul li:last-child {
+    margin-right: 0;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    transition: background-color 0.3s;
+}
+
+nav ul li a:hover {
+    background-color: #555;
+}
+
+header h1 {
+    text-align: center;
+font-size: 3rem;
+margin-top: 1rem;
+}
+
+h1 {
+    text-align: center;
+    font-size: 3rem;
+    margin-top: 1rem;
+}
+
+/* Sección de servicios */
+.services {
+    background-color: #f7f7f7;
+    padding: 50px 0;
+    text-align: center;
+}
+
+.services h2 {
+    font-size: 2.5em;
+    margin-bottom: 50px;
+}
+
+.service {
+    display: inline-block;
+    margin-right: 30px;
+    margin-bottom: 30px;
+    width: 300px;
+    text-align: left;
+}
+
+.service i {
+    font-size: 3em;
+    margin-bottom: 20px;
+    color: #444;
+}
+
+.service h3 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+.service p {
+    font-size: 1em;
+    line-height: 1.6;
+}
+
+/* Sección "Sobre Nosotros" */
+.about {
+    padding: 50px 0;
+    text-align: center;
+}
+
+.about h2 {
+    font-size: 2.5em;
+    margin-bottom: 50px;
+}
+
+.about-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.about-content p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+/* Sección de contacto */
+.contact {
+    background-color: #f7f7f7;
+    padding: 50px 0;
+    text-align: center;
+}
+
+.contact h2 {
+    font-size: 2.5em;
+    margin-bottom: 50px;
+}
+
+.contact-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.contact-form input,
+.contact-form textarea {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+}
+
+.contact-form textarea {
+    height: 150px;
+}
+
+.contact-form button {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 30px;
+    font-size: 1.1em;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+a[href="#services"] {
+    scroll-behavior: smooth;
+  }
+  .testimonial-carousel {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+.testimonial-controls {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.testimonial-controls button {
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    margin: 0 5px;
+}
+
+.testimonials {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 50px; /* Ajusta este valor para cambiar el espacio entre los testimonios y el footer */
+}
+
+.testimonials h2 {
+    font-size: 2.5em;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.testimonial {
+    flex: 0 0 100%;
+    max-width: 100%;
+    text-align: center;
+}
+
+.testimonial p {
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+.testimonial .author {
+    margin-top: 10px;
+    font-style: italic;
+}
+  

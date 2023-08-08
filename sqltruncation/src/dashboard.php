@@ -1,7 +1,44 @@
+<?php
+error_reporting(0);
+session_start();
+
+function getUserFromJwt($jwt) {
+    $key = "your_secret_key"; // Change this to your own secret key
+
+    list($header, $payload, $signature) = explode('.', $jwt);
+
+    $decodedHeader = base64_decode(str_replace(['-', '_', ''], ['+', '/', '='], $header));
+    $decodedPayload = base64_decode(str_replace(['-', '_', ''], ['+', '/', '='], $payload));
+
+    $expectedSignature = hash_hmac('sha256', $header . '.' . $payload, $key, true);
+    $expectedBase64UrlSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($expectedSignature));
+
+    if ($signature !== $expectedBase64UrlSignature) {
+        return false; // Invalid JWT signature
+    }
+
+    $userData = json_decode($decodedPayload, true);
+    return $userData['user'];
+}
+
+$cookieUser = null;
+if (isset($_COOKIE["jwtToken"])) {
+    $jwtToken = $_COOKIE["jwtToken"];
+    $cookieUser = getUserFromJwt($jwtToken);
+    if ($cookieUser !== "jsmith"){
+      header("Location: index.php");
+      exit;
+    }
+}else{
+  header("Location: index.php");
+  exit;
+}
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Panel de control</title>
+    <title>SQL Truncation</title>
     <meta charset="utf-8">
     <?php
     $conexion = mysqli_connect("db", "usuario", "contraseña", "database");
@@ -217,7 +254,7 @@ canvas {
 <header>
         <nav>
             <div class="container">
-                <h1 class="logo">SQL Truncation</h1>
+                <h1 class="logo">Cybertec</h1>
                 <ul class="menu">
                     <li><a href="http://sqltruncation.local/inicio.php">Inicio</a></li>
                     <li><a href="http://sqltruncation.local/logout.php">Logout</a></li>
