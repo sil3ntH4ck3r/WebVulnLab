@@ -1,3 +1,45 @@
+<?php
+
+  $conexion = mysqli_connect("db", "usuario", "contraseña", "database");
+  if ($conexion) {
+      $conexion->set_charset("utf8");
+  }
+
+  // Verificar si la conexión fue exitosa
+  if (!$conexion) {
+      die('Error al conectar a la base de datos: ' . mysqli_connect_error());
+  }
+
+  //$cookieUser = null;
+    if (isset($_COOKIE["session_id"])) {
+        $cookieUser = $_COOKIE["session_id"];
+    }
+    else{
+      header("Location: index.php");
+      exit;
+    }
+
+    // Obtener el nombre de usuario de la persona que tiene el session_id almacenado en la cookie
+    if ($cookieUser) {
+        $sql = "SELECT nombre FROM usuarios WHERE session_id = ? AND nombre = 'admin'";
+        $stmt = $conexion->prepare($sql);
+        $stmt->bind_param("s", $cookieUser);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $nombreUsuario = $row['nombre'];
+            //echo "El nombre de usuario con el session_id " . $cookieUser . " es: " . $nombreUsuario;
+        } else {
+            echo "<script>alert('Has de ser usuario administrador para poder ver este sitio');</script>";
+            exit;
+        }
+    } else {
+      header("Location: index.php");
+      exit;
+    }
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -217,7 +259,7 @@ canvas {
 <header>
         <nav>
             <div class="container">
-                <h1 class="logo">SQL Truncation</h1>
+                <h1 class="logo">Session Puzzling</h1>
                 <ul class="menu">
                     <li><a href="http://sessionpuzzling.local/logout.php">Logout</a></li>
                     <li><a href="http://sessionpuzzling.local/perfil.php">Perfil</a></li>

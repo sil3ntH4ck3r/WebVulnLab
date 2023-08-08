@@ -1,2 +1,2 @@
-admin,admin
+admin,P@$$w0rd!
 invitado,invitado

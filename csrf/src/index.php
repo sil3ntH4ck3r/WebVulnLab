@@ -189,11 +189,11 @@
         <h2>Iniciar sesión</h2>
         <form method="POST" action="login.php">
             <div class="user-box">
-                <input type="text" name="username" required>
+                <input type="text" name="username" id="nombre" required>
                 <label>Usuario</label>
             </div>
             <div class="user-box">
-                <input type="password" name="password" required>
+                <input type="password" name="password" id="contraseña"required>
                 <label>Contraseña</label>
             </div>
             <button type="submit">Iniciar sesión</button>

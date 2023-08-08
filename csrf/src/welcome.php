@@ -11,6 +11,34 @@ if (!isset($_SESSION['username'])) {
 // Obtener el nombre de usuario de la sesión
 $username = $_SESSION['username'];
 $login_successful = true;
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submitComment"])) {
+    // Check if the comment is not empty
+    if (!empty($_POST["comment"])) {
+        $comment = $_POST["comment"];
+        
+        // Open the comments.txt file in append mode
+        $file = fopen("comments.txt", "a");
+        
+        if ($file) {
+            // Format the comment and user information
+            $commentLine = "User: $username\nComment: $comment\n\n";
+            
+            // Write the comment to the file
+            fwrite($file, $commentLine);
+            
+            // Close the file
+            fclose($file);
+            
+            echo "<script>alert('Comentario añadido correctamente');</script>";
+        } else {
+            echo "<script>alert('Error al subir el comentario.');</script>";
+        }
+    } else {
+        echo "<script>alert('El comentario no puede estar vacío.');</script>";
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -175,6 +203,47 @@ $login_successful = true;
             color: #4CAF50;
             margin-bottom: 20px;
         }
+        .comment-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        
+        .comment-container h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .comment-container form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .comment-container textarea {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+        }
+        
+        .comment-container button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .comment-container button:hover {
+            background-color: #555;
+        }
     </style>
 </head>
 <body>
@@ -195,6 +264,14 @@ $login_successful = true;
     <div class="content" style="text-align: center;">
         <h2 style="font-size: 2rem;">Bienvenido, <?php echo $username; ?>!</h2>
         <p style="font-size: 1.5rem;">Has iniciado sesión correctamente.</p>
+        <div class="comment-container">
+                        <h2>Contacto con el Administrador</h2>
+                        <p>¿Tienes alguna queja, sugerencia o pregunta? ¡No dudes en ponerte en contacto con el administrador! Utiliza el formulario a continuación para compartir tus comentarios. Revisamos todos los mensajes con atención y te responderemos lo antes posible.</p>
+                        <form method="post" action="">
+                            <textarea name="comment" placeholder="Ingresa tu comentario"></textarea>
+                            <button type="submit" name="submitComment">Enviar</button>
+                        </form>
+        </div>
     </div>
 
     <footer>
