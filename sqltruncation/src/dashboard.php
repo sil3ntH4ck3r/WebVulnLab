@@ -219,6 +219,7 @@ canvas {
             <div class="container">
                 <h1 class="logo">SQL Truncation</h1>
                 <ul class="menu">
+                    <li><a href="http://sqltruncation.local/inicio.php">Inicio</a></li>
                     <li><a href="http://sqltruncation.local/logout.php">Logout</a></li>
                     <li><a href="http://sqltruncation.local/perfil.php">Perfil</a></li>
                     <li><a href="http://sqltruncation.local/dashboard.php">Dashboard</a></li>
