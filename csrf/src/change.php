@@ -182,7 +182,7 @@ $username = $_SESSION['username'];
         <ul>
             <li><a href="welcome.php">Bienvenido</a></li>
             <li><a href="logout.php">Cerrar sesión</a></li>
-            <li><a href="change.html">Cambiar contraseña</a></li>
+            <li><a href="change.php">Cambiar contraseña</a></li>
         </ul>
     </nav>
 
