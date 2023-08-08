@@ -177,7 +177,7 @@ if (isset($_COOKIE["jwtToken"])) {
                         <li><a href="http://sqltruncation.local/inicio.php">Inicio</a></li>
                         <li><a href="http://sqltruncation.local/logout.php">Logout</a></li>
                         <li><a href="http://sqltruncation.local/perfil.php">Perfil</a></li>
-                        <?php if ($cookieUser == "admin") : ?>
+                        <?php if ($cookieUser == "jsmith") : ?>
                             <li><a href="http://sqltruncation.local/dashboard.php">Dashboard</a></li>
                         <?php endif; ?>
                     <?php else : ?>

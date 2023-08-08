@@ -89,7 +89,7 @@ This script will download and install all the necessary dependencies, create the
 | Client-Side Template Injection (CSTI)| http://csti.local/         |Functional                            |
 | NoSQL Injections     | http://nosqlinjection.local/               |Functional                            |
 | LDAP Injections      | http://ldapinjection.local/                |Functional                            |
-| API's Abuse and Mass-Asignament Attack | http://apiabuse.local/                     |Functional                            |
+| API's Abuse and Mass-Asignament Attack | http://apiabuse.local/   |Functional                            |
 | File Upload Abuse    | http://fileuploadabuse.local/              |Functional                            |
 | Prototype Pollution  | http://prototypepollution.local/           |Functional                            |
 | Open Redirect| - | In development |
@@ -97,7 +97,7 @@ This script will download and install all the necessary dependencies, create the
 | SquidProxies| http://squidproxy.local/| Funcional |
 | Cross-Origin Resource Sharing (CORS) Vulnerability | http://localhost:8029 | Semi-Functional |
 |                                                | Note: The CORS vulnerability should be tested using `localhost:8029`, as we haven't been able to make it work using `cors.local`. |
-| SQL Truncation| http://sqltruncation.local/ | In development (but can be tested) |
+| SQL Truncation| http://sqltruncation.local/ | Functional |
 |Session Puzzling / Session Fixation / Session Variable Overloading| http://sessionpuzzling.local/ | Functional |
 | Json Web Token| - | - |
 | Race Condition| - | - |
