@@ -177,10 +177,10 @@ body {
             <div class="container">
                 <h1 class="logo">Cybertec</h1>
                 <ul class="menu">
-                <li><a href="http://sqltruncation.local/index.php">Login</a></li>
+                    <li><a href="http://sqltruncation.local/inicio.php">Inicio</a></li>
+                    <li><a href="http://sqltruncation.local/index.php">Login</a></li>
                     <li><a href="http://sqltruncation.local/register.php">Register</a></li>
-                    <li><a href="http://sqltruncation.local/reiniciar.php">Reiniciar Base de Datos</a></li>
-                    
+                    <li><a href="http://sqltruncation.local/reiniciar.php">Reiniciar Base de Datos</a></li>   
                 </ul>
             </div>
         </nav>

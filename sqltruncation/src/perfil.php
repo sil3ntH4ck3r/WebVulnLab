@@ -174,12 +174,14 @@ if (isset($_COOKIE["jwtToken"])) {
                 <h1 class="logo">Cybertec</h1>
                 <ul class="menu">
                     <?php if ($cookieUser) : ?>
+                        <li><a href="http://sqltruncation.local/inicio.php">Inicio</a></li>
                         <li><a href="http://sqltruncation.local/logout.php">Logout</a></li>
                         <li><a href="http://sqltruncation.local/perfil.php">Perfil</a></li>
                         <?php if ($cookieUser == "admin") : ?>
                             <li><a href="http://sqltruncation.local/dashboard.php">Dashboard</a></li>
                         <?php endif; ?>
                     <?php else : ?>
+                        <li><a href="http://sqltruncation.local/inicio.php">Inicio</a></li>
                         <li><a href="http://sqltruncation.local/index.php">Login</a></li>
                         <li><a href="http://sqltruncation.local/register.php">Register</a></li>
                         <li><a href="http://sqltruncation.local/reiniciar.php">Reiniciar Base de Datos</a></li>

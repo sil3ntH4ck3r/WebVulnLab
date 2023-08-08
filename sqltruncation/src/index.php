@@ -243,6 +243,7 @@ body {
                     <?php
                         if ($_SESSION['loggedin']==false)
                         {   
+                            echo '<li><a href="http://sqltruncation.local/inicio.php">Inicio</a></li>';
                             echo '<li><a href="http://sqltruncation.local/index.php">Login</a></li>';
                             echo '<li><a href="http://sqltruncation.local/register.php">Register</a></li>';
                             echo '<li><a href="http://sqltruncation.local/reiniciar.php">Reiniciar Base de Datos</a></li>';
@@ -251,6 +252,7 @@ body {
                     <?php
                     if ($_SESSION['loggedin']==true)
                     {   
+                        echo '<li><a href="http://sqltruncation.local/inicio.php">Inicio</a></li>';
                         echo '<li><a href="http://sqltruncation.local/logout.php">Logout</a></li>';
                         echo '<li><a href="http://sqltruncation.local/perfil.php">Perfil</a></li>';
                         echo '<li><a href="http://sqltruncation.local/reiniciar.php">Reiniciar Base de Datos</a></li>';
