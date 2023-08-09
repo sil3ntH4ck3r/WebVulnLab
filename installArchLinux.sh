@@ -42,6 +42,7 @@ database=(
     "idor_db_v2;$PWD/idor;8017:80;idor_v2"
     "sqltruncation_db_v2;$PWD/sqltruncation;8030:80;sqltruncation_v2"
     "sessionpuzzling_db_v2;$PWD/sessionpuzzling;8031:80;sessionpuzzling_v2"
+    "jwt_db_v2;$PWD/jwt;8032:80;jwt_v2"
 )
 
 if [ "$(id -u)" != "0" ]; then

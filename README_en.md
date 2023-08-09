@@ -99,7 +99,7 @@ This script will download and install all the necessary dependencies, create the
 |                                                | Note: The CORS vulnerability should be tested using `localhost:8029`, as we haven't been able to make it work using `cors.local`. |
 | SQL Truncation| http://sqltruncation.local/ | Functional |
 |Session Puzzling / Session Fixation / Session Variable Overloading| http://sessionpuzzling.local/ | Functional |
-| Json Web Token| - | - |
+| Json Web Token| http://jwt.local/ | Functional |
 | Race Condition| - | - |
 | CSS Injection| - | - |
 | Python Deserelization (DES-Yaml)| - | - |
