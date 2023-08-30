@@ -47,6 +47,8 @@ sudo apt-get install git
 
 2. Navigate to the directory where you cloned the repository and give execution permissions to the installation script:
 
+**Note:** The `install.sh` file is not compatible with Arch Linux (a new installation script is being worked on).
+
 ```bash
 cd WebVulnLab
 chmod +x install.sh
@@ -92,19 +94,19 @@ This script will download and install all the necessary dependencies, create the
 | API's Abuse and Mass-Asignament Attack | http://apiabuse.local/   |Functional                            |
 | File Upload Abuse    | http://fileuploadabuse.local/              |Functional                            |
 | Prototype Pollution  | http://prototypepollution.local/           |Functional                            |
-| Open Redirect| - | In development |
-| WebDAV| - | In development |
+| Open Redirect| - | Functional |
+| WebDAV| http://webdav.local/ | Functional |
 | SquidProxies| http://squidproxy.local/| Funcional |
 | Cross-Origin Resource Sharing (CORS) Vulnerability | http://localhost:8029 | Semi-Functional |
 |                                                | Note: The CORS vulnerability should be tested using `localhost:8029`, as we haven't been able to make it work using `cors.local`. |
 | SQL Truncation| http://sqltruncation.local/ | Functional |
 |Session Puzzling / Session Fixation / Session Variable Overloading| http://sessionpuzzling.local/ | Functional |
 | Json Web Token| http://jwt.local/ | Functional |
-| Race Condition| - | - |
-| CSS Injection| - | - |
-| Python Deserelization (DES-Yaml)| - | - |
-| Python Deserelization (DES-Pickle)| - | - |
-| GraphQL Introspection, Mutations e IDORs| - | - |
+| Race Condition| http://racecondition.local/ | Functional |
+| CSS Injection| http://cssi.local/ | Functional |
+| Python Deserelization (DES-Yaml)| - | In development |
+| Python Deserelization (DES-Pickle)| - | In development |
+| GraphQL Introspection, Mutations e IDORs| - | In development |
 
 Note that it is still in development, and not all containers are working correctly. This repository is updated frequently.
 

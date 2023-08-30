@@ -31,8 +31,11 @@ containers=(
   "ldapinjection_v2;$PWD/ldapinjection/webserver;8021:80"
   "fileuploadabuse_v2;$PWD/fileuploadabuse;8024:80"
   "prototypepollution_v2;$PWD/prototypepollution;8025:3000"
+  "openredirect_v2;$PWD/openredirect;8026:80"
   "squidproxy_v2;$PWD/squidproxy;8028:80 -p 3128:3128 --cap-add=NET_ADMIN"
   "cors_v2;$PWD/cors;8029:80"
+  "racecondition_v2;$PWD/racecondition;8033:80"
+  "cssi_v2;$PWD/cssi;8034:80"
 )
 database=(
     "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
@@ -42,6 +45,12 @@ database=(
     "sqltruncation_db_v2;$PWD/sqltruncation;8030:80;sqltruncation_v2"
     "sessionpuzzling_db_v2;$PWD/sessionpuzzling;8031:80;sessionpuzzling_v2"
     "jwt_db_v2;$PWD/jwt;8032:80;jwt_v2"
+)
+otros=(
+    "Construyendo contenedores para API Abuse;docker-compose -f $PWD/apiabuse/docker-compose.yml up -d"
+    "Contruyendo contenedores para WebDAV;/usr/local/bin/docker-compose -f $PWD/webdav/docker-compose.yml up -d"
+    "Configurando archivos para LDAP;configure_ldap_files"
+    "Configurando red para los contenedores;configure_network"
 )
 
 # Colores
@@ -126,7 +135,7 @@ configure_network() {
     fi
 
     # Eliminar el archivo de errores si está vacío
-    [ -s "$error_file" ] || rm "$error_file"
+    #[ -s "$error_file" ] || rm "$error_file"
 }
 # Función para crear archivo de virtual hosting
 
@@ -158,6 +167,12 @@ setup_file_virtual_hosting() {
         echo "    ServerName mail.local"
         echo "    ProxyPass / http://localhost:8023/"
         echo "    ProxyPassReverse / http://localhost:8023/"
+        echo "</VirtualHost>"
+        echo
+        echo "<VirtualHost *:80>"
+        echo "    ServerName webdav.local"
+        echo "    ProxyPass / http://localhost:8027/"
+        echo "    ProxyPassReverse / http://localhost:8027/"
         echo "</VirtualHost>"
         echo
     } >> "$config_file" 2>> "$error_file"
@@ -287,7 +302,7 @@ configure_virtual_host() {
         hosts_entries+=("$db_container_name.local")
     done
 
-    echo "127.0.0.1 ${hosts_entries[*]} tablero.local apiabuse.local mail.local" >> /etc/hosts
+    echo "127.0.0.1 ${hosts_entries[*]} tablero.local apiabuse.local mail.local webdav.local" >> /etc/hosts
 
 
     if [ $? -ne 0 ]; then
@@ -404,6 +419,20 @@ if [ "$hide_output" = "s" ]; then
 
         done
 
+        for otros in "${otros[@]}"; do
+
+            IFS=';' read -ra otros_info <<< "$otros"
+            info=${otros_info[0]}
+            command=${otros_info[1]}
+
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}$info${endColour}"
+            eval "$command > /dev/null 2>&1"
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}$info${endColour}"
+            fi
+            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}$info${endColour}"
+        done
+
     else
 
         # Si ha escogido esconder el output pero no saltar los errores
@@ -472,6 +501,21 @@ if [ "$hide_output" = "s" ]; then
 
         done
 
+        for otros in "${otros[@]}"; do
+
+            IFS=';' read -ra otros_info <<< "$otros"
+            info=${otros_info[0]}
+            command=${otros_info[1]}
+
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}$info${endColour}"
+            eval "$command > /dev/null 2>&1"
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}$info${endColour}"
+                exit 1;
+            fi
+            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}$info${endColour}"
+        done
+
     fi
 else
 
@@ -537,6 +581,20 @@ else
                 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $container_name iniciado correctamente${endColour}"
             fi
 
+        done
+
+        for otros in "${otros[@]}"; do
+
+            IFS=';' read -ra otros_info <<< "$otros"
+            info=${otros_info[0]}
+            command=${otros_info[1]}
+
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}$info${endColour}"
+            eval "$command"
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}$info${endColour}"
+            fi
+            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}$info${endColour}"
         done
 
     else
@@ -607,16 +665,21 @@ else
 
         done
 
+        for otros in "${otros[@]}"; do
+
+            IFS=';' read -ra otros_info <<< "$otros"
+            info=${otros_info[0]}
+            command=${otros_info[1]}
+
+            echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}$info${endColour}"
+            eval "$command"
+            if [ $? -ne 0 ]; then
+                echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}$info${endColour}"
+                exit 1;
+            fi
+            echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}$info${endColour}"
+        done
+
     fi
 
 fi
-
-
-# Configurar archivos LDAP Server
-configure_ldap_files
-
-# Agregar contenedores a la red
-configure_network
-
-# Configurar API Abuse
-docker-compose -f $PWD/apiabuse/docker-compose.yml up
