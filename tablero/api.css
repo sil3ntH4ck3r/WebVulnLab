@@ -1,175 +1,111 @@
-/* Estilos generales */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
 
-html, body {
-  height: 100%;
-  margin: 0;
-  font-family: 'Montserrat', sans-serif;
-  scroll-behavior: smooth; /* hace que el desplazamiento por la página sea suave */
+*{
+  box-sizing: border-box;
+  padding: 0;
+  margin:0;
 }
 
-body {
-  display: flex;
+body{
+  background-color:#03001C;
+  font-family: "Poppins",system-ui;
+}
+
+header{
+  padding:10px;
+  background-color:#301E67;
+  color:white;
+}
+
+main{
+  padding:40px;
+}
+
+.container{
+  max-width: 1200px;
+  margin:0 auto;
+}
+
+.card {
+  background-color:#301E67;
+  color:white;
+  padding:20px;
+  border-radius: 5px;
+  display:flex;
   flex-direction: column;
-  justify-content: space-between;
-  min-height: 100%;
-}
-main {
-  flex: 1;
+  max-width: 700px;
+  margin:0 auto;
+  gap:15px;
 }
 
-/* Estilos del encabezado */
+.card h2{
+  text-align: center;
+}
 
-header {
-  background-color: #333;
-  color: #fff;
-  display: flex;
+.counters{
+  display:flex;
   flex-direction: column;
+  gap:10px;
+  background-color: #5B8FB9;
+  padding:10px;
+  border-radius: 2px;
+  justify-content: center;
+  align-items: center;
+}
+
+.counters h3{
+  text-align: center;
+}
+
+ul{
+  display:flex;
+  gap:25px;
+  margin-top:30px;
+  flex-wrap: wrap;
+}
+
+form button{
+  border:none;
+  padding:5px 10px;
+  font-size: 18px;
+  border-radius: 2px;
+  background-color: #03001C;
+  color:white;
+  cursor:pointer;
+  transition: .2s background-color;
+}
+
+form button:hover{
+  background-color: #5B8FB9;
+}
+
+form button.delete{
+  background-color: red;
+}
+
+form button.stop{
+  background-color: #5B8FB9;
+}
+
+form button.stop:hover{
+  background-color: #03001C;
+}
+
+.buttons{
+  display:flex;
+  gap:10px;
+}
+
+footer{
+  background-color: #301E67;
+  height:80px;
+  color:white;
+  font-size:16px;
+  display:flex;
   align-items: center;
   justify-content: center;
-  height: 20%;
 }
 
-h1 {
-  text-align: center;
-  font-size: 3rem;
-  margin-top: 1rem;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-li {
-  margin: 20px;
-  padding: 20px;
-  border-radius: 5px;
-  background-color: #f1f1f1;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-  width: 300px;
-}
-
-/*footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 50px;
-  background-color: #f2f2f2;
-  text-align: center;
-  padding-top: 15px;
-  font-size: 12px;
-}*/
-
-footer {
-        background-color: #333;
-        color: #fff;
-        padding: 10px;
-        text-align: center;
-        height: 100px; /* Ajusta la altura deseada */
-        font-weight: bold; /* Ajusta el estilo de fuente deseado */
-    }
-
-footer p {
-  margin: 0;
-}
-
-/* Estilos para dispositivos móviles */
-@media screen and (max-width: 768px) {
-  h1 {
-    font-size: 2rem;
-  }
-
-  section {
-    width: 90%;
-  }
-}
-
-h2 {
-  font-size: 2rem;
-  color: #333;
-}
-
-/* Botones */
-
-.start-button {
-  background-color: black;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.restart-button{
-  background-color: black;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.delete-button{
-  background-color: red;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.stop-button {
-  background-color: white;
-  color: black;
-  padding: 0.5rem 1rem;
-  border: 1px solid black;
-  border-radius: 5px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.stop-button:hover {
-  background-color: black;
-  color: white;
-}
-
-.start-button:hover {
-  background-color: white;
-  color: black;
-  border: 1px solid black;
-}
-.restart-button:hover {
-  background-color: white;
-  color: black;
-  border: 1px solid black;
-}
-
-/* Estilos específicos para el formulario */
-
-form {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-}
-li.encendido {
-  background-color: #b5e7a0;
-}
-
-li.apagado {
-  background-color: #f1f1f1;
-}
-
-#counter {
-  text-align: center;
+li{
+  width:300px;
 }
