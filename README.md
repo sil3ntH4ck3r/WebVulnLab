@@ -48,11 +48,12 @@ Una vez descargado, el proyecto no requiere conexión a internet, ya que está d
 
 2. Navega hasta el directorio donde clonaste el repositorio y da permisos de ejecución al script de instalación:
 
+**Nota:** El archivo `install.sh` no es compatible con Arch Linux (se esta trabajando en un nuevo script de instalación).
+
 ```bash
 cd WebVulnLab
 chmod +x install.sh
 ```
-> En caso que utilizes Arch Linux, el script de instalación es: installArchLinux.sh
 
 3. Ejecuta el script de instalación:
 
@@ -94,19 +95,19 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | API's Abuse y Mass-Asignament Attack| http://apiabuse.local/      |Funcional                              |
 | File Upload Abuse    | http://fileuploadabuse.local/              |Funcional                              |
 | Prototype Pollution  | http://prototypepollution.local/           |Funcional                              |
-| Open Redirect| - | En desarrollo |
-| WebDAV| - | En desarrollo |
+| Open Redirect| http://openredirect.local/ | Funcional |
+| WebDAV| http://webdav.local/ | Funcional |
 | SquidProxies| http://squidproxy.local/| Funcional |
 | Intercambio de recursos de origen cruzado (CORS) | http://localhost:8029 | Semifuncional |
 |                                                | Nota: la vulnerabilidad CORS se debe practicar utilizando `localhost:8029`, ya que no hemos logrado que funcione a través de `cors.local`. |
 | SQL Truncation| http://sqltruncation.local/ | Funcional |
 |Session Puzzling / Session Fixation / Session Variable Overloading| http://sessionpuzzling.local/ | Funcional |
 | Json Web Token| http://jwt.local/ | Funcional |
-| Race Condition| - | - |
-| CSS Injection| - | - |
-| Python Deserelization (DES-Yaml)| - | - |
-| Python Deserelization (DES-Pickle)| - | - |
-| GraphQL Introspection, Mutations e IDORs| - | - |
+| Race Condition| http://racecondition.local/ | Funcional |
+| CSS Injection| http://cssi.local/ | Funcional |
+| Python Deserelization (DES-Yaml)| - | En desarrollo |
+| Python Deserelization (DES-Pickle)| - | En desarrollo |
+| GraphQL Introspection, Mutations e IDORs| - | En desarrollo |
 
 Cabe destacar que aún está en desarrollo, y que no todos los contenedores están funcionando correctamente. Este repositorio se actualiza a menudo.
 
