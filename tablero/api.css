@@ -96,16 +96,22 @@ form button.stop:hover{
   gap:10px;
 }
 
-footer{
+footer {
   background-color: #301E67;
-  height:80px;
-  color:white;
-  font-size:16px;
-  display:flex;
+  height: 80px;
+  color: white;
+  font-size: 16px;
+  display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: auto; /* Empuja el footer hacia abajo */
 }
 
 li{
   width:300px;
+}
+body.flex-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Asegura que el contenido ocupe al menos el alto del viewport */
 }
