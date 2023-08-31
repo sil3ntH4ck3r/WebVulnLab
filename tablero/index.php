@@ -68,8 +68,13 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
                     preg_match('/(?<=0\.0\.0\.0:)\d+/', $errorMessage, $portMatches); // Extraer el número de puerto del mensaje
                     $portInUse = isset($portMatches[0]) ? $portMatches[0] : "desconocido";
                     echo "<script>alert('El puerto $portInUse ya está en uso en su sistema, por lo que el contenedor no puede iniciar. Asegúrese de que el puerto $portInUse de su sistema esté libre antes de intentar nuevamente.');</script>";
+                } else if (preg_match('/Cannot link to a non running container: (.+) AS (.+)/', $errorResponse['message'], $matches)) {
+                    $contenedor = str_replace('/db', '', $matches[1]); // Eliminar '/db' si está presente
+                    $contenedor1 = str_replace('/db', '', $matches[2]); // Eliminar '/db' si está presente
+                    $contenedor1 = rtrim($contenedor1, "\n"); // Eliminar salto de línea al final
+                    echo "<script>alert('Debes de iniciar primero el contenedor $contenedor, para encender $contenedor1.');</script>";
                 } else {
-                    echo "<script>alert('Error al $action el contenedor');</script>";
+                    echo "<script>alert('Error no contemplado." . $errorResponse['message'] . "');</script>";
                 }
             }
         }

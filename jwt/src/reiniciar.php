@@ -33,7 +33,7 @@ $sql = "CREATE TABLE usuarios (
 //echo "Usuario insertado correctamente";
 
 // Cerrar la conexión
-mysqli_query($conexion, "INSERT INTO usuarios (nombre, contraseña, email) VALUES ('admin', 'P@$\$w0rd!', 'admin@sqltruncation.local')");
+mysqli_query($conexion, "INSERT INTO usuarios (nombre, contraseña, email) VALUES ('admin', 'P@$\$w0rd!', 'admin@jwt.local')");
 mysqli_close($conexion);
 header("Location: index.php"); //redirigir al usuario a la página de inicio
 ?>

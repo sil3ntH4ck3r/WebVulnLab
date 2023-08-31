@@ -52,13 +52,14 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "http://localhost:2375/containers/$containerId/$action");
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Añadir esta linea para poder almacenar el resultado de la consulta en una variable
         $response = curl_exec($ch);
         $statusCode = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
         curl_close($ch);
 
         if ($action === 'start') {
             if ($statusCode === 204) {
-                header('Location: ' . "http://tablero.local/");
+                header('Location: ' . "http://tablero.local/oldVersion");
                 exit();
             } else {
                 $errorResponse = json_decode($response, true);
@@ -67,21 +68,26 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
                     preg_match('/(?<=0\.0\.0\.0:)\d+/', $errorMessage, $portMatches); // Extraer el número de puerto del mensaje
                     $portInUse = isset($portMatches[0]) ? $portMatches[0] : "desconocido";
                     echo "<script>alert('El puerto $portInUse ya está en uso en su sistema, por lo que el contenedor no puede iniciar. Asegúrese de que el puerto $portInUse de su sistema esté libre antes de intentar nuevamente.');</script>";
+                } else if (preg_match('/Cannot link to a non running container: (.+) AS (.+)/', $errorResponse['message'], $matches)) {
+                    $contenedor = str_replace('/db', '', $matches[1]); // Eliminar '/db' si está presente
+                    $contenedor1 = str_replace('/db', '', $matches[2]); // Eliminar '/db' si está presente
+                    $contenedor1 = rtrim($contenedor1, "\n"); // Eliminar salto de línea al final
+                    echo "<script>alert('Debes de iniciar primero el contenedor $contenedor, para encender $contenedor1.');</script>";
                 } else {
-                    echo "<script>alert('Error al $action el contenedor');</script>";
+                    echo "<script>alert('Error no contemplado." . $errorResponse['message'] . "');</script>";
                 }
             }
         }
         if ($action === 'stop') {
             if ($statusCode === 204) {
-                header('Location: ' . "http://tablero.local/");
+                header('Location: ' . "http://tablero.local/oldVersion");
                 exit();
             } else {
                 echo "<script>alert('Error al detener el contenedor');</script>";
             }
         } elseif ($action === 'restart') {
             if ($statusCode === 204) {
-                header('Location: ' . "http://tablero.local/");
+                header('Location: ' . "http://tablero.local/oldVersion");
                 exit();
             } else {
                 echo "<script>alert('Error al reiniciar el contenedor');</script>";
