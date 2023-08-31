@@ -27,7 +27,7 @@ if ($result === false) {
   )";
 
   mysqli_query($conexion, $sql);
-  mysqli_query($conexion, "INSERT INTO usuarios (nombre, contraseña, email) VALUES ('admin', 'P@$\$w0rd!', 'admin@sqltruncation.local')");
+  mysqli_query($conexion, "INSERT INTO usuarios (nombre, contraseña, email) VALUES ('admin', 'P@$\$w0rd!', 'admin@jwt.local')");
 } 
 
 // Cerrar la conexión
