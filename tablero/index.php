@@ -1,4 +1,15 @@
 <?php
+
+function processContainerName($containerName) {
+    $containerName = substr($containerName, 1); // Elimina el primer caracter '/'
+    
+    if (strpos($containerName, '_db_') === false) {
+        $containerName = str_replace('_v2', '', $containerName); // Elimina '_v2' del nombre si no contiene '_db_'
+    }
+    
+    return $containerName;
+}
+
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, "http://localhost:2375/containers/json?all=1");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -41,17 +52,44 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "http://localhost:2375/containers/$containerId/$action");
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Añadir esta linea para poder almacenar el resultado de la consulta en una variable
         $response = curl_exec($ch);
         $statusCode = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
         curl_close($ch);
-
-        if ($statusCode === 204) {
-            header('Location: ' . "http://tablero.local/");
-            exit();
-        } else {
-            echo "<script>alert('Error al $action el contenedor');</script>";
+    
+        if ($action === 'start') {
+            if ($statusCode === 204) {
+                header('Location: ' . "http://tablero.local/");
+                exit();
+            } else {
+                $errorResponse = json_decode($response, true);
+                if (isset($errorResponse['message']) && strpos($errorResponse['message'], 'address already in use') !== false) {
+                    $errorMessage = $errorResponse['message'];
+                    preg_match('/(?<=0\.0\.0\.0:)\d+/', $errorMessage, $portMatches); // Extraer el número de puerto del mensaje
+                    $portInUse = isset($portMatches[0]) ? $portMatches[0] : "desconocido";
+                    echo "<script>alert('El puerto $portInUse ya está en uso en su sistema, por lo que el contenedor no puede iniciar. Asegúrese de que el puerto $portInUse de su sistema esté libre antes de intentar nuevamente.');</script>";
+                } else {
+                    echo "<script>alert('Error al $action el contenedor');</script>";
+                }
+            }
         }
-    }
+        if ($action === 'stop') {
+            if ($statusCode === 204) {
+                header('Location: ' . "http://tablero.local/");
+                exit();
+            } else {
+                echo "<script>alert('Error al detener el contenedor');</script>";
+            }
+        } elseif ($action === 'restart') {
+            if ($statusCode === 204) {
+                header('Location: ' . "http://tablero.local/");
+                exit();
+            } else {
+                echo "<script>alert('Error al reiniciar el contenedor');</script>";
+            }
+        }
+        
+    }      
 }
 ?>
 <!DOCTYPE html>
@@ -79,8 +117,8 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
 <body>
     <header>
         <nav class="container">
-            <h1>Admin Panel</h1>
-            <a href="http://tablero.local/oldVersion">Versión antigua</a> <!-- Agrega esta línea -->
+            <h1>Tablero</h1>
+            <a href="http://tablero.local/oldVersion">Versión antigua</a>
         </nav>
         </header>
     <main class="container">
@@ -102,7 +140,30 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
         <ul>
             <?php foreach ($containers as $container): ?>
             <li class="card">
-                <h2><?php echo $container['Names'][0]; ?></h2>
+            <?php
+                        $processedName = processContainerName($container['Names'][0]);
+                        $containerId = $container['Id'];
+
+                        // Obtener la dirección IP del contenedor
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, "http://localhost:2375/containers/$containerId/json");
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        $containerInfo = curl_exec($ch);
+                        curl_close($ch);
+                        $containerInfo = json_decode($containerInfo, true);
+                        $containerIP = $containerInfo['NetworkSettings']['IPAddress'];
+
+                        if (strpos($processedName, '_db_') === false && strpos($processedName, '_server') === false):
+                    ?>
+                    <h2><a href="http://<?php echo $processedName; ?>.local" target="_blank"><?php echo $container['Names'][0]; ?></a></h2>
+                    <?php else: ?>
+                    <h2><?php echo $container['Names'][0]; ?></h2>
+                    <?php endif; ?>
+
+                    <!-- Mostrar dirección IP del contenedor solo si está encendido -->
+                    <?php if ($containerIP !== ''): ?>
+                    <p>IP: <?php echo $containerIP; ?></p>
+                    <?php endif; ?>
                 <div class="buttons">
                     <?php if (strpos($container['Status'], 'Up') !== false): ?>
                     <form method="POST">

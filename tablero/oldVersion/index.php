@@ -43,7 +43,7 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
         curl_close($ch);
 
         if ($statusCode === 204) {
-            header('Location: ' . "http://tablero.local/");
+            header('Location: ' . "http://tablero.local/oldVersion");
             exit();
         } else {
             echo "<script>alert('Error al eliminar el contenedor');</script>";
@@ -56,11 +56,36 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
         $statusCode = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
         curl_close($ch);
 
-        if ($statusCode === 204) {
-            header('Location: ' . "http://tablero.local/");
-            exit();
-        } else {
-            echo "<script>alert('Error al $action el contenedor');</script>";
+        if ($action === 'start') {
+            if ($statusCode === 204) {
+                header('Location: ' . "http://tablero.local/");
+                exit();
+            } else {
+                $errorResponse = json_decode($response, true);
+                if (isset($errorResponse['message']) && strpos($errorResponse['message'], 'address already in use') !== false) {
+                    $errorMessage = $errorResponse['message'];
+                    preg_match('/(?<=0\.0\.0\.0:)\d+/', $errorMessage, $portMatches); // Extraer el número de puerto del mensaje
+                    $portInUse = isset($portMatches[0]) ? $portMatches[0] : "desconocido";
+                    echo "<script>alert('El puerto $portInUse ya está en uso en su sistema, por lo que el contenedor no puede iniciar. Asegúrese de que el puerto $portInUse de su sistema esté libre antes de intentar nuevamente.');</script>";
+                } else {
+                    echo "<script>alert('Error al $action el contenedor');</script>";
+                }
+            }
+        }
+        if ($action === 'stop') {
+            if ($statusCode === 204) {
+                header('Location: ' . "http://tablero.local/");
+                exit();
+            } else {
+                echo "<script>alert('Error al detener el contenedor');</script>";
+            }
+        } elseif ($action === 'restart') {
+            if ($statusCode === 204) {
+                header('Location: ' . "http://tablero.local/");
+                exit();
+            } else {
+                echo "<script>alert('Error al reiniciar el contenedor');</script>";
+            }
         }
     }
 }
@@ -86,93 +111,112 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
 
 </head>
 <body>
-<header>
-    <h1>Tablero</h1>
-</header>
-<h1>Contenedores Docker</h1>
+    <header>
+        <nav class="container">
+            <h1>Tablero</h1>
+            <a href="http://tablero.local/" class="version-link">Versión nueva</a>
+        </nav>
+    </header>
+    <h1>Contenedores Docker</h1>
 
-<div id="counter" style="margin: auto;">
+    <div id="counter" style="margin: auto;">
 
-        <?php
-
-            if ($totalContenedores === 0) {
-                echo "<h3>NO HAY CONTENEDORES DESPLEGADOS</h3>";
-            } else {
-                echo "<h3>Contenedores en ejecución: $encendidos </h3> <!-- Mostrar número de contenedores encendidos -->
-                <h3>Contenedores apagados: $apagados </h3> <!-- Mostrar número de contenedores apagados -->
-                <h3>Total contenedores: $totalContenedores </h3> <!-- Mostrar número de contenedores totales -->";
-            }
-        ?>
-</div>
-
-
-<ul>
-    <?php foreach ($containers as $container): ?>
-        <li>
             <?php
-                $processedName = processContainerName($container['Names'][0]);
-                if (strpos($processedName, '_db_') === false && strpos($processedName, '_server') === false):
-            ?>
-                <h2><a href="http://<?php echo $processedName; ?>.local" target="_blank"><?php echo $container['Names'][0]; ?></a></h2>
-            <?php else: ?>
-                <h2><?php echo $container['Names'][0]; ?></h2>
-            <?php endif; ?>
-            <?php if (strpos($container['Status'], 'Up') !== false): ?>
-                <form method="POST">
-                    <input type="hidden" name="action" value="stop">
-                    <input type="hidden" name="container_id" value="<?php echo $container['Id']; ?>">
-                    <button class="stop-button" type="submit">Apagar</button>
-                </form>
-                <form method="POST">
-                    <input type="hidden" name="action" value="restart">
-                    <input type="hidden" name="container_id" value="<?php echo $container['Id']; ?>">
-                    <button class="restart-button" type="submit">Reiniciar</button>
-                </form>
-            <?php else: ?>
-                <form method="POST">
-                    <input type="hidden" name="action" value="start">
-                    <input type="hidden" name="container_id" value="<?php echo $container['Id']; ?>">
-                    <button class="start-button"type="submit">Encender</button>
-                </form>
 
-                <form method="POST">
-                    <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="container_id" value="<?php echo $container['Id']; ?>">
-                    <button class="delete-button" type="submit" onclick="confirmDelete(event, '<?php echo $container['Names'][0]; ?>', this.form)">Eliminar</button>
-
-                </form>
-
-            <?php endif; ?>
-
-            <script>
-                function confirmDelete(event, containerName, form) {
-                    event.preventDefault(); // evita el envío del formulario si el usuario hace clic en "Cancelar"
-                    if (confirm("¿Está seguro de que desea eliminar el contenedor " + containerName + "?")) {
-                        // Si el usuario confirma la eliminación, envía la solicitud al servidor
-                        form.submit();
-                    }
-
-
-//                    Swal.fire({
-//                        title: '¿Está seguro de que desea eliminar el contenedor ' + containerName + '?',
-//                        text: "¡Esta acción no se puede deshacer!",
-//                        icon: 'warning',
-//                        showCancelButton: true,
-//                        confirmButtonColor: '#3085d6',
-//                        cancelButtonColor: '#d33',
-//                        confirmButtonText: 'Sí, eliminarlo'
-//                    }).then((result) => {
-//                        if (result.isConfirmed) {
-//                            
-//                            form.submit();
-//                            
-//                        }
-//                    })
+                if ($totalContenedores === 0) {
+                    echo "<h3>NO HAY CONTENEDORES DESPLEGADOS</h3>";
+                } else {
+                    echo "<h3>Contenedores en ejecución: $encendidos </h3> <!-- Mostrar número de contenedores encendidos -->
+                    <h3>Contenedores apagados: $apagados </h3> <!-- Mostrar número de contenedores apagados -->
+                    <h3>Total contenedores: $totalContenedores </h3> <!-- Mostrar número de contenedores totales -->";
                 }
-            </script>
-        </li>
-    <?php endforeach; ?>
-</ul>
+            ?>
+    </div>
+
+
+    <ul>
+        <?php foreach ($containers as $container): ?>
+            <li>
+            <?php
+                        $processedName = processContainerName($container['Names'][0]);
+                        $containerId = $container['Id'];
+
+                        // Obtener la dirección IP del contenedor
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, "http://localhost:2375/containers/$containerId/json");
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        $containerInfo = curl_exec($ch);
+                        curl_close($ch);
+                        $containerInfo = json_decode($containerInfo, true);
+                        $containerIP = $containerInfo['NetworkSettings']['IPAddress'];
+
+                        if (strpos($processedName, '_db_') === false && strpos($processedName, '_server') === false):
+                    ?>
+                    <h2><a href="http://<?php echo $processedName; ?>.local" target="_blank"><?php echo $container['Names'][0]; ?></a></h2>
+                    <?php else: ?>
+                    <h2><?php echo $container['Names'][0]; ?></h2>
+                    <?php endif; ?>
+
+                    <!-- Mostrar dirección IP del contenedor solo si está encendido -->
+                    <?php if ($containerIP !== ''): ?>
+                    <p>IP: <?php echo $containerIP; ?></p>
+                    <?php endif; ?>
+                <?php if (strpos($container['Status'], 'Up') !== false): ?>
+                    <form method="POST">
+                        <input type="hidden" name="action" value="stop">
+                        <input type="hidden" name="container_id" value="<?php echo $container['Id']; ?>">
+                        <button class="stop-button" type="submit">Apagar</button>
+                    </form>
+                    <form method="POST">
+                        <input type="hidden" name="action" value="restart">
+                        <input type="hidden" name="container_id" value="<?php echo $container['Id']; ?>">
+                        <button class="restart-button" type="submit">Reiniciar</button>
+                    </form>
+                <?php else: ?>
+                    <form method="POST">
+                        <input type="hidden" name="action" value="start">
+                        <input type="hidden" name="container_id" value="<?php echo $container['Id']; ?>">
+                        <button class="start-button"type="submit">Encender</button>
+                    </form>
+
+                    <form method="POST">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="container_id" value="<?php echo $container['Id']; ?>">
+                        <button class="delete-button" type="submit" onclick="confirmDelete(event, '<?php echo $container['Names'][0]; ?>', this.form)">Eliminar</button>
+
+                    </form>
+
+                <?php endif; ?>
+
+                <script>
+                    function confirmDelete(event, containerName, form) {
+                        event.preventDefault(); // evita el envío del formulario si el usuario hace clic en "Cancelar"
+                        if (confirm("¿Está seguro de que desea eliminar el contenedor " + containerName + "?")) {
+                            // Si el usuario confirma la eliminación, envía la solicitud al servidor
+                            form.submit();
+                        }
+
+
+    //                    Swal.fire({
+    //                        title: '¿Está seguro de que desea eliminar el contenedor ' + containerName + '?',
+    //                        text: "¡Esta acción no se puede deshacer!",
+    //                        icon: 'warning',
+    //                        showCancelButton: true,
+    //                        confirmButtonColor: '#3085d6',
+    //                        cancelButtonColor: '#d33',
+    //                        confirmButtonText: 'Sí, eliminarlo'
+    //                    }).then((result) => {
+    //                        if (result.isConfirmed) {
+    //                            
+    //                            form.submit();
+    //                            
+    //                        }
+    //                    })
+                    }
+                </script>
+            </li>
+        <?php endforeach; ?>
+    </ul>
 </body>
 <footer>
 <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0
