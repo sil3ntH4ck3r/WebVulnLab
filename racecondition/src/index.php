@@ -27,23 +27,23 @@
 
         if (!is_numeric($amount)) {
 
-            file_put_contents('amount.php', $amount);
+            file_put_contents('quantity.php', $amount);
 
             $error_message = "La cantidad debe ser un valor numérico";
 
-            file_put_contents('amount.php', '');
+            file_put_contents('quantity.php', '');
         } else {
-            file_put_contents('amount.php', $amount);
+            file_put_contents('quantity.php', $amount);
             $transfer_result = transfer($from_account, $to_account, $amount);
             if ($transfer_result === 'success') {
                 $success_message = "Cantidad transferida: \${$amount}";
-                file_put_contents('amount.php', '');
+                file_put_contents('quantity.php', '');
             } elseif ($transfer_result === 'insufficient_funds') {
                 $error_message = "No se puede transferir una cantidad superior al saldo restante";
-                file_put_contents('amount.php', '');
+                file_put_contents('quantity.php', '');
             } elseif ($transfer_result === 'same_account') {
                 $error_message = "No se puede transferir dinero de una cuenta a la misma";
-                file_put_contents('amount.php', '');
+                file_put_contents('quantity.php', '');
             }
         }
     }

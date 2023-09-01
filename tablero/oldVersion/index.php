@@ -155,6 +155,7 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
                         curl_close($ch);
                         $containerInfo = json_decode($containerInfo, true);
                         $containerIP = $containerInfo['NetworkSettings']['IPAddress'];
+                        $containerState = $containerInfo['State']['Status'];
 
                         if (strpos($processedName, '_db_') === false && strpos($processedName, '_server') === false):
                     ?>
@@ -164,7 +165,7 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
                     <?php endif; ?>
 
                     <!-- Mostrar dirección IP del contenedor solo si está encendido -->
-                    <?php if ($containerIP !== ''): ?>
+                    <?php if ($containerState !== 'exited' && $containerState !== 'stopped'): ?>
                     <p>IP: <?php echo $containerIP; ?></p>
                     <?php endif; ?>
                 <?php if (strpos($container['Status'], 'Up') !== false): ?>
