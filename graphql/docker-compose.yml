@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  db:
+    build: ./db
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    container_name: graphql_db_server_v2
+    networks:
+      - graphql_network
+
+  graphql:
+    build: ./graphql
+    ports:
+      - "8035:3000"
+    depends_on:
+      - db
+    container_name: graphql_v2
+    networks:
+      - graphql_network
+
+volumes:
+  db_data:
+
+networks:
+  graphql_network:

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GraphQL</title>
+</head>
+<body>
+  <h2>Registro</h2>
+  <p id="registro-mensaje"></p>
+  <div id="contenido">
+    <form id="registro-form">
+      <label for="username">Nombre de usuario:</label>
+      <input type="text" id="username" name="username" required>
+      <br>
+      <label for="password">Contraseña:</label>
+      <input type="password" id="password" name="password" required>
+      <br>
+      <label for="password-confirm">Confirmar contraseña:</label>
+      <input type="password" id="password-confirm" name="password-confirm" required>
+      <br>
+      <button id="register-button" type="submit">Registrarse</button>
+    </form>
+  </div>
+  
+  <script src="register.js"></script>
+  <script src="sha512.js"></script>
+</body>
+</html>

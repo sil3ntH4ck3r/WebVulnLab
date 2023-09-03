@@ -1,0 +1,14 @@
+{
+    "name": "graphql-api",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "crypto-js": "^4.1.1",
+        "express": "^4.17.1",
+        "express-graphql": "^0.12.0",
+        "graphql": "^15.5.0",
+        "mysql2": "^2.3.3"
+    }
+}
