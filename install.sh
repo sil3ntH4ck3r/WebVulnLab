@@ -49,6 +49,7 @@ database=(
 otros=(
     "Construyendo contenedores para API Abuse;docker-compose -f $PWD/apiabuse/docker-compose.yml up -d"
     "Contruyendo contenedores para WebDAV;/usr/local/bin/docker-compose -f $PWD/webdav/docker-compose.yml up -d"
+    "Contruyendo contenedores para GraphQL;/usr/local/bin/docker-compose -f $PWD/graphql/docker-compose.yml up -d"
     "Configurando archivos para LDAP;configure_ldap_files"
     "Configurando red para los contenedores;configure_network"
 )
@@ -173,6 +174,12 @@ setup_file_virtual_hosting() {
         echo "    ServerName webdav.local"
         echo "    ProxyPass / http://localhost:8027/"
         echo "    ProxyPassReverse / http://localhost:8027/"
+        echo "</VirtualHost>"
+        echo
+        echo "<VirtualHost *:80>"
+        echo "    ServerName graphql.local"
+        echo "    ProxyPass / http://localhost:8035/"
+        echo "    ProxyPassReverse / http://localhost:8035/"
         echo "</VirtualHost>"
         echo
     } >> "$config_file" 2>> "$error_file"
@@ -302,7 +309,7 @@ configure_virtual_host() {
         hosts_entries+=("$db_container_name.local")
     done
 
-    echo "127.0.0.1 ${hosts_entries[*]} tablero.local apiabuse.local mail.local webdav.local" >> /etc/hosts
+    echo "127.0.0.1 ${hosts_entries[*]} tablero.local apiabuse.local mail.local webdav.local graphql.local" >> /etc/hosts
 
 
     if [ $? -ne 0 ]; then

@@ -106,7 +106,7 @@ This script will download and install all the necessary dependencies, create the
 | CSS Injection| http://cssi.local/ | Functional |
 | Python Deserelization (DES-Yaml)| - | In development |
 | Python Deserelization (DES-Pickle)| - | In development |
-| GraphQL Introspection, Mutations e IDORs| - | In development |
+| GraphQL Introspection, Mutations e IDORs| - | In development (but can be tested) |
 
 Note that it is still in development, and not all containers are working correctly. This repository is updated frequently.
 
