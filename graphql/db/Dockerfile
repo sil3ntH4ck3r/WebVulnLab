@@ -4,3 +4,5 @@ ENV MYSQL_DATABASE=mydatabase
 ENV MYSQL_ROOT_PASSWORD=mysecretpassword
 
 COPY schema.sql /docker-entrypoint-initdb.d/
+
+EXPOSE 3306

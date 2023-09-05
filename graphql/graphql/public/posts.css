@@ -1,0 +1,194 @@
+/* posts.css */
+
+/* Estilo general para toda la página */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Establece una altura mínima igual a la altura de la ventana del navegador */
+}
+  
+  h1 {
+    font-size: 24px;
+    margin: 20px 0;
+  }
+/* Estilo para el encabezado */
+header {
+  background-color: #333; /* Cambia el color de fondo según lo desees */
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+  border-radius: 5px 5px 0 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  width: 100%; /* Ocupa todo el ancho de la pantalla */
+  position: fixed; /* Fija el encabezado en la parte superior */
+  top: 0; /* Coloca el encabezado en la parte superior */
+  left: 0; /* Coloca el encabezado en la parte izquierda */
+}
+
+
+
+  header h1 {
+    font-size: 36px;
+    margin: 0;
+  }
+  
+  /* Estilo para el botón dentro del encabezado */
+  header #new-post-button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  /* Agrega espacio entre el botón y los posts */
+  .button-container {
+    text-align: center;
+    margin: 20px 0;
+  }  
+  /* Contenedor principal para los posts */
+  #post-list {
+    width: 100%;
+    max-width: 800px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px; /* Agrega un margen superior para separar el contenido del header */
+  }
+  
+  /* Estilo para cada post individual */
+  .post {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    background-color: #fff;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .post:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .post h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .post p {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  
+  /* Botón "Nuevo Post" */
+  #new-post-button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  #new-post-button:hover {
+    background-color: #424242;
+  }
+  
+  /* Estilo para el área de creación de nuevo post */
+  #new-post-area {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    width: 80%; /* Cambia el ancho según lo necesites */
+    height: 100%; /* Cambia la altura según lo necesites */
+  }
+  
+  #new-post-area h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  #add-post-form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  #add-post-form input[type="text"],
+  #add-post-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  #send-post {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  #send-post:hover {
+    background-color: #424242;
+  }
+  
+  #cancel-post {
+    background-color: #ccc;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  
+  #cancel-post:hover {
+    background-color: #999;
+  }
+  /* Estilo para el textarea del contenido */
+  #content {
+    width: 200px;
+    padding: 40px; /* Puedes eliminar el padding si no es necesario */
+    margin: 0px; /* Elimina el margen en todos los lados */
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+  }
+  footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    width: 100%; /* Ocupa todo el ancho de la pantalla */
+  }
+  .main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 80px; /* Ajusta el valor según la altura del header */
+    padding-top: 20px; /* Agrega un padding-top para separar el contenido del header */
+    flex-grow: 1; /* Hace que el contenedor principal ocupe todo el espacio disponible */
+  }
