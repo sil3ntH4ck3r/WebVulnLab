@@ -20,6 +20,8 @@ services:
     container_name: graphql_v2
     networks:
       - graphql_network
+    volumes:
+      - ./graphql/public:/var/www/html/public
 
 volumes:
   db_data:

@@ -4,26 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GraphQL</title>
+  <link rel="stylesheet" href="register.css">
 </head>
+<header>
+  <h1>Registro</h1>
+</header>
 <body>
-  <h2>Registro</h2>
-  <p id="registro-mensaje"></p>
-  <div id="contenido">
-    <form id="registro-form">
-      <label for="username">Nombre de usuario:</label>
-      <input type="text" id="username" name="username" required>
-      <br>
-      <label for="password">Contraseña:</label>
-      <input type="password" id="password" name="password" required>
-      <br>
-      <label for="password-confirm">Confirmar contraseña:</label>
-      <input type="password" id="password-confirm" name="password-confirm" required>
-      <br>
-      <button id="register-button" type="submit">Registrarse</button>
-    </form>
+  <div class="main-container">
+    <h2>Registro</h2>
+    <p id="registro-mensaje"></p>
+    <div class="form-item">
+      <form id="registro-form">
+        <label for="username">Nombre de usuario:</label>
+        <input type="text" id="username" name="username" required>
+        <br>
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <label for="password-confirm">Confirmar contraseña:</label>
+        <input type="password" id="password-confirm" name="password-confirm" required>
+        <p class="small-text">Si ya tiene cuenta, pulse <a href="http://graphql.local/login.html">aquí</a></p>
+        <br>
+        <button id="register-button" type="submit">Registrarse</button>
+      </form>
+    </div>
   </div>
-  
   <script src="register.js"></script>
   <script src="sha512.js"></script>
 </body>
+<footer>
+  <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0
+</footer>
 </html>

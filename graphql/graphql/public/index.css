@@ -1,0 +1,115 @@
+/* index.css */
+
+/* Estilo general para toda la página */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Establece una altura mínima igual a la altura de la ventana del navegador */
+  }
+  
+  /* Estilo para el encabezado */
+  header {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+  
+  header h1 {
+    font-size: 36px;
+    margin: 0;
+  }
+  
+  /* Estilo para los botones de registro e inicio de sesión */
+  #registrarse,
+  #iniciar-sesion,
+  #profile {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 20px;
+  }
+  
+  #registrarse:hover,
+  #iniciar-sesion:hover {
+    background-color: #424242;
+  }
+  
+  /* Estilo para el contenido principal */
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 80px;
+    padding-top: 20px;
+    flex-grow: 1;
+  }
+  
+  /* Estilo para las secciones */
+  section {
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 800px;
+  }
+  
+  section h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  section p {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  section ul {
+    list-style-type: disc;
+    margin-left: 20px;
+  }
+  
+  /* Estilo para el botón de explorar API GraphQL */
+  footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    width: 97.9%; /* Ocupa todo el ancho de la pantalla */
+  }
+  
+  .explore-button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 97.9%;
+    margin-top: 10px; /* Agrega un margen superior para separar el botón del párrafo anterior */
+  }
+  
+  .explore-button:hover {
+    background-color: #424242;
+  }
+  main.content {
+    margin-top: 140px; /* Ajusta el valor según la cantidad de espacio que desees */
+  }
+  

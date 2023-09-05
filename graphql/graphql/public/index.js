@@ -38,7 +38,10 @@ async function init() {
     
     const isLoggedIn = await checkLoggedIn(sessionCookie);
     if (isLoggedIn) {
-        document.getElementById('contenido').style.display = 'none';
+        document.getElementById('ocultar').style.display = 'none';
+        document.getElementById('mostrar').style.display = 'yes';
+    } else{
+      document.getElementById('mostrar').style.display = 'none';
     }
 }
 
@@ -50,5 +53,8 @@ document.getElementById('registrarse').addEventListener('click', function() {
   
   document.getElementById('iniciar-sesion').addEventListener('click', function() {
     window.location.href = 'login.html';
+});
+document.getElementById('profile').addEventListener('click', function() {
+  window.location.href = 'profile.html';
 });
   

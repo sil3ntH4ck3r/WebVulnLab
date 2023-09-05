@@ -6,7 +6,7 @@ WORKDIR /var/www/html
 COPY package*.json ./
 RUN npm install
 
-RUN npm install mysql2
+RUN npm install mysql2 cookie-parser
 
 RUN apt update
 RUN apt install default-mysql-server -y

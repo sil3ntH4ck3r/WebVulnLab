@@ -42,7 +42,7 @@ async function init() {
     } else {
         const query = `
             query GetProfile($sessionCookie: String!) {
-                profile(sessionCookie: $sessionCookie) {
+                profile(sessionCookie: $sessionCookie, id: true, username: true, api: true) {
                     id
                     username
                     api
@@ -88,3 +88,21 @@ async function init() {
   }
   
   window.addEventListener('load', init);
+
+  // Obtén una referencia al botón de cierre de sesión
+const logoutButton = document.getElementById('logout-button');
+
+// Agrega un evento de clic al botón de cierre de sesión
+logoutButton.addEventListener('click', function () {
+  // Borra todas las cookies
+  const cookies = document.cookie.split(';');
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i];
+    const eqPos = cookie.indexOf('=');
+    const cookieName = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+    document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  }
+
+  // Redirige al usuario a "index.html" después de cerrar la sesión
+  window.location.href = 'index.html';
+});

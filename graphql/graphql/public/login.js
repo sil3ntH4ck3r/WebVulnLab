@@ -82,10 +82,9 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
     if (jsonResponse.errors) {
         document.getElementById('login-mensaje').innerText = jsonResponse.errors[0].message;
     } else if (jsonResponse.data.login && jsonResponse.data.login.id !== null && jsonResponse.data.login.username !== null) {
-        document.getElementById('login-mensaje').innerText = 'Inicio de sesión exitoso.';
-
-        const sessionCookie = jsonResponse.data.login.sessionCookie;
-        document.cookie = `sessionCookie=${sessionCookie}; max-age=${30 * 24 * 60 * 60}; path=/`;
+      const sessionCookie = jsonResponse.data.login.sessionCookie;
+      document.cookie = `sessionCookie=${sessionCookie}; max-age=${30 * 24 * 60 * 60}; path=/`;
+      window.location.href = 'index.html';
     } else {
         document.getElementById('login-mensaje').innerText = 'Error desconocido.';
     }
