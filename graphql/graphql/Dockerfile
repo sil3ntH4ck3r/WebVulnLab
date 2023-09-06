@@ -15,8 +15,8 @@ RUN apt install default-mysql-server -y
 # Copia el código de tu servidor
 COPY index.js .
 
-# Copia la carpeta "public"
-COPY public/ ./public
+# Copia la carpeta "src"
+COPY src/ ./src
 
 # Expone el puerto
 EXPOSE 3000

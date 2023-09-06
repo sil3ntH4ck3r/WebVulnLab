@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Destacados</h2>
+    <ul>
+        <li><a href="{{ url_for('post', post_id=10) }}">Como Alcanzar el Exito en el Mundo Empresarial</a></li>
+        <li><a href="{{ url_for('post', post_id=9) }}">Viajes Aventureros al Rededor del Mundo</a></li>
+    </ul>
+    <h2>Últimos artículos</h2>
+    <ul>
+        <li><a href="{{ url_for('post', post_id=1) }}">El Cambio Climático y sus Efectos</a></li>
+        <li><a href="{{ url_for('post', post_id=2) }}">La Importancia de la Educacion</a></li>
+        <li><a href="{{ url_for('post', post_id=3) }}">La Tecnologia en la Vida Cotidiana</a></li>
+    </ul>
+    <h2>Artículos antiguos</h2>
+    <ul>
+        <li><a href="{{ url_for('post', post_id=4) }}">Los Beneficios de Hacer Ejercicio Regularmente</a></li>
+        <li><a href="{{ url_for('post', post_id=5) }}">La Importancia de la Diversidad en el Lugar de Trabajo</a></li>
+        <li><a href="{{ url_for('post', post_id=6) }}">El Arte de la Cocina Internacional</a></li>
+        <li><a href="{{ url_for('post', post_id=7) }}">Consejos para una Alimentación Saludable</a></li>
+        <li><a href="{{ url_for('post', post_id=8) }}">El Impacto de la Inteligencia Artificial en la Sociedad</a></li>
+    </ul>
+{% endblock %}
