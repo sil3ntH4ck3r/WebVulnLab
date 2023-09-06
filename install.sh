@@ -36,6 +36,7 @@ containers=(
   "cors_v2;$PWD/cors;8029:80"
   "racecondition_v2;$PWD/racecondition;8033:80"
   "cssi_v2;$PWD/cssi;8034:80"
+  "yamldeseralization_v2;$PWD/yamldeseralization;8036:5000"
 )
 database=(
     "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"

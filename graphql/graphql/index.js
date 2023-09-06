@@ -6,7 +6,7 @@ const mysql = require('mysql2/promise');
 const cookieParser = require('cookie-parser');
 
 const dbConfig = {
-  host: 'graphql_db_server_v2',
+  host: 'graphql_db_v2',
   user: 'root',
   password: 'mysecretpassword',
   database: 'mydatabase',
@@ -316,7 +316,7 @@ app.use(cookieParser());
 
 // Configura la ruta raíz para enviar el archivo HTML
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'src', 'index.html'));
 });
 
 app.use('/graphql', checkAuthentication, graphqlHTTP({
@@ -341,7 +341,7 @@ app.use('/graphql', checkAuthentication, graphqlHTTP({
   },
 }));
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'src')));
 
 const port = 3000;
 

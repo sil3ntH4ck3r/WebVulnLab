@@ -7,7 +7,7 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-    container_name: graphql_db_server_v2
+    container_name: graphql_db_v2
     networks:
       - graphql_network
 
@@ -21,7 +21,7 @@ services:
     networks:
       - graphql_network
     volumes:
-      - ./graphql/public:/var/www/html/public
+      - ./graphql/src:/var/www/html/src
 
 volumes:
   db_data:

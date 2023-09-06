@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2 id="article-title">Artículo</h2>
+    <p id="article-content"></p>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var serializedData = '{{ serialized_data|safe }}';
+            var formData = new FormData();
+            formData.append('input', btoa(serializedData));
+            fetch('/deserialize', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('article-title').textContent = 'Artículo';
+                document.getElementById('article-content').textContent = data;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+{% endblock %}
