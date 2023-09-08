@@ -105,9 +105,9 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Json Web Token| http://jwt.local/ | Funcional |
 | Race Condition| http://racecondition.local/ | Funcional |
 | CSS Injection| http://cssi.local/ | Funcional |
-| Python Deserelization (DES-Yaml)| - | En desarrollo (pero se puede probar) |
-| Python Deserelization (DES-Pickle)| - | En desarrollo |
-| GraphQL Introspection, Mutations | http://graphql.local/ | En desarrollo (pero se puede probar) |
+| Python Deserelization (DES-Yaml)| http://yamldeseralization.local/ | Funcional |
+| Python Deserelization (DES-Pickle)| http://pickledeseralization.local/ | Funcional |
+| GraphQL Introspection, Mutations| http://graphql.local/ | Funcional |
 
 Cabe destacar que aún está en desarrollo, y que no todos los contenedores están funcionando correctamente. Este repositorio se actualiza a menudo.
 
