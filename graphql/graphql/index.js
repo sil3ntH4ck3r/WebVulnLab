@@ -66,8 +66,8 @@ const createDefaultEntries = async () => {
     if (existingPosts.length === 0) {
       // Si no existe, crea el post por defecto
       await connection.query('INSERT INTO posts (title, content, user_id) VALUES (?, ?, ?)', [
-        'Título por defecto',
-        'Contenido por defecto',
+        '¡Bienvenido!',
+        'Aquí, puedes compartir tus pensamientos, ideas y experiencias con personas de todo el mundo. Es un lugar donde puedes inspirar, aprender y conectar con otros apasionados como tú. Ya sea que tengas una historia que contar, un consejo que compartir o simplemente quieras expresarte, este es tu espacio. ¡Comienza a publicar y deja que el mundo descubra lo que tienes para ofrecer!\n\n¡Disfruta de tu estancia y únete a la comunidad creativa!',
         1, // ID del usuario por defecto
       ]);
     }
