@@ -107,7 +107,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | CSS Injection| http://cssi.local/ | Funcional |
 | Python Deserelization (DES-Yaml)| - | En desarrollo (pero se puede probar) |
 | Python Deserelization (DES-Pickle)| - | En desarrollo |
-| GraphQL Introspection, Mutations e IDORs| http://graphql.local/ | En desarrollo (pero se puede probar) |
+| GraphQL Introspection, Mutations | http://graphql.local/ | En desarrollo (pero se puede probar) |
 
 Cabe destacar que aún está en desarrollo, y que no todos los contenedores están funcionando correctamente. Este repositorio se actualiza a menudo.
 
