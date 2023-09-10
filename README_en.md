@@ -11,6 +11,7 @@ In this new version, you will find a more attractive and user-friendly interface
 
 ## Content
 - [Requirements](#requirements)
+- [Personalización de la instalación (recomendado)](#customizinginstallation)
 - [Installation](#installation)
 - [Steps to Update the Project](#update)
 - [Errores comunes](#errors)
@@ -26,6 +27,35 @@ In this new version, you will find a more attractive and user-friendly interface
 git --version
 ```
 If Git is not installed, you can follow the installation instructions provided [here](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+
+## Customizing the Installation <a name="customizinginstallation"></a>
+In the `install.sh` file, you will find three arrays containing information about the containers to be installed: `containers`, `database`, and `otros`. Each element of these arrays follows the following format:
+
+- containers
+```
+container_name;$DIRECTORY_PATH;PUBLISHED_PORT:CONTAINER_PORT;container_image
+```
+- database
+```
+database_container_name;$DIRECTORY_PATH;PUBLISHED_PORT:CONTAINER_PORT;container_image
+```
+- otros
+```
+Command Description;command_to_execute
+```
+You can comment out the lines of containers that you do not wish to install. For example:
+```
+database=(
+#   "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
+#   "blindsqli_db_v2;$PWD/blindsqli;8014:80;blindsqli_v2"
+#   ...
+)
+```
+This allows you to install only the containers that you need to avoid performance issues on your system. Once you have commented out the containers you do not want to install, you can proceed to the [next step](#installation).
+After you have resolved and used the installed containers, you can uninstall them if desired. You can do so using commands such as docker-compose down or docker rm, as appropriate.
+If you wish to install more containers, simply comment out the lines of unwanted containers in the install.sh file and run the script again.
+
+This process allows you to selectively install and manage containers, which can be helpful for efficiently managing your system's resources.
 
 ## Installation <a name="installation"></a>
 
