@@ -10,6 +10,7 @@ En esta nueva versión, encontrarás una interfaz más atractiva y fácil de usa
 
 ## Contenido
 - [Requisitos](#requisitos)
+- [Personalización de la instalación (recomendado)](#personalizacióndelainstalación)
 - [Instalación](#instalación)
 - [Actualización del proyecto](#actualización)
 - [Errores comunes](#errores)
@@ -26,6 +27,36 @@ En esta nueva versión, encontrarás una interfaz más atractiva y fácil de usa
   git --version
   ```
   Si Git no está instalado, puedes seguir las instrucciones de instalación en [este enlace](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+
+## Personalización de la instalación <a name="personalizacióndelainstalación"></a>
+En el archivo `install.sh`, encontrarás tres arrays que contienen información sobre los contenedores a instalar: `containers`, `database`, y `otros`. Cada elemento de estos arrays tiene el siguiente formato:
+
+- containers
+```
+nombre_del_contenedor;$RUTA_DEL_DIRECTORIO;PUERTO_DE_PUBLICACIÓN:PUERTO_DEL_CONTENEDOR;imagen_del_contenedor
+```
+- database
+```
+nombre_del_contenedor_de_la_base_de_datos;$RUTA_DEL_DIRECTORIO;PUERTO_DE_PUBLICACIÓN:PUERTO_DEL_CONTENEDOR;imagen_del_contenedor
+```
+- otros
+```
+Descripción del comando;comando_a_ejecutar
+```
+Puedes comentar las líneas de los contenedores que no deseas instalar. Por ejemplo:
+```
+database=(
+#   "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
+#   "blindsqli_db_v2;$PWD/blindsqli;8014:80;blindsqli_v2"
+#   ...
+)
+```
+Esto te permite instalar solo los contenedores que necesites para evitar problemas de rendimiento en tu sistema.
+Una vez comentados los contenedores que no quieres que se instalen, ya puedes pasar al [paso siguiente](#instalación).
+Después de que hayas resuelto y utilizado los contenedores que instalaste, puedes desinstalarlos si así lo deseas. Puedes hacerlo utilizando comandos como docker-compose down o docker rm, según corresponda.
+Si deseas instalar más contenedores, simplemente vuelve a comentar las líneas de los contenedores no deseados en el archivo install.sh y ejecuta el script nuevamente.
+
+Este proceso te permite instalar y resolver los contenedores de forma selectiva, lo que puede ser útil para gestionar los recursos de tu sistema de manera más eficiente.
 
 ## Instalación <a name="instalación"></a>
 
