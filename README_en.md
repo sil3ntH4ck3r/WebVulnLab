@@ -11,7 +11,7 @@ In this new version, you will find a more attractive and user-friendly interface
 
 ## Content
 - [Requirements](#requirements)
-- [Personalización de la instalación (recomendado)](#customizinginstallation)
+- [Customization of the installation (recommended)](#customizinginstallation)
 - [Installation](#installation)
 - [Steps to Update the Project](#update)
 - [Errores comunes](#errors)
