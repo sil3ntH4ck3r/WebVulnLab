@@ -67,7 +67,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 
 | Docker               | Enlace                                     |Estatus                                |
 |:---------------------|:-------------------------------------------|---------------------------------------|
-| Tablero              | http://tablero.loca/                       |Funcional                              |
+| Tablero              | http://tablero.local/                       |Funcional                              |
 | Servidor Principal   | http://menu.local/                         |Funcional                              |
 | LFI                  | http://lfi.local/                          |Funcional                              |
 | Padding Oracle Attack| http://paddingoracleattack.local/          |Funcional                              |
