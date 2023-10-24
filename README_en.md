@@ -21,6 +21,7 @@ In this new version, you will find a more attractive and user-friendly interface
 ## Requirements <a name="requirements"></a>
 
 - docker (command to install docker on Kali Linux: `sudo apt-get install docker.io`)
+- docker-compose (command to install docker on Kali Linux: `sudo apt-get install docker-compose`)
 - php
 - Git: Make sure you have Git installed on your system. You can check if Git is installed by running the following command in the terminal:
 ```shell

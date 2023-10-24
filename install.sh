@@ -8,50 +8,50 @@ hide_output="s"
 # Arrays
 
 containers=(
-  "menu_v2;$PWD/menu;8080:80" # Contenedor para el menú
-  "lfi_v2;$PWD/lfi;8000:80" # Contenedor para LFI
-  "csrf_v2;$PWD/csrf;8001:80" # Contenedor para CSRF
-  "blindxxe_v2;$PWD/blindxxe;8002:80" # Contenedor para Blind XXE
-  "xxe_v2;$PWD/xxe;8003:80" # Contenedor para XXE
-  "xss_v2;$PWD/xss;8004:80" # Contenedor para XSS
-  "domainzonetransfer_v2;$PWD/domainzonetransfer;53:53/udp -p 53:53/tcp" # Contenedor para Domain Zone Transfer
-  "ssrf_v2;$PWD/ssrf;8006:80" # Contenedor para SSRF
-  "typejuggling_v2;$PWD/typejuggling;8008:80" # Contenedor para Type Juggling
-  "rfi_v2;$PWD/rfi;8009:80" # Contenedor para RFI
-  "insecuredeseralizationphp_v2;$PWD/insecuredeseralizationphp;8010:80" # Contenedor para Insecure Deserialization en PHP
-  "latexinjection_v2;$PWD/latexinjection;8011:80" # Contenedor para LaTeX Injection
-  "xpathinjection_v2;$PWD/xpathinjection;8012:80" # Contenedor para xPath Injection
-  "shellshock_v2;$PWD/shellshock;8013:80" # Contenedor para ShellShock
-  "blindxss_v2;$PWD/blindxss;8015:80" # Contenedor para Blind XSS
-  "htmlinjection_v2;$PWD/htmlinjection;8016:80" # Contenedor para HTML Injection
-  "ssti_v2;$PWD/ssti;8018:80"  # Contenedor para SSTI
-  "csti_v2;$PWD/csti;8019:80" # Contenedor para CSTI
-  "nosqlinjection_v2;$PWD/nosqlinjection;8020:80" # Contenedor para NoSQL Injection
-  "ldap_server_v2;$PWD/ldapinjection/ldapserver;389:389" # Contenedor LDAP Server
-  "ldapinjection_v2;$PWD/ldapinjection/webserver;8021:80" # Contenedor LDAP Injection (Necesario iniciar también: LDAP Server y Configurar archivos LDAP, que están en el array "otros")
-  "fileuploadabuse_v2;$PWD/fileuploadabuse;8024:80" # Contenedor para File Upload Abuse
-  "prototypepollution_v2;$PWD/prototypepollution;8025:3000" # Contenedor para Prototype Pollution
-  "openredirect_v2;$PWD/openredirect;8026:80" # Contenedor para Open Redirect
-  "squidproxy_v2;$PWD/squidproxy;8028:80 -p 3128:3128 --cap-add=NET_ADMIN" # Contenedor para SQUID Proxy
-  "cors_v2;$PWD/cors;8029:80" # Contenedor para CORS
-  "racecondition_v2;$PWD/racecondition;8033:80" # Contenedor para Race Condition
-  "cssi_v2;$PWD/cssi;8034:80" # Contenedor para CSS Injection
-  "yamldeseralization_v2;$PWD/yamldeseralization;8036:5000" # Contenedor para YAML Deserialization
-  "pickledeseralization_v2;$PWD/pickledeseralization;8037:5000" # Contenedor para Pickle Deserialization
+  #"menu_v2;$PWD/menu;8080:80" # Contenedor para el menú
+  #"lfi_v2;$PWD/lfi;8000:80" # Contenedor para LFI
+  #"csrf_v2;$PWD/csrf;8001:80" # Contenedor para CSRF
+  #"blindxxe_v2;$PWD/blindxxe;8002:80" # Contenedor para Blind XXE
+  #"xxe_v2;$PWD/xxe;8003:80" # Contenedor para XXE
+  #"xss_v2;$PWD/xss;8004:80" # Contenedor para XSS
+  #"domainzonetransfer_v2;$PWD/domainzonetransfer;53:53/udp -p 53:53/tcp" # Contenedor para Domain Zone Transfer
+  #"ssrf_v2;$PWD/ssrf;8006:80" # Contenedor para SSRF
+  #"typejuggling_v2;$PWD/typejuggling;8008:80" # Contenedor para Type Juggling
+  #"rfi_v2;$PWD/rfi;8009:80" # Contenedor para RFI
+  #"insecuredeseralizationphp_v2;$PWD/insecuredeseralizationphp;8010:80" # Contenedor para Insecure Deserialization en PHP
+  #"latexinjection_v2;$PWD/latexinjection;8011:80" # Contenedor para LaTeX Injection
+  #"xpathinjection_v2;$PWD/xpathinjection;8012:80" # Contenedor para xPath Injection
+  #"shellshock_v2;$PWD/shellshock;8013:80" # Contenedor para ShellShock
+  #"blindxss_v2;$PWD/blindxss;8015:80" # Contenedor para Blind XSS
+  #"htmlinjection_v2;$PWD/htmlinjection;8016:80" # Contenedor para HTML Injection
+  #"ssti_v2;$PWD/ssti;8018:80"  # Contenedor para SSTI
+  #"csti_v2;$PWD/csti;8019:80" # Contenedor para CSTI
+  #"nosqlinjection_v2;$PWD/nosqlinjection;8020:80" # Contenedor para NoSQL Injection
+  #"ldap_server_v2;$PWD/ldapinjection/ldapserver;389:389" # Contenedor LDAP Server
+  #"ldapinjection_v2;$PWD/ldapinjection/webserver;8021:80" # Contenedor LDAP Injection (Necesario iniciar también: LDAP Server y Configurar archivos LDAP, que están en el array "otros")
+  #"fileuploadabuse_v2;$PWD/fileuploadabuse;8024:80" # Contenedor para File Upload Abuse
+  #"prototypepollution_v2;$PWD/prototypepollution;8025:3000" # Contenedor para Prototype Pollution
+  #"openredirect_v2;$PWD/openredirect;8026:80" # Contenedor para Open Redirect
+  #"squidproxy_v2;$PWD/squidproxy;8028:80 -p 3128:3128 --cap-add=NET_ADMIN" # Contenedor para SQUID Proxy
+  #"cors_v2;$PWD/cors;8029:80" # Contenedor para CORS
+  #"racecondition_v2;$PWD/racecondition;8033:80" # Contenedor para Race Condition
+  #"cssi_v2;$PWD/cssi;8034:80" # Contenedor para CSS Injection
+  #"yamldeseralization_v2;$PWD/yamldeseralization;8036:5000" # Contenedor para YAML Deserialization
+  #"pickledeseralization_v2;$PWD/pickledeseralization;8037:5000" # Contenedor para Pickle Deserialization
 )
 database=(
-    "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2" # Contenedor para SQL Injection
-    "blindsqli_db_v2;$PWD/blindsqli;8014:80;blindsqli_v2" # Contenedor para Blind SQL Injection
-    "paddingoracleattack_db_v2;$PWD/paddingoracleattack;8007:80;paddingoracleattack_v2" # Contenedor para Padding Oracle Attack
-    "idor_db_v2;$PWD/idor;8017:80;idor_v2" # Contenedor para iDOR
-    "sqltruncation_db_v2;$PWD/sqltruncation;8030:80;sqltruncation_v2" # Contenedor para SQL Truncation
-    "sessionpuzzling_db_v2;$PWD/sessionpuzzling;8031:80;sessionpuzzling_v2" # Contenedor para Session Puzzling
-    "jwt_db_v2;$PWD/jwt;8032:80;jwt_v2" # Contenedor para JWT
+    #"sqli_db_v2;$PWD/sqli;8005:80;sqli_v2" # Contenedor para SQL Injection
+    #"blindsqli_db_v2;$PWD/blindsqli;8014:80;blindsqli_v2" # Contenedor para Blind SQL Injection
+    #"paddingoracleattack_db_v2;$PWD/paddingoracleattack;8007:80;paddingoracleattack_v2" # Contenedor para Padding Oracle Attack
+    #"idor_db_v2;$PWD/idor;8017:80;idor_v2" # Contenedor para iDOR
+    #"sqltruncation_db_v2;$PWD/sqltruncation;8030:80;sqltruncation_v2" # Contenedor para SQL Truncation
+    #"sessionpuzzling_db_v2;$PWD/sessionpuzzling;8031:80;sessionpuzzling_v2" # Contenedor para Session Puzzling
+    #"jwt_db_v2;$PWD/jwt;8032:80;jwt_v2" # Contenedor para JWT
 )
 otros=(
-    "Construyendo contenedores para API Abuse;docker-compose -f $PWD/apiabuse/docker-compose.yml up -d" # Contenedor para API abuse (recomiendo ejecutarlo solo, sin otros contenedores)
-    "Contruyendo contenedores para WebDAV;/usr/local/bin/docker-compose -f $PWD/webdav/docker-compose.yml up -d" # Contenedor para WebDAV
-    "Contruyendo contenedores para GraphQL;/usr/local/bin/docker-compose -f $PWD/graphql/docker-compose.yml up -d" # Contenedor para GrphQL
+    #"Construyendo contenedores para API Abuse;docker-compose -f $PWD/apiabuse/docker-compose.yml up -d" # Contenedor para API abuse (recomiendo ejecutarlo solo, sin otros contenedores)
+    "Contruyendo contenedores para WebDAV;docker-compose -f $PWD/webdav/docker-compose.yml up -d" # Contenedor para WebDAV
+    "Contruyendo contenedores para GraphQL;docker-compose -f $PWD/graphql/docker-compose.yml up -d" # Contenedor para GrphQL
     "Configurando archivos para LDAP;configure_ldap_files" # Función para configurar los archivos de LDAP
     "Configurando red para los contenedores;configure_network" # Función para poner todos los contenedores en una misma red
 )
@@ -395,6 +395,8 @@ if [ "$hide_output" = "s" ]; then
                 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $container_name iniciado correctamente${endColour}"
             fi
 
+            sudo docker stop $(docker ps -aq) > /dev/null 2>&1
+
         done
 
         for database in "${database[@]}"; do
@@ -426,6 +428,8 @@ if [ "$hide_output" = "s" ]; then
                 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $container_name iniciado correctamente${endColour}"
             fi
 
+            sudo docker stop $(docker ps -aq) > /dev/null 2>&1
+
         done
 
         for otros in "${otros[@]}"; do
@@ -440,6 +444,7 @@ if [ "$hide_output" = "s" ]; then
                 echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}$info${endColour}"
             fi
             echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}$info${endColour}"
+            sudo docker stop $(docker ps -aq) > /dev/null 2>&1
         done
 
     else
@@ -474,6 +479,7 @@ if [ "$hide_output" = "s" ]; then
             else
                 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $container_name iniciado correctamente${endColour}"
             fi
+            sudo docker stop $(docker ps -aq) > /dev/null 2>&1
         done
 
         for database in "${database[@]}"; do
@@ -507,6 +513,7 @@ if [ "$hide_output" = "s" ]; then
             else 
                 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $container_name iniciado correctamente${endColour}"
             fi
+            sudo docker stop $(docker ps -aq) > /dev/null 2>&1
 
         done
 
@@ -523,6 +530,7 @@ if [ "$hide_output" = "s" ]; then
                 exit 1;
             fi
             echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}$info${endColour}"
+            sudo docker stop $(docker ps -aq) > /dev/null 2>&1
         done
 
     fi
@@ -559,6 +567,8 @@ else
                 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $container_name iniciado correctamente${endColour}"
             fi
 
+            sudo docker stop $(docker ps -aq) > /dev/null 2>&1
+
         done
 
         for database in "${database[@]}"; do
@@ -590,6 +600,8 @@ else
                 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $container_name iniciado correctamente${endColour}"
             fi
 
+            sudo docker stop $(docker ps -aq) > /dev/null 2>&1
+
         done
 
         for otros in "${otros[@]}"; do
@@ -604,6 +616,7 @@ else
                 echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}$info${endColour}"
             fi
             echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}$info${endColour}"
+            sudo docker stop $(docker ps -aq) > /dev/null 2>&1
         done
 
     else
@@ -638,6 +651,7 @@ else
             else
                 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $container_name iniciado correctamente${endColour}"
             fi
+            sudo docker stop $(docker ps -aq) > /dev/null 2>&1
         done
 
         for database in "${database[@]}"; do
@@ -672,6 +686,8 @@ else
                 echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Docker $container_name iniciado correctamente${endColour}"
             fi
 
+            sudo docker stop $(docker ps -aq) > /dev/null 2>&1
+
         done
 
         for otros in "${otros[@]}"; do
@@ -687,6 +703,7 @@ else
                 exit 1;
             fi
             echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}$info${endColour}"
+            sudo docker stop $(docker ps -aq) > /dev/null 2>&1
         done
 
     fi
