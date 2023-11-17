@@ -87,6 +87,7 @@ configure_ldap_files(){
 
             if [ "$container_name" == "ldap_server_v2" ]; then
                 echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}Configurando archivos para LDAP Server${endColour}"
+                docker start ldap_server_v2
                 ldapadd -x -H ldap://localhost -D "cn=admin,dc=ldapinjection,dc=local" -w admin -f $PWD/ldapinjection/ldapserver/users.ldif
                 if [ $? -ne 0 ]; then
                     echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al configurar users.ldif${endColour}"
@@ -96,8 +97,10 @@ configure_ldap_files(){
                 ldapadd -x -D "cn=admin,dc=ldapinjection,dc=local" -w admin -f $PWD/ldapinjection/ldapserver/user1.ldif
                 if [ $? -ne 0 ]; then
                     echo -e "\n${yellowColour}[${endColour}${redColour}+${endColour}${yellowColour}]${endColour} ${redColour}ERROR${endColour} ${grayColour}Error al configurar user1.ldif${endColour}"
+                    docker stop ldap_server_v2
                 else
                     echo -e "\n${yellowColour}[${endColour}${greenColour}+${endColour}${yellowColour}]${endColour} ${greenColour}CORRECTO${endColour} ${grayColour}Configurado correctamente user1.ldif${endColour}"
+                    docker stop ldap_server_v2
                 fi
             fi
 
