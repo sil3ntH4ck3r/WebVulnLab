@@ -1,0 +1,6 @@
+systemctl start snapd.service
+systemctl enable --now snapd.apparmor
+snap install distrobuilder --classic
+sudo /snap/bin/distrobuilder repack-windows --windows-arch=amd64 (images iso descargada)
+systemctl start lxd.service
+systemctl start lxc.service

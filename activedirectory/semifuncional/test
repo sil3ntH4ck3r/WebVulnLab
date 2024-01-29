@@ -1,0 +1,1 @@
+qemu-system-x86_64 -m 2G -smp 2 -name 'testing' -vnc 0:80 -boot d -cdrom /isos/server2016.iso
