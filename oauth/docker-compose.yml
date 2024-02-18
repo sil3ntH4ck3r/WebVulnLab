@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  printing_db:
+    image: "postgres:latest"
+    environment:
+      - POSTGRES_USER=username
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=printing_db
+
+  gallery_db:
+    image: "postgres:latest"
+    environment:
+      - POSTGRES_USER=username
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=gallery_db
+
+  printing:
+    build:
+      context: ./printing
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URI=postgresql://username:password@printing_db:5432/printing_db
+    depends_on:
+      - printing_db
+    volumes:
+      - ./printing:/app
+
+  gallery:
+    build:
+      context: ./gallery
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - DATABASE_URI=postgresql://username:password@gallery_db:5432/gallery_db
+    depends_on:
+      - gallery_db
+    volumes:
+      - ./gallery:/app
+
+networks:
+  default:
+    name: printing_network

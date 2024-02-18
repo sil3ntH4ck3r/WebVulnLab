@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery</title>
+</head>
+<body>
+    <h1>My Images</h1>
+
+    {% if images %}
+    <div class="row">
+    {% for image in images %}
+        <div class="col-md-3">
+            <img src="data:image/{{ image.filename.split('.')[-1] }};base64,{{ image.data }}" alt="{{ image.filename }}" class="img-fluid">
+        </div>
+    {% endfor %}
+    </div>
+    {% else %}
+    <p>You haven't uploaded any images yet.</p>
+    {% endif %}
+</body>
+</html>
