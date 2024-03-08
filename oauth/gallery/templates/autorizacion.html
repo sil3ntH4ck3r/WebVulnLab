@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autorización</title>
+</head>
+<body>
+    <h1>Autorización</h1>
+    <p>¿Autorizas a Printing a acceder a tus imágenes?</p>
+    <form action="{{ url_for('procesar_autorizacion') }}" method="post">
+        <input type="hidden" name="redirect_uri" value="{{ redirect_uri }}">
+        <input type="hidden" name="codigo" value="{{ codigo }}">
+        <button type="submit" name="decision" value="si">Sí</button>
+        <button type="submit" name="decision" value="no">No</button>
+    </form>
+</body>
+</html>

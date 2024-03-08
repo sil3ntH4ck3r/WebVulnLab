@@ -22,7 +22,7 @@
     <table>
         <tr>
             <th>ID</th>
-            <td>{{ user.id }}</td>
+            <td>{{ user.client_id }}</td>
         </tr>
         <tr>
             <th>Username</th>
@@ -45,7 +45,7 @@
     {% if not user.gallery_linked %}
     <form method="post">
         <input type="hidden" name="action" value="link_gallery">
-        <button type="submit" class="btn btn-primary">Link Gallery Account</button>
+        <button type="button" onclick="window.location.href='/connect-gallery'" class="btn btn-primary">Link Gallery Account</button>
     </form>
     {% endif %}
 </body>

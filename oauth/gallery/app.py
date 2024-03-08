@@ -8,11 +8,17 @@ from werkzeug.utils import secure_filename
 import base64
 import time
 import jwt
+import random
+import string
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@gallery_db:5432/gallery_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Define the Gallery authorization endpoint and redirect URI
+GALLERY_AUTHORIZATION_ENDPOINT = "http://localhost:5001/auth/callback"
+GALLERY_REDIRECT_URI = "http://localhost:5001/gallery/photos"
 
 db = SQLAlchemy(app)
 
@@ -22,6 +28,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     images = db.relationship('Image', backref='user', lazy=True)
+    codigo = db.Column(db.String(4), nullable=True)
 
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -42,9 +49,141 @@ def try_connect_to_db(retry_limit=3, delay=1):
     print(f"Connection to the database failed after {retry_limit} attempts.")
     return False
 
+def obtener_client_id():
+    # Obtener el token JWT de la cookie jwt_printing
+    token = request.cookies.get('jwt_printing')
+    
+    # Decodificar el token JWT para obtener el payload
+    try:
+        payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        # Extraer el client_id del payload
+        client_id = payload.get('client_id')
+        return client_id
+    except jwt.ExpiredSignatureError:
+        # Manejar el caso en que el token JWT haya expirado
+        return None
+    except jwt.InvalidTokenError:
+        # Manejar el caso en que el token JWT sea inválido
+        return None
+
+@app.route('/auth/callback', methods=['GET'])
+def oauth_callback():
+    # Obtener los parámetros de la URL
+    response_type = request.args.get('response_type')
+    client_id = request.args.get('client_id')
+    redirect_uri = request.args.get('redirect_uri')
+    scope = request.args.get('scope')
+
+    # Verificar que los datos sean correctos
+    if response_type != 'code':
+        return 'Error: response_type incorrecto', 400
+
+    # Verificar el client_id con la cookie jwt_gallery
+    jwt_cookie = request.cookies.get('jwt_gallery')
+    if not jwt_cookie:
+        # Si la cookie no se encuentra, redirigir al usuario a la página de inicio de sesión
+        login_url = url_for('login', next='/auth/callback')
+        return redirect(login_url)
+
+    jwt_cookie = request.cookies.get('jwt_printing')
+
+    try:
+        decoded_token = jwt.decode(jwt_cookie, app.config['SECRET_KEY'], algorithms=['HS256'])
+        token_client_id = decoded_token.get('client_id')
+        if not token_client_id or token_client_id != client_id:
+            return 'Error: client_id inválido', 400
+    except jwt.ExpiredSignatureError:
+        return 'Error: token JWT expirado', 400
+    except jwt.InvalidTokenError:
+        return 'Error: token JWT inválido', 400
+
+    # Verificar el redirect_uri si es necesario
+    if redirect_uri is None:
+        return 'The redirect_uri was not provided', 400
+    # Verificar el scope si es necesario
+    if scope != 'photos':
+        return 'Error: scope incorrecto', 400
+
+    # Generar un código de 4 dígitos
+    codigo = ''.join(random.choices('0123456789', k=4))
+
+    jwt_cookie = request.cookies.get('jwt_gallery')
+    decoded_token = jwt.decode(jwt_cookie, app.config['SECRET_KEY'], algorithms=['HS256'])
+
+    # Obtener el usuario actual
+    user_email = decoded_token.get('email')
+    user = User.query.filter_by(email=user_email).first()
+    if user:
+        # Asignar el código al usuario
+        user.codigo = codigo
+        db.session.commit()
+    else:
+        return 'Error: Usuario no encontrado', 400
+
+    # Mostrar un panel solicitando la autorización del usuario
+    return render_template('autorizacion.html', redirect_uri=redirect_uri, codigo=codigo)
+
+@app.route('/oauth/authorize', methods=['POST'])
+def procesar_autorizacion():
+    decision = request.form.get('decision')
+    redirect_uri = request.form.get('redirect_uri')
+
+    # Comprobar si se proporcionan los parámetros código y redirect_uri
+    codigo = request.form.get('codigo')
+    if not codigo or not redirect_uri:
+        return 'Faltan parámetros requeridos', 400
+    
+    # Comprobar si el código es válido
+    user = User.query.filter_by(codigo=codigo).first()
+    if not user:
+        return 'Código inválido', 400
+
+    if decision == 'si':
+        # Si el usuario acepta, redirigirlo a la URL proporcionada en redirect_uri
+        redirect_uri_con_codigo = f"http://localhost:5000/oauth/code?codigo={codigo}&redirect_uri={redirect_uri}"
+        return redirect(redirect_uri_con_codigo)
+    else:
+        # Si el usuario rechaza, redirigirlo a localhost:5000/profile
+        return redirect(url_for('profile'))
+
 @app.route("/")
 def home():
     return render_template('home.html')
+
+@app.route('/oauth/authorize/token', methods=['POST'])
+def procesar_autorizacion_token():
+    # Obtener los parámetros de la solicitud POST
+    codigo = request.form.get('code')
+    redirect_uri = request.form.get('redirect_uri')
+    client_id = request.form.get('client_id')
+
+    # Verificar si se proporcionaron todos los parámetros necesarios
+    if not (codigo and redirect_uri and client_id):
+        return 'Bad Request: Falta alguno de los parámetros', 400
+
+    # Verificar si el código es válido consultando la base de datos
+    user = User.query.filter_by(codigo=codigo).first()
+    if not user:
+        return 'Unauthorized: Código inválido', 401
+
+    # Verificar si el client_id coincide con el de la cookie
+    token = request.cookies.get('jwt_printing')
+    if not token:
+        return 'Unauthorized: Falta la cookie jwt_printing', 401
+
+    try:
+        payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        cookie_client_id = payload.get('client_id')
+        if cookie_client_id != client_id:
+            return 'Unauthorized: client_id de la cookie no coincide', 401
+    except jwt.ExpiredSignatureError:
+        return 'Unauthorized: Token JWT expirado', 401
+    except jwt.InvalidTokenError:
+        return 'Unauthorized: Token JWT inválido', 401
+
+    # Si todas las verificaciones pasan, responder con un código de estado 200
+    return 'OK', 200
+    
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -73,6 +212,23 @@ def login():
             response = make_response(redirect(url_for('profile')))
             # Establecer la cookie con el token JWT
             response.set_cookie('jwt_gallery', token)
+
+            # Verificar si hay una URL de redireccionamiento después del inicio de sesión
+            next_url = request.args.get('next')
+            if next_url and next_url == url_for('oauth_callback'):
+                # Construir la URL de redirección con los parámetros requeridos
+                redirect_url = (
+                    "http://localhost:5001/auth/callback"
+                    "?response_type=code"
+                    f"&client_id={obtener_client_id()}"  # Obtener el client_id de alguna manera
+                    f"&redirect_uri={GALLERY_REDIRECT_URI}"
+                    "&scope=photos"
+                )
+                
+                # Crear una respuesta con la redirección a la URL construida
+                response = make_response(redirect(redirect_url))
+                # Establecer la cookie con el token JWT
+                response.set_cookie('jwt_gallery', token)
 
             return response
         else:
