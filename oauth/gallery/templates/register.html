@@ -1,35 +1,167 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .register-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 300px;
+            animation: slideIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .password-requirements {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .password-requirement {
+            color: #ccc;
+            margin-bottom: 5px;
+        }
+
+        .password-requirement.valid {
+            color: green;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        @keyframes slideIn {
+            0% {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0%);
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Register</h1>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
-                    {{ message }}
+    <div class="register-container">
+        <h1>Register</h1>
+        <p id="passwordMatchError" class="error-message"></p>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == 'danger' %}
+                        <p class="error-message">{{ message }}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form id="registerForm" method="post" onsubmit="return validateForm()">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" class="form-control" name="username" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" class="form-control" name="email" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-control" name="password" id="password" minlength="8" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).*$">
+                <div class="password-requirements">
+                    <span class="password-requirement" data-requirement="(?=.*\d)">- At least one number</span><br>
+                    <span class="password-requirement" data-requirement="(?=.*[a-z])">- At least one lowercase letter</span><br>
+                    <span class="password-requirement" data-requirement="(?=.*[A-Z])">- At least one uppercase letter</span><br>
+                    <span class="password-requirement" data-requirement="(?=.*\W)">- At least one symbol</span><br>
+                    <span class="password-requirement" data-requirement=".{8,}">- At least 8 characters</span>
                 </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    <form method="post">
-        <div class="form-group">
-            <label>Username</label>
-            <input type="text" class="form-control" name="username">
-        </div>
-        <div class="form-group">
-            <label>Email</label>
-            <input type="email" class="form-control" name="email">
-        </div>
-        <div class="form-group">
-            <label>Password</label>
-            <input type="password" class="form-control" name="password">
-        </div>
-        <button type="submit" class="btn btn-primary">Register</button>
-    </form>
+            </div>
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" class="form-control" name="confirm_password" id="confirmPassword" required>
+            </div>
+            <p style="text-align: center;">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+            <button type="submit" class="btn-primary">Register</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.querySelector('input[name="password"]');
+            const passwordRequirements = document.querySelectorAll('.password-requirement');
+    
+            passwordInput.addEventListener('input', function() {
+                const password = passwordInput.value;
+                passwordRequirements.forEach(function(requirement) {
+                    const requirementName = requirement.dataset.requirement;
+                    const regex = new RegExp(requirementName);
+                    if (regex.test(password)) {
+                        requirement.style.color = 'green';
+                    } else {
+                        requirement.style.color = 'red';
+                    }
+                });
+            });
+        });
+        function validateForm() {
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirmPassword").value;
+
+            if (password !== confirmPassword) {
+                document.getElementById("passwordMatchError").textContent = "Passwords do not match";
+                return false; // Evita que el formulario se envíe si las contraseñas no coinciden
+            } else {
+                return true; // Permite que el formulario se envíe si las contraseñas coinciden
+            }
+        }
+    </script>
+
 </body>
 </html>

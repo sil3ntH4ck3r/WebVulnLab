@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Define the Gallery authorization endpoint and redirect URI
 GALLERY_AUTHORIZATION_ENDPOINT = "http://localhost:5001/auth/callback"
-GALLERY_REDIRECT_URI = "http://localhost:5001/gallery/photos"
+GALLERY_REDIRECT_URI = "http://localhost:5000/gallery/photos"
 
 db = SQLAlchemy(app)
 
@@ -65,6 +65,10 @@ def obtener_client_id():
     except jwt.InvalidTokenError:
         # Manejar el caso en que el token JWT sea inválido
         return None
+
+# Definir una función para verificar si el usuario está autenticado
+def is_authenticated():
+    return 'jwt_gallery' in request.cookies
 
 @app.route('/auth/callback', methods=['GET'])
 def oauth_callback():
@@ -148,7 +152,7 @@ def procesar_autorizacion():
 
 @app.route("/")
 def home():
-    return render_template('home.html')
+    return render_template('home.html', user_is_authenticated=is_authenticated())
 
 @app.route('/oauth/authorize/token', methods=['POST'])
 def procesar_autorizacion_token():
@@ -181,8 +185,20 @@ def procesar_autorizacion_token():
     except jwt.InvalidTokenError:
         return 'Unauthorized: Token JWT inválido', 401
 
-    # Si todas las verificaciones pasan, responder con un código de estado 200
-    return 'OK', 200
+    # Generar un token de autorización Bearer sin tiempo de expiración
+    token_payload = {
+        'client_id': client_id,
+        'codigo': codigo,
+    }
+    token = jwt.encode(token_payload, app.config['SECRET_KEY'], algorithm='HS256')
+
+    # Crear una respuesta de redirección
+    redirect_response = redirect(redirect_uri)
+
+    # Configurar la cookie con el token de autorización
+    redirect_response.set_cookie('oauth_token', token)
+
+    return redirect_response
     
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -191,11 +207,26 @@ def register():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
-        user = User(username=username, email=email, password=password)
-        db.session.add(user)
+        
+        # Verificar si el nombre de usuario ya está en uso
+        existing_username = User.query.filter_by(username=username).first()
+        if existing_username:
+            flash('Username already exists. Please choose a different one.', 'danger')
+            return redirect(request.url)
+        
+        # Verificar si el correo electrónico ya está en uso
+        existing_email = User.query.filter_by(email=email).first()
+        if existing_email:
+            flash('Email already exists. Please use a different one or login.', 'danger')
+            return redirect(request.url)
+
+        # Si no hay coincidencias, crear un nuevo usuario
+        new_user = User(username=username, email=email, password=password)
+        db.session.add(new_user)
         db.session.commit()
-        flash('Account created! You can now link your gallery account.', 'success')
-        return redirect(url_for('profile'))
+        
+        return redirect(url_for('login'))
+    
     return render_template('register.html')
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -285,12 +316,18 @@ def upload():
                         flash('No selected file', 'danger')
                         return redirect(request.url)
                     
-                    # No need to check the file extension since we're storing the image in the database
-                    image_data = file.read()
-                    new_image = Image(filename=file.filename, data=image_data, user_id=user.id)
-                    db.session.add(new_image)
-                    db.session.commit()
-                    flash('File uploaded successfully', 'success')
+                    # Verificar si el archivo es una imagen
+                    if file.mimetype.startswith('image'):
+                        filename = secure_filename(file.filename)
+                        image_data = file.read()
+                        new_image = Image(filename=filename, data=image_data, user_id=user.id)
+                        db.session.add(new_image)
+                        db.session.commit()
+                        flash('File uploaded successfully', 'success')
+                        return redirect(request.url)
+                    else:
+                        flash('Only images are allowed', 'danger')  # Usar flash para mostrar el mensaje de error
+                        return redirect(request.url)  # Redirigir para que se muestre el mensaje en la plantilla
                     return redirect(url_for('gallery'))
             except jwt.ExpiredSignatureError:
                 flash('Token expired. Please log in again.', 'danger')
@@ -300,7 +337,24 @@ def upload():
             flash('Unauthorized access. Please log in.', 'danger')
             return redirect(url_for('login'))
 
-    return render_template('upload.html')
+    if request.method == 'GET':
+        token = request.cookies.get('jwt_gallery')
+        if token:
+            try:
+                # Verificar y decodificar el token JWT
+                payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+                email = payload['email']
+                if email:
+                    return render_template('upload.html')
+            except jwt.ExpiredSignatureError:
+                flash('Token expired. Please log in again.', 'danger')
+                return render_template('login.html')
+            except jwt.InvalidTokenError:
+                flash('Invalid token. Please log in again.', 'danger')
+                return render_template('login.html')
+        else:
+            flash('Unauthorized access. Please log in.', 'danger')
+            return render_template('login.html')
 
 @app.route('/gallery')
 def gallery():
@@ -314,7 +368,7 @@ def gallery():
             user = User.query.filter_by(email=email).first()
             if user:
                 # Si el token es válido y el usuario existe, mostrar las imágenes del usuario
-                images = [{'filename': img.filename, 'data': base64.b64encode(img.data).decode('ascii')} for img in user.images]
+                images = [{'filename': img.filename, 'data': base64.b64encode(img.data).decode('ascii'), 'uploaded_at': img.uploaded_at} for img in user.images]
                 return render_template('gallery.html', images=images)
         except jwt.ExpiredSignatureError:
             flash('Token expired. Please log in again.', 'danger')
@@ -324,6 +378,49 @@ def gallery():
     # Si el token es inválido o no se proporciona, redirigir al usuario al inicio de sesión
     flash('Unauthorized access. Please log in.', 'danger')
     return redirect(url_for('login'))
+
+@app.route('/get_images')
+def get_images():
+    # Obtener el encabezado de autorización de la solicitud
+    authorization_header = request.headers.get('Authorization')
+
+    # Verificar si se proporcionó un encabezado de autorización
+    if authorization_header:
+        # Separar el encabezado de autorización en tipo y token
+        auth_parts = authorization_header.split()
+        if len(auth_parts) == 2 and auth_parts[0] == 'Bearer':
+            token = auth_parts[1]
+
+            try:
+                # Verificar y decodificar el token JWT
+                payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+                
+                # Verificar si el payload del token contiene el parámetro 'codigo'
+                if 'codigo' in payload:
+                    codigo = payload['codigo']
+                    
+                    # Buscar al usuario asociado al código
+                    user = User.query.filter_by(codigo=codigo).first()
+                    if user:
+                        # Si se encuentra al usuario, devolver las imágenes asociadas a ese usuario
+                        images = [{'filename': img.filename, 'data': base64.b64encode(img.data).decode('ascii')} for img in user.images]
+                        return jsonify(images)
+                    else:
+                        return jsonify({'error': 'User not found for the given code'}), 404
+                else:
+                    return jsonify({'error': 'Codigo parameter missing in token payload'}), 400
+            except jwt.ExpiredSignatureError:
+                # Manejar token expirado
+                return jsonify({'error': 'Token expired'}), 401
+            except jwt.InvalidTokenError:
+                # Manejar token inválido
+                return jsonify({'error': 'Invalid token'}), 401
+        else:
+            # Si el encabezado de autorización no está en el formato esperado
+            return jsonify({'error': 'Invalid authorization header format'}), 401
+    else:
+        # Si no se proporcionó un encabezado de autorización
+        return jsonify({'error': 'Authorization header is missing'}), 401
 
 if __name__ == '__main__':
     if try_connect_to_db():

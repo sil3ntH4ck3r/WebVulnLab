@@ -1,13 +1,107 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery Service</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 50px 0;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .features {
+            padding: 50px 0;
+        }
+
+        .feature {
+            display: inline-block;
+            width: 30%;
+            vertical-align: top;
+            margin: 0 2%;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        .feature h2 {
+            color: #007bff;
+        }
+
+        .cta {
+            background-color: #007bff;
+            color: #fff;
+            padding: 50px 0;
+        }
+
+        .cta p {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #fff;
+            color: #007bff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Gallery Service!</h1>
-    <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
-    <a href="{{ url_for('register') }}" class="btn btn-secondary">Register</a>
+    <div class="header">
+        <h1>Welcome to the Gallery Service!</h1>
+        <p>Start sharing your memories with the world by uploading your images to our secure gallery service.</p>
+    </div>
+
+    <div class="features">
+        <div class="feature">
+            <h2>End-to-End Encryption</h2>
+            <p>Your privacy matters. We provide robust encryption to ensure your images are safe and secure.</p>
+        </div>
+        <div class="feature">
+            <h2>OAuth Integration</h2>
+            <p>Connect seamlessly with other applications using our OAuth integration feature.</p>
+        </div>
+        <div class="feature">
+            <h2>User-Friendly Interface</h2>
+            <p>Our intuitive interface makes it easy to upload, organize, and share your images with friends and family.</p>
+        </div>
+    </div>
+
+    <div class="cta">
+        <p>Ready to get started?</p>
+        {% if user_is_authenticated %}
+            <a href="{{ url_for('profile') }}" class="btn">Profile</a>
+        {% else %}
+            <a href="{{ url_for('login') }}" class="btn">Login</a>
+            <a href="{{ url_for('register') }}" class="btn">Register</a>
+        {% endif %}
+    </div>
 </body>
 </html>

@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     python3-jwt \
     python3-requests-oauthlib \
+    python3-reportlab \
     && rm -rf /var/lib/apt/lists/*
 
 # Establecer el directorio de trabajo
@@ -26,4 +27,11 @@ ENV DATABASE_URI=postgresql://username:password@db:5432/printing_db
 # Exponer el puerto 5000
 EXPOSE 5000
 
-CMD ["python3", "app.py"]
+# Copiar el script de inicialización
+COPY init_script.sh /usr/local/bin/init_script.sh
+
+# Cambiar los permisos del script para que sea ejecutable
+RUN chmod +x /usr/local/bin/init_script.sh
+
+# Ejecutar el script al iniciar el contenedor
+CMD ["bash", "-c", "/usr/local/bin/init_script.sh && python3 app.py"]

@@ -38,15 +38,21 @@
         </tr>
         <tr>
             <th>Gallery linked</th>
-            <td>{{ user.gallery_linked }}</td>
+            <td>{{ gallery_linked }}</td>
         </tr>
     </table>
     <br>
-    {% if not user.gallery_linked %}
+    {% if not gallery_linked %}
     <form method="post">
         <input type="hidden" name="action" value="link_gallery">
         <button type="button" onclick="window.location.href='/connect-gallery'" class="btn btn-primary">Link Gallery Account</button>
     </form>
     {% endif %}
+    {% if gallery_linked %}
+    <form method="post">
+        <input type="hidden" name="action" value="unlink_gallery">
+        <button type="submit" class="btn btn-danger">Unlink Gallery Account</button>
+    </form>
+{% endif %}
 </body>
 </html>
