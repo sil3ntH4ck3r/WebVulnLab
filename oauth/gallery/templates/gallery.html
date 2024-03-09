@@ -4,20 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .navbar {
+            background-color: #0056b3;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            color: #fff;
+            font-size: 24px;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            list-style-type: none;
+            margin-right: 20px;
+        }
+
+        .navbar-menu li {
+            margin-right: 20px;
+        }
+
+        .navbar-menu li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-menu li a:hover {
+            color: #ddd;
+        }
+
+        .gallery-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .image-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border: 1px solid #ddd;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        .image-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: center;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .image-container:hover .gallery-image {
+            transform: scale(1.1);
+        }
+
+        .image-container:hover .image-info {
+            opacity: 1;
+        }
+
+        .footer {
+            background-color: #0056b3;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-    <h1>My Images</h1>
+    <div class="navbar">
+        <a href="/" class="navbar-brand">Gallery</a>
+        <ul class="navbar-menu">
+            <li><a href="/gallery">Gallery</a></li>
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/upload">Upload</a></li>
+        </ul>
+    </div>
+
+    <h1 style="text-align: center;">My Images</h1>
 
     {% if images %}
-    <div class="row">
-    {% for image in images %}
-        <div class="col-md-3">
-            <img src="data:image/{{ image.filename.split('.')[-1] }};base64,{{ image.data }}" alt="{{ image.filename }}" class="img-fluid">
-        </div>
-    {% endfor %}
+    <div class="gallery-container">
+        {% for image in images %}
+            <div class="image-container">
+                <img src="data:image/{{ image.filename.split('.')[-1] }};base64,{{ image.data }}" alt="{{ image.filename }}" class="gallery-image">
+                <div class="image-info">
+                    <p style="margin-bottom: 5px;">Filename: {{ image.filename }}</p>
+                    <p style="margin-bottom: 0;">Uploaded at: {{ image.uploaded_at }}</p>
+                </div>
+            </div>
+        {% endfor %}
     </div>
     {% else %}
-    <p>You haven't uploaded any images yet.</p>
+    <p style="text-align: center;">You haven't uploaded any images yet.</p>
     {% endif %}
+
+    <div class="footer">
+        <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0
+    </div>
 </body>
 </html>

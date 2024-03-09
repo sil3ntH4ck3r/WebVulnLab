@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery Photos</title>
+    <style>
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .image-item {
+            width: 300px; /* Tamaño estándar del recuadro */
+            height: 300px; /* Tamaño estándar del recuadro */
+            border: 1px solid #ccc; /* Borde del recuadro */
+            overflow: hidden; /* Evita que las imágenes más grandes desborden el recuadro */
+            cursor: pointer; /* Cambiar el cursor al pasar sobre el recuadro */
+        }
+
+        .image-item.selected {
+            border: 2px solid black; /* Cambiar el borde del recuadro cuando está seleccionado */
+        }
+
+        .image-item img {
+            width: 100%; /* Ajustar la imagen al ancho del recuadro */
+            height: auto; /* Permitir que la altura se ajuste proporcionalmente */
+            display: block; /* Hacer que la imagen sea un bloque */
+            object-fit: cover; /* Redimensionar la imagen para que llene el recuadro sin distorsionarla */
+        }
+    </style>
+</head>
+<body>
+    <h1>Gallery Photos</h1>
+    
+    <form id="imageForm" action="/generate_document" method="POST">
+        <div class="image-container">
+            {% for image in images %}
+                <div class="image-item" onclick="toggleSelection(this)">
+                    <img src="data:image/{{ image.filename.split('.')[-1] }};base64,{{ image.data }}" alt="{{ image.filename }}">
+                    <p>{{ image.filename }}</p>
+                    <input type="hidden" name="selected_images[]" value="{{ image.filename }}">
+                    <input type="hidden" name="image_data[]" value="{{ image.data }}">
+                </div>
+            {% endfor %}
+        </div>
+    
+        <button type="button" onclick="submitForm()" id="generateButton" disabled>Generate Document</button>
+    </form>
+
+    <script>
+        function toggleSelection(element) {
+            element.classList.toggle('selected'); // Agrega o quita la clase 'selected' al hacer clic en el recuadro
+
+            // Habilitar el botón si hay alguna imagen seleccionada
+            var generateButton = document.getElementById('generateButton');
+            var selectedImages = document.querySelectorAll('.image-item.selected');
+            if (selectedImages.length > 0) {
+                generateButton.disabled = false;
+            } else {
+                generateButton.disabled = true;
+            }
+        }
+
+        function submitForm() {
+            var selectedImages = document.querySelectorAll('.image-item.selected');
+
+            // Eliminar los campos ocultos de las imágenes no seleccionadas
+            var form = document.getElementById('imageForm');
+            var selectedImagesInputs = form.querySelectorAll('.image-item:not(.selected) input[type="hidden"]');
+            selectedImagesInputs.forEach(function(input) {
+                input.remove();
+            });
+
+            // Enviar el formulario
+            form.submit();
+        }
+    </script>
+</body>
+</html>
