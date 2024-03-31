@@ -1,13 +1,167 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Printing Service</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            color: #2ecc71; /* Green */
+            overflow: hidden;
+            border-right: 2px solid;
+            white-space: nowrap;
+            text-align: center;
+            display: inline-block;
+            animation: typing 5s steps(30, end) forwards, hideCursor 0s 5s forwards;
+        }
+
+        @keyframes typing {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes hideCursor {
+            to {
+                border-right-color: transparent;
+            }
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #2ecc71; /* Green */
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background-color: #3498db; /* Blue */
+            color: #fff;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .email-section {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border-radius: 10px;
+        }
+
+        .email-input {
+            width: 60%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #2ecc71; /* Green */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #27ae60; /* Darker Green */
+        }
+
+        /* Nuevos estilos para la decoración */
+        .printer {
+            font-size: 6rem;
+            margin-bottom: 20px;
+        }
+
+        .printer:before,
+        .printer:after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .printer:before {
+            transform: skew(-45deg);
+            margin-left: -50%;
+        }
+
+        .printer:after {
+            transform: skew(45deg);
+            margin-right: -50%;
+        }
+
+        .printer-text {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Printing Service!</h1>
-    <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
-    <a href="{{ url_for('register') }}" class="btn btn-secondary">Register</a>
+    <div class="container">
+        <h1>Welcome to the Printing Service!</h1>
+        <p>We are your one-stop solution for all printing needs. From business cards to banners, we've got you covered.</p>
+        <p>Our state-of-the-art equipment ensures high-quality prints with fast turnaround times, allowing you to meet your deadlines with ease.</p>
+        <p>Sign up now to explore our services and take advantage of exclusive offers!</p>
+        {% if user_is_authenticated %}
+            <a href="/profile" class="btn btn-primary">Profile</a>
+        {% else %}
+            <a href="/login" class="btn btn-primary">Login</a>
+            <a href="/register" class="btn btn-secondary">Register</a>
+        {% endif %}
+    </div>
+
+    <div class="email-section">
+        <h2>Send us your document for printing</h2>
+        <form action="#" method="get">
+            <input type="email" name="email" placeholder="Enter your email" class="email-input" required>
+            <br>
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+    </div>
 </body>
 </html>

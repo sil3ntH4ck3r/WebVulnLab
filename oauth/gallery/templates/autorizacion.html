@@ -4,15 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Autorización</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ddd;
+        }
+
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            margin-right: 10px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="hidden"] {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>Autorización</h1>
-    <p>¿Autorizas a Printing a acceder a tus imágenes?</p>
-    <form action="{{ url_for('procesar_autorizacion') }}" method="post">
-        <input type="hidden" name="redirect_uri" value="{{ redirect_uri }}">
-        <input type="hidden" name="codigo" value="{{ codigo }}">
-        <button type="submit" name="decision" value="si">Sí</button>
-        <button type="submit" name="decision" value="no">No</button>
-    </form>
+    <div class="container">
+        <h1>Autorización</h1>
+        <p>¿Autorizas a Printing a acceder a tus imágenes?</p>
+        <form action="{{ url_for('procesar_autorizacion') }}" method="post">
+            <input type="hidden" name="redirect_uri" value="{{ redirect_uri }}">
+            <input type="hidden" name="codigo" value="{{ codigo }}">
+            <button type="submit" name="decision" value="si">Sí</button>
+            <button type="submit" name="decision" value="no">No</button>
+        </form>
+    </div>
 </body>
 </html>

@@ -1,58 +1,170 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <style>
-        table {
-            border-collapse: collapse;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #2ecc71;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-right: 20px;
+            font-size: 18px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background-color: #2ecc71;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
             width: 100%;
         }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
         th, td {
-            border: 1px solid black;
-            padding: 8px;
+            border: 1px solid #ccc;
+            padding: 10px;
             text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #2ecc71;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #27ae60;
+        }
+
+        .alert-success {
+            background-color: #d4edda; /* Light Green */
+            color: #155724; /* Dark Green */
+        }
+
+        .alert-danger {
+            color: red;
+            font-weight: bold;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>Profile</h1>
-    <h2>Welcome back, {{ user.username }}!</h2>
-    <table>
-        <tr>
-            <th>ID</th>
-            <td>{{ user.client_id }}</td>
-        </tr>
-        <tr>
-            <th>Username</th>
-            <td>{{ user.username }}</td>
-        </tr>
-        <tr>
-            <th>Email</th>
-            <td>{{ user.email }}</td>
-        </tr>
-        <tr>
-            <th>Password</th>
-            <td>{{ user.password }}</td>
-        </tr>
-        <tr>
-            <th>Gallery linked</th>
-            <td>{{ gallery_linked }}</td>
-        </tr>
-    </table>
-    <br>
-    {% if not gallery_linked %}
-    <form method="post">
-        <input type="hidden" name="action" value="link_gallery">
-        <button type="button" onclick="window.location.href='/connect-gallery'" class="btn btn-primary">Link Gallery Account</button>
-    </form>
-    {% endif %}
-    {% if gallery_linked %}
-    <form method="post">
-        <input type="hidden" name="action" value="unlink_gallery">
-        <button type="submit" class="btn btn-danger">Unlink Gallery Account</button>
-    </form>
-{% endif %}
+    <header>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/profile">Profile</a>
+            <a href="/gallery/photos">Gallery</a>
+        </nav>
+        <h1>Profile</h1>
+    </header>
+
+    <div class="container">
+        <h2>Welcome back, {{ user.username }}!</h2>
+        <!-- Mensajes de éxito y error -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <table>
+            <tr>
+                <th>ID</th>
+                <td>{{ user.client_id }}</td>
+            </tr>
+            <tr>
+                <th>Username</th>
+                <td>{{ user.username }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Gallery linked</th>
+                <td>{{ gallery_linked }}</td>
+            </tr>
+        </table>
+        <br>
+        {% if not gallery_linked %}
+        <form method="post">
+            <input type="hidden" name="action" value="link_gallery">
+            <button type="button" onclick="window.location.href='/connect-gallery'" class="btn">Link Gallery Account</button>
+        </form>
+        <br>
+        <form method="post">
+            <input type="hidden" name="action" value="logout">
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
+        {% endif %}
+        {% if gallery_linked %}
+        <form method="post">
+            <input type="hidden" name="action" value="unlink_gallery">
+            <button type="submit" class="btn btn-danger">Unlink Gallery Account</button>
+        </form>
+        <br>
+        <form method="post">
+            <input type="hidden" name="action" value="logout">
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
+        {% endif %}
+    </div>
+
+    <footer>
+        <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0
+    </footer>
 </body>
 </html>

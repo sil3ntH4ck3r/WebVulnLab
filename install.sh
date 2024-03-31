@@ -52,6 +52,7 @@ otros=(
     "Construyendo contenedores para API Abuse;docker-compose -f $PWD/apiabuse/docker-compose.yml up -d" # Contenedor para API abuse (recomiendo ejecutarlo solo, sin otros contenedores)
     "Contruyendo contenedores para WebDAV;docker-compose -f $PWD/webdav/docker-compose.yml up -d" # Contenedor para WebDAV
     "Contruyendo contenedores para GraphQL;docker-compose -f $PWD/graphql/docker-compose.yml up -d" # Contenedor para GrphQL
+    "Contruyendo contenedores para OAuth;docker-compose -f $PWD/oauth/docker-compose.yml up -d" # Contenedor para OAuth
     "Configurando archivos para LDAP;configure_ldap_files" # Función para configurar los archivos de LDAP
     "Configurando red para los contenedores;configure_network" # Función para poner todos los contenedores en una misma red
 )
@@ -187,6 +188,18 @@ setup_file_virtual_hosting() {
         echo "    ProxyPassReverse / http://localhost:8035/"
         echo "</VirtualHost>"
         echo
+        echo "<VirtualHost *:80>"
+        echo "    ServerName oauth_gallery.local"
+        echo "    ProxyPass / http://localhost:8037/"
+        echo "    ProxyPassReverse / http://localhost:8037/"
+        echo "</VirtualHost>"
+        echo
+        echo "<VirtualHost *:80>"
+        echo "    ServerName oauth_printing.local"
+        echo "    ProxyPass / http://localhost:8036/"
+        echo "    ProxyPassReverse / http://localhost:8036/"
+        echo "</VirtualHost>"
+        echo
     } >> "$config_file" 2>> "$error_file"
 
     # Añadir las entradas de VirtualHost
@@ -314,7 +327,7 @@ configure_virtual_host() {
         hosts_entries+=("$db_container_name.local")
     done
 
-    echo "127.0.0.1 ${hosts_entries[*]} tablero.local apiabuse.local mail.local webdav.local graphql.local" >> /etc/hosts
+    echo "127.0.0.1 ${hosts_entries[*]} tablero.local apiabuse.local mail.local webdav.local graphql.local oauth_printing.local oauth_gallery.local" >> /etc/hosts
 
 
     if [ $? -ne 0 ]; then

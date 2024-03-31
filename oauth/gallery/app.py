@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for, flash, redirect, request, session, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from datetime import datetime
 from sqlalchemy.exc import OperationalError
 from werkzeug.utils import secure_filename
@@ -10,6 +10,10 @@ import time
 import jwt
 import random
 import string
+import io
+from reportlab.lib.pagesizes import letter
+from PIL import Image as PILImage
+from reportlab.platypus import Image
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -17,8 +21,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@gallery_
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Define the Gallery authorization endpoint and redirect URI
-GALLERY_AUTHORIZATION_ENDPOINT = "http://localhost:5001/auth/callback"
-GALLERY_REDIRECT_URI = "http://localhost:5000/gallery/photos"
+GALLERY_AUTHORIZATION_ENDPOINT = "http://oauth_gallery.local/auth/callback"
+GALLERY_REDIRECT_URI = "http://oauth_printing.local/gallery/photos"
 
 db = SQLAlchemy(app)
 
@@ -48,6 +52,47 @@ def try_connect_to_db(retry_limit=3, delay=1):
             time.sleep(delay)
     print(f"Connection to the database failed after {retry_limit} attempts.")
     return False
+
+def generate_random_code():
+    return ''.join(random.choices(string.digits, k=4))
+
+def create_default_user():
+    default_username = 'admin'
+    default_email = 'admin@gallery.local'
+    default_password = 'Admin3$!'
+
+    # Check if the default user already exists
+    existing_user = User.query.filter_by(username=default_username).first()
+    if existing_user:
+        return
+
+    # Create the default user
+    default_user = User(username=default_username, email=default_email, password=default_password)
+    
+    # Generate a random code and assign it to the user
+    default_user.codigo = generate_random_code()
+    
+    db.session.add(default_user)
+    db.session.commit()
+
+    # Create the default image associated with the default user
+    image_path = 'testing.png'  # Path to the image
+    # Después de leer el archivo testing.png
+    with open(image_path, 'rb') as img_file:
+        image_data = img_file.read()
+        filename = 'testing.jpg'  # Cambiar la extensión del archivo a .jpg
+
+        # Convertir la imagen a formato JPEG
+        img = PILImage.open(io.BytesIO(image_data))
+        buffer = io.BytesIO()
+        # Convertir la imagen a modo RGB antes de guardarla como JPEG
+        img = img.convert('RGB')
+        img.save(buffer, format='JPEG')
+        image_data_jpg = buffer.getvalue()
+
+        new_image = Image(filename=filename, data=image_data_jpg, user_id=default_user.id)
+        db.session.add(new_image)
+        db.session.commit()
 
 def obtener_client_id():
     # Obtener el token JWT de la cookie jwt_printing
@@ -90,16 +135,6 @@ def oauth_callback():
         return redirect(login_url)
 
     jwt_cookie = request.cookies.get('jwt_printing')
-
-    try:
-        decoded_token = jwt.decode(jwt_cookie, app.config['SECRET_KEY'], algorithms=['HS256'])
-        token_client_id = decoded_token.get('client_id')
-        if not token_client_id or token_client_id != client_id:
-            return 'Error: client_id inválido', 400
-    except jwt.ExpiredSignatureError:
-        return 'Error: token JWT expirado', 400
-    except jwt.InvalidTokenError:
-        return 'Error: token JWT inválido', 400
 
     # Verificar el redirect_uri si es necesario
     if redirect_uri is None:
@@ -144,11 +179,11 @@ def procesar_autorizacion():
 
     if decision == 'si':
         # Si el usuario acepta, redirigirlo a la URL proporcionada en redirect_uri
-        redirect_uri_con_codigo = f"http://localhost:5000/oauth/code?codigo={codigo}&redirect_uri={redirect_uri}"
+        redirect_uri_con_codigo = f"http://oauth_printing.local/oauth/code?codigo={codigo}&redirect_uri={redirect_uri}"
         return redirect(redirect_uri_con_codigo)
     else:
-        # Si el usuario rechaza, redirigirlo a localhost:5000/profile
-        return redirect(url_for('profile'))
+        # Si el usuario rechaza, redirigirlo a http://oauth_printing.local/profile
+        return redirect("http://oauth_printing.local/profile")
 
 @app.route("/")
 def home():
@@ -160,6 +195,7 @@ def procesar_autorizacion_token():
     codigo = request.form.get('code')
     redirect_uri = request.form.get('redirect_uri')
     client_id = request.form.get('client_id')
+    token = request.form.get('cookie')
 
     # Verificar si se proporcionaron todos los parámetros necesarios
     if not (codigo and redirect_uri and client_id):
@@ -170,8 +206,6 @@ def procesar_autorizacion_token():
     if not user:
         return 'Unauthorized: Código inválido', 401
 
-    # Verificar si el client_id coincide con el de la cookie
-    token = request.cookies.get('jwt_printing')
     if not token:
         return 'Unauthorized: Falta la cookie jwt_printing', 401
 
@@ -192,13 +226,13 @@ def procesar_autorizacion_token():
     }
     token = jwt.encode(token_payload, app.config['SECRET_KEY'], algorithm='HS256')
 
-    # Crear una respuesta de redirección
-    redirect_response = redirect(redirect_uri)
+     # Añadir el token a la URL de redirección como parámetro
+    redirect_uri_with_token = f"{redirect_uri}?oauth_token={token}"
 
-    # Configurar la cookie con el token de autorización
-    redirect_response.set_cookie('oauth_token', token)
+    # Crear una respuesta de redirección con la URL que incluye el token
+    response = redirect(redirect_uri_with_token)
 
-    return redirect_response
+    return response
     
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -225,8 +259,18 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         
+        # Verificar si hay una URL de redirección almacenada en la sesión
+        if 'next_url' in session:
+            next_url = session['next_url']
+            del session['next_url']  # Eliminar la URL de redirección de la sesión
+            return redirect(next_url)
+        
         return redirect(url_for('login'))
     
+    # Guardar la URL de referencia en la sesión
+    if request.referrer:
+        session['next_url'] = request.referrer
+        
     return render_template('register.html')
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -249,7 +293,7 @@ def login():
             if next_url and next_url == url_for('oauth_callback'):
                 # Construir la URL de redirección con los parámetros requeridos
                 redirect_url = (
-                    "http://localhost:5001/auth/callback"
+                    "http://oauth_gallery.local/auth/callback"
                     "?response_type=code"
                     f"&client_id={obtener_client_id()}"  # Obtener el client_id de alguna manera
                     f"&redirect_uri={GALLERY_REDIRECT_URI}"
@@ -320,6 +364,8 @@ def upload():
                     if file.mimetype.startswith('image'):
                         filename = secure_filename(file.filename)
                         image_data = file.read()
+                        # Imprimir image_data en la salida del servidor
+                        print("Image Data:", image_data)
                         new_image = Image(filename=filename, data=image_data, user_id=user.id)
                         db.session.add(new_image)
                         db.session.commit()
@@ -426,4 +472,5 @@ if __name__ == '__main__':
     if try_connect_to_db():
         with app.app_context():
             db.create_all()
+            create_default_user()
         app.run(debug=True, host='0.0.0.0', port=5001)

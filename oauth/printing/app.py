@@ -22,8 +22,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@printing
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Define the Gallery authorization endpoint and redirect URI
-GALLERY_AUTHORIZATION_ENDPOINT = "http://localhost:5001/auth/callback"
-GALLERY_REDIRECT_URI = "http://localhost:5000/gallery/photos"
+GALLERY_AUTHORIZATION_ENDPOINT = "http://oauth_gallery.local/auth/callback"
+GALLERY_REDIRECT_URI = "http://oauth_printing.local/gallery/photos"
 
 db = SQLAlchemy(app)
 
@@ -72,11 +72,16 @@ def obtener_client_id():
         # Manejar el caso en que el token JWT sea inválido
         return None
 
+# Definir una función para verificar si el usuario está autenticado
+def is_authenticated():
+    return 'jwt_printing' in request.cookies
+
 @app.route("/oauth/code", methods=['GET'])
 def oauth_code():
     # Obtener el código de la URL
     code = request.args.get('codigo')
     redirect_uri = request.args.get('redirect_uri')
+    cookie = request.cookies.get('jwt_printing')
 
     # Check if the code was provided
     if code is None:
@@ -86,7 +91,7 @@ def oauth_code():
         return 'The redirect_uri was not provided', 400
 
     # Define the URL for the redirect
-    redirect_url = 'http://localhost:5001/oauth/authorize/token'
+    redirect_url = 'http://oauth_gallery.local/oauth/authorize/token'
 
     # Obtener el client_id
     client_id = obtener_client_id()
@@ -100,11 +105,12 @@ def oauth_code():
             <input type="hidden" name="code" value="{code}">
             <input type="hidden" name="redirect_uri" value="{redirect_uri}">
             <input type="hidden" name="client_id" value="{client_id}">
+            <input type="hidden" name="cookie" value="{cookie}">
             <!-- Agrega cualquier otro campo necesario aquí -->
         </form>
         </body>
         </html>
-        """.format(url=redirect_url, code=code, redirect_uri=redirect_uri, client_id=client_id)
+        """.format(url=redirect_url, code=code, redirect_uri=redirect_uri, client_id=client_id, cookie=cookie)
 
         # Redirigir con el formulario HTML como respuesta
         return form_html, 200
@@ -121,7 +127,17 @@ def connect_gallery():
             email = payload['email']
             user = User.query.filter_by(email=email).first()
             if user:
-                # Si el usuario existe, obtener su client_id y utilizarlo en la URL de redirección
+                jwt_cookie = request.cookies.get('jwt_printing')
+
+                try:
+                    decoded_token = jwt.decode(jwt_cookie, app.config['SECRET_KEY'], algorithms=['HS256'])
+                    token_client_id = decoded_token.get('client_id')
+                    if not token_client_id or token_client_id != user.client_id:
+                        return 'Error: client_id inválido', 400
+                except jwt.ExpiredSignatureError:
+                    return 'Error: token JWT expirado', 400
+                except jwt.InvalidTokenError:
+                    return 'Error: token JWT inválido', 400
                 return redirect(f'{GALLERY_AUTHORIZATION_ENDPOINT}?response_type=code&client_id={user.client_id}&redirect_uri={GALLERY_REDIRECT_URI}&scope=photos')
         except jwt.ExpiredSignatureError:
             flash('Token expired. Please log in again.', 'danger')
@@ -133,7 +149,7 @@ def connect_gallery():
 
 @app.route("/")
 def home():
-    return render_template('home.html')
+    return render_template('home.html', user_is_authenticated=is_authenticated())
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -141,6 +157,18 @@ def register():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
+
+        # Verificar si el nombre de usuario ya está en uso
+        existing_username = User.query.filter_by(username=username).first()
+        if existing_username:
+            flash('Username already exists. Please choose a different one.', 'danger')
+            return redirect(request.url)
+        
+        # Verificar si el correo electrónico ya está en uso
+        existing_email = User.query.filter_by(email=email).first()
+        if existing_email:
+            flash('Email already exists. Please use a different one or login.', 'danger')
+            return redirect(request.url)
 
         # Generar un client_id aleatorio
         client_id = generate_client_id()
@@ -150,12 +178,16 @@ def register():
         
         db.session.add(user)
         db.session.commit()
-        flash('Account created! You can now link your gallery account.', 'success')
+        flash('Account created!', 'success')
         return redirect(url_for('profile'))
     return render_template('register.html')
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    # Verificar si el usuario está autenticado usando la función is_authenticated
+    if is_authenticated():
+        return redirect(url_for('profile'))
+
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
@@ -183,7 +215,14 @@ def profile():
             # Eliminar la cookie oauth_token
             response = redirect(url_for('profile'))
             response.delete_cookie('oauth_token')
-            flash('Gallery account unlinked successfully', 'success')
+            return response
+    
+    if request.method == 'POST':
+        action = request.form.get('action')
+        if action == 'logout':
+            # Eliminar la cookie oauth_token
+            response = redirect(url_for('profile'))
+            response.delete_cookie('jwt_printing')
             return response
 
     # Obtener el token JWT de la cookie 'jwt_printing' y 'oauth_token'
@@ -222,36 +261,70 @@ def profile():
     # Si el token 'jwt_printing_token' es inválido o no se proporciona, redirigir al usuario al inicio de sesión
     return redirect(url_for('login'))
 
-@app.route("/gallery/photos")
+@app.route("/gallery/photos", methods=['GET'])
 def gallery_photos():
+    # Obtener el valor del parámetro oauth_token de la URL
+    oauth_token = request.args.get('oauth_token')
+
+    # Verificar si se proporciona un oauth_token en la URL
+    if oauth_token:
+        try:
+            # Decodificar el oauth_token
+            decode = jwt.decode(oauth_token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            # Manejar oauth_token caducado
+            return 'Error: oauth_token expirado', 400
+        except jwt.InvalidTokenError:
+            # Manejar oauth_token inválido
+            return 'Error: oauth_token inválido', 400
+
+        # Verificar si el token es válido
+        if decode:
+            # Verificar si los parámetros codigo y client_id están presentes en el token decodificado
+            if 'codigo' in decode and 'client_id' in decode:
+                # Si el token es válido y contiene los parámetros requeridos, establecerlo como cookie y redirigir al usuario
+                response = make_response(redirect('http://oauth_printing.local/gallery/photos'))
+                response.set_cookie('oauth_token', oauth_token)
+                return response
+            else:
+                # Manejar el caso donde el token no contiene los parámetros requeridos
+                return 'Error: oauth_token inválido', 400
+        else:
+            # Manejar el caso donde el token no es válido
+            return 'Error: oauth_token no válido', 400
+    
     # Obtener el valor de la cookie llamada oauth_token
     oauth_token = request.cookies.get('oauth_token')
     
     # Verificar si se encontró el token
-    if oauth_token:
-        try:
-            # Enviar solicitud GET a localhost:5001/get_images con el encabezado de autorización adecuado
-            response = requests.get('http://oauth.gallery.local:5001/get_images', headers={'Authorization': f'Bearer {oauth_token}'})
-            
-            # Verificar si la solicitud fue exitosa (código de estado 200)
-            if response.status_code == 200:
-                # Obtener las imágenes de la respuesta
-                images_data = response.json()
-                
+    if not oauth_token:
+        # Si no se encontró el token en la cookie, mostrar un mensaje de error
+        flash('You must link your gallery account', 'danger')
+        return redirect(url_for('login'))  # Redirigir al usuario al inicio de sesión
+    
+    try:
+        # Enviar solicitud GET a localhost:5001/get_images con el encabezado de autorización adecuado
+        response = requests.get('http://oauth.gallery.local:5001/get_images', headers={'Authorization': f'Bearer {oauth_token}'})
+        
+        # Verificar si la solicitud fue exitosa (código de estado 200)
+        if response.status_code == 200:
+            # Verificar si hay datos en la respuesta
+            images_data = response.json()
+            if not images_data:
+                # Si no hay imágenes en la respuesta, mostrar un mensaje de error
+                flash('No images found in the gallery yet. Upload images on Gallery service', 'danger')
+                return render_template('gallery.html', images=[])  # Renderizar la plantilla con una lista vacía de imágenes
+            else:
                 # Renderizar la plantilla y pasar las imágenes como contexto
                 return render_template('gallery.html', images=images_data)
-            else:
-                # Si la solicitud no fue exitosa, mostrar un mensaje de error
-                flash('Failed to retrieve images from the server.', 'danger')
-                return redirect(url_for('login'))  # Redirigir al usuario al inicio de sesión
-        except Exception as e:
-            # Si ocurre alguna excepción, mostrar un mensaje de error
-            flash(f'Error: {str(e)}', 'danger')
-            return redirect(url_for('login'))  # Redirigir al usuario al inicio de sesión
-    else:
-        # Si no se encontró el token en la cookie, mostrar un mensaje de error
-        flash('Unauthorized access. Please log in.', 'danger')
-        return redirect(url_for('login'))  # Redirigir al usuario al inicio de sesión
+        else:
+            # Si la solicitud no fue exitosa, mostrar un mensaje de error
+            flash('Failed to retrieve images from the server.', 'danger')
+    except Exception as e:
+        # Si ocurre alguna excepción, mostrar un mensaje de error
+        flash(f'Error: {str(e)}', 'danger')
+    
+    return redirect(url_for('login'))  # Redirigir al usuario al inicio de sesión
 
 @app.route('/generate_document', methods=['POST'])
 def generate_document():

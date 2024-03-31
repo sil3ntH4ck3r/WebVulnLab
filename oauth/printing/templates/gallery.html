@@ -5,75 +5,275 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery Photos</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #2ecc71;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        nav {
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-right: 20px;
+            font-size: 18px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background-color: #2ecc71;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            margin-top: 60px; /* Ajuste para evitar la superposición del contenido */
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 100px; /* Ajuste para evitar la superposición del contenido */
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
         .image-container {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
         }
 
         .image-item {
-            width: 300px; /* Tamaño estándar del recuadro */
-            height: 300px; /* Tamaño estándar del recuadro */
-            border: 1px solid #ccc; /* Borde del recuadro */
-            overflow: hidden; /* Evita que las imágenes más grandes desborden el recuadro */
-            cursor: pointer; /* Cambiar el cursor al pasar sobre el recuadro */
-        }
-
-        .image-item.selected {
-            border: 2px solid black; /* Cambiar el borde del recuadro cuando está seleccionado */
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
         }
 
         .image-item img {
-            width: 100%; /* Ajustar la imagen al ancho del recuadro */
-            height: auto; /* Permitir que la altura se ajuste proporcionalmente */
-            display: block; /* Hacer que la imagen sea un bloque */
-            object-fit: cover; /* Redimensionar la imagen para que llene el recuadro sin distorsionarla */
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        .image-item p {
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .image-item.selected {
+            border-color: #2ecc71;
+        }
+
+        .generate-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #2ecc71;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            position: relative; /* Cambio a posición relativa */
+        }
+
+        .generate-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .generate-button:hover {
+            background-color: #27ae60;
+        }
+
+        /* Estilo para los mensajes de éxito */
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            text-align: center; /* Centra el texto */
+        }
+
+        /* Estilo para los mensajes de error */
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            text-align: center; /* Centra el texto */
+        }
+        .info-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .info-button:hover {
+            background-color: #2980b9;
+        }
+
+        .info-message {
+            display: none;
+            background-color: #f1c40f;
+            color: #333;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: center;
+            /* Centra vertical y horizontalmente */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .close-button {
+            display: block;
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .close-button:hover {
+            background-color: #c0392b;
+        }
+        .info-button {
+            margin-right: 20px; /* Ajusta el margen derecho */
         }
     </style>
 </head>
 <body>
-    <h1>Gallery Photos</h1>
-    
-    <form id="imageForm" action="/generate_document" method="POST">
-        <div class="image-container">
-            {% for image in images %}
-                <div class="image-item" onclick="toggleSelection(this)">
-                    <img src="data:image/{{ image.filename.split('.')[-1] }};base64,{{ image.data }}" alt="{{ image.filename }}">
-                    <p>{{ image.filename }}</p>
-                    <input type="hidden" name="selected_images[]" value="{{ image.filename }}">
-                    <input type="hidden" name="image_data[]" value="{{ image.data }}">
-                </div>
-            {% endfor %}
-        </div>
-    
-        <button type="button" onclick="submitForm()" id="generateButton" disabled>Generate Document</button>
-    </form>
+    <header>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/profile">Profile</a>
+            <a href="/gallery/photos">Gallery</a>
+            <!-- Agrega más elementos del menú según sea necesario -->
+        </nav>
+        <h1>Gallery</h1>
+    </header>
+
+    <div class="container">
+        <!-- Mensajes de éxito y error -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <button type="button" onclick="showInfo()" class="info-button">&#8505;</button>
+        <form id="imageForm" action="/generate_document" method="POST">
+            <div class="image-container">
+                {% for image in images %}
+                    <div class="image-item" onclick="toggleSelection(this)">
+                        <img src="data:image/{{ image.filename.split('.')[-1] }};base64,{{ image.data }}" alt="{{ image.filename }}">
+                        <p>{{ image.filename }}</p>
+                        <input type="hidden" name="selected_images[]" value="{{ image.filename }}">
+                        <input type="hidden" name="image_data[]" value="{{ image.data }}">
+                        <div class="selected-overlay"><i class="fas fa-check"></i></div>
+                    </div>
+                {% endfor %}
+            </div>
+        
+            <button type="button" onclick="submitForm()" class="generate-button" target="_blank" id="generateButton" disabled>Generate Document</button>
+            <div id="infoMessage" class="info-message">
+                <button type="button" onclick="closeInfo()" class="close-button">&#10006;</button>
+                <h2>Welcome to our Gallery!</h2>
+                <p>Thank you for choosing our gallery to showcase your photos. We're excited to offer you a seamless experience to generate your own document.</p>
+                <p>To print your selected images, simply follow these easy steps:</p>
+                <ol>
+                    <li>Browse through our gallery and select the images you wish to include in your document by clicking on them.</li>
+                    <li>Once you have selected all the desired images, click on the "Generate Document" button.</li>
+                    <li>Our system will then process your selections and generate a beautiful document containing your chosen photos.</li>
+                    <li>You can then proceed to print or download the document for your convenience.</li>
+                </ol>
+                <p>Thank you again for using our gallery. We hope you enjoy your experience!</p>
+            </div>
+        </form>
+    </div>
+
+    <footer>
+        <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0
+    </footer>
 
     <script>
-        function toggleSelection(element) {
-            element.classList.toggle('selected'); // Agrega o quita la clase 'selected' al hacer clic en el recuadro
 
-            // Habilitar el botón si hay alguna imagen seleccionada
+        function closeInfo() {
+            var infoMessage = document.getElementById('infoMessage');
+            infoMessage.style.display = 'none';
+        }
+
+        function showInfo() {
+            var infoMessage = document.getElementById('infoMessage');
+            infoMessage.style.display = 'block';
+        }
+        function toggleSelection(element) {
+            element.classList.toggle('selected');
+            updateGenerateButtonState();
+        }
+
+        function updateGenerateButtonState() {
             var generateButton = document.getElementById('generateButton');
             var selectedImages = document.querySelectorAll('.image-item.selected');
-            if (selectedImages.length > 0) {
-                generateButton.disabled = false;
-            } else {
-                generateButton.disabled = true;
-            }
+            generateButton.disabled = selectedImages.length === 0;
         }
 
         function submitForm() {
             var selectedImages = document.querySelectorAll('.image-item.selected');
 
-            // Eliminar los campos ocultos de las imágenes no seleccionadas
+            // Remove hidden fields for unselected images
             var form = document.getElementById('imageForm');
-            var selectedImagesInputs = form.querySelectorAll('.image-item:not(.selected) input[type="hidden"]');
-            selectedImagesInputs.forEach(function(input) {
+            var unselectedImagesInputs = form.querySelectorAll('.image-item:not(.selected) input[type="hidden"]');
+            unselectedImagesInputs.forEach(function(input) {
                 input.remove();
             });
 
-            // Enviar el formulario
+            // Submit the form
             form.submit();
         }
     </script>

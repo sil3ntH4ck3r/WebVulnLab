@@ -4,32 +4,164 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            position: relative; /* Añadido para posicionar el formulario correctamente */
+        }
+
+        header {
+            background-color: #2ecc71;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            position: fixed;
+            top: 0;
+        }
+
+        footer {
+            background-color: #2ecc71;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px; /* Establece el ancho máximo del formulario */
+            width: calc(100% - 40px); /* Establece el ancho inicial del formulario */
+            left: 50%; /* Centra horizontalmente el formulario */
+            transform: translateX(-50%); /* Centra horizontalmente el formulario */
+            position: absolute; /* Permite el centrado horizontal */
+            margin-top: -150px; /* Ajusta la posición vertical del formulario */
+        }
+
+        h1 {
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 95.5%; /* Haz que los campos de entrada ocupen todo el ancho del formulario */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #2ecc71;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #28a745;
+        }
+
+        .alert {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            position: absolute; /* Agregado para el posicionamiento absoluto */
+            top: 150px; /* Ajusta la posición vertical del mensaje */
+            left: 50%; /* Centra horizontalmente el mensaje */
+            transform: translateX(-50%); /* Centra horizontalmente el mensaje */
+            z-index: 2; /* Asegura que el mensaje esté en una capa superior */
+        }
+
+        .alert-success {
+            background-color: #d4edda; /* Light Green */
+            color: #155724; /* Dark Green */
+        }
+
+        .alert-danger {
+            background-color: #f8d7da; /* Light Red */
+            color: #721c24; /* Dark Red */
+        }
+        nav {
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-right: 20px;
+            font-size: 18px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Register</h1>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    <form method="post">
-        <div class="form-group">
-            <label>Username</label>
-            <input type="text" class="form-control" name="username">
-        </div>
-        <div class="form-group">
-            <label>Email</label>
-            <input type="email" class="form-control" name="email">
-        </div>
-        <div class="form-group">
-            <label>Password</label>
-            <input type="password" class="form-control" name="password">
-        </div>
-        <button type="submit" class="btn btn-primary">Register</button>
-    </form>
+    <header>
+        <h1>Register</h1>
+        <nav>
+            <a href="/">Home</a>
+        </nav>
+    </header>
+    <div class="form-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        <form method="post">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Register</button>
+            <p style="text-align: center;">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+        </form>
+    </div>
+    <footer>
+        <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0
+    </footer>
 </body>
 </html>

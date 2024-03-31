@@ -2,6 +2,7 @@ version: '3.9'
 
 services:
   printing_db:
+    container_name: oauth_printing_db_v2
     image: "postgres:latest"
     environment:
       - POSTGRES_USER=username
@@ -9,6 +10,7 @@ services:
       - POSTGRES_DB=printing_db
 
   gallery_db:
+    container_name: oauth_gallery_db_v2
     image: "postgres:latest"
     environment:
       - POSTGRES_USER=username
@@ -16,11 +18,12 @@ services:
       - POSTGRES_DB=gallery_db
 
   printing:
+    container_name: oauth_printing_v2
     build:
       context: ./printing
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - "8036:5000"
     environment:
       - DATABASE_URI=postgresql://username:password@printing_db:5432/printing_db
     depends_on:
@@ -29,11 +32,12 @@ services:
       - ./printing:/app
 
   gallery:
+    container_name: oauth_gallery_v2
     build:
       context: ./gallery
       dockerfile: Dockerfile
     ports:
-      - "5001:5001"
+      - "8037:5001"
     environment:
       - DATABASE_URI=postgresql://username:password@gallery_db:5432/gallery_db
     depends_on:
