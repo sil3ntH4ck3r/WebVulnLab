@@ -125,7 +125,7 @@ This script will download and install all the necessary dependencies, create the
 | API's Abuse and Mass-Asignament Attack | http://apiabuse.local/   |Functional                            |
 | File Upload Abuse    | http://fileuploadabuse.local/              |Functional                            |
 | Prototype Pollution  | http://prototypepollution.local/           |Functional                            |
-| Open Redirect| - | Functional |
+| Open Redirect| http://openredirect.local/ | Functional |
 | WebDAV| http://webdav.local/ | Functional |
 | SquidProxies| http://squidproxy.local/| Funcional |
 | Cross-Origin Resource Sharing (CORS) Vulnerability | http://localhost:8029 | Semi-Functional |
