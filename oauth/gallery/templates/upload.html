@@ -99,11 +99,11 @@
         }
 
         .upload-form label::after {
-            content: "Choose Image"; /* Texto predeterminado del botón */
+            content: "Choose file or image"; /* Texto predeterminado del botón */
         }
 
         .upload-form input[type="file"]:valid + label::after {
-            content: "Change Image"; /* Cambiar el texto del botón después de seleccionar una imagen */
+            content: "Change file or image"; /* Cambiar el texto del botón después de seleccionar una imagen */
         }
 
         .upload-form button[type="submit"] {
@@ -150,13 +150,14 @@
         <a href="/" class="navbar-brand">Gallery</a>
         <ul class="navbar-menu">
             <li><a href="/gallery">Gallery</a></li>
+            <li><a href="/cloud">Cloud</a></li>
             <li><a href="/profile">Profile</a></li>
             <li><a href="/upload">Upload</a></li>
         </ul>
     </div>
     <div class="upload-container">
         <div class="upload-header">
-            <h1>Upload Image</h1>
+            <h1>Upload File or Image</h1>
         </div>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -171,7 +172,7 @@
             {% endif %}
         {% endwith %}
         <form method="post" enctype="multipart/form-data" class="upload-form">
-            <input type="file" name="file" id="fileInput" accept="image/*" required>
+            <input type="file" name="file" id="fileInput" required>
             <label for="fileInput"></label>
             <button type="submit">Upload</button>
         </form>

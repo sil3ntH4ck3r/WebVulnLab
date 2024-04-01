@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, flash, redirect, request, session, jsonify, make_response
+from flask import Flask, render_template, url_for, flash, redirect, request, session, jsonify, make_response, send_from_directory, send_file, current_app
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from sqlalchemy import create_engine, event
@@ -11,14 +11,17 @@ import jwt
 import random
 import string
 import io
+import os
 from reportlab.lib.pagesizes import letter
 from PIL import Image as PILImage
 from reportlab.platypus import Image
 
 app = Flask(__name__)
+UPLOAD_FOLDER = 'uploads'  # Carpeta donde se guardarán los archivos
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@gallery_db:5432/gallery_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Define the Gallery authorization endpoint and redirect URI
 GALLERY_AUTHORIZATION_ENDPOINT = "http://oauth_gallery.local/auth/callback"
@@ -114,6 +117,39 @@ def obtener_client_id():
 # Definir una función para verificar si el usuario está autenticado
 def is_authenticated():
     return 'jwt_gallery' in request.cookies
+
+def obtener_user_id_de_jwt(request):
+    # Obtener el token JWT de la solicitud
+    token = request.cookies.get('jwt_gallery')
+    if token:
+        try:
+            # Decodificar el token JWT y obtener el correo electrónico
+            payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+            email = payload.get('email')
+            if email:
+                # Buscar el usuario en la base de datos por correo electrónico
+                user = User.query.filter_by(email=email).first()
+                if user:
+                    # Devolver el ID del usuario encontrado
+                    return user.id
+        except jwt.ExpiredSignatureError:
+            pass  # El token ha caducado
+        except jwt.InvalidTokenError:
+            pass  # El token es inválido
+
+    # Si no se puede obtener el ID del usuario, devolver None o lanzar una excepción según tus necesidades
+    return None
+
+# Función para eliminar un archivo
+def delete_file(file_name):
+    user_id = obtener_user_id_de_jwt(request)
+    if user_id:
+        upload_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(user_id))
+        file_path = os.path.join(upload_folder, file_name)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            return True
+    return False
 
 @app.route('/auth/callback', methods=['GET'])
 def oauth_callback():
@@ -372,9 +408,13 @@ def upload():
                         flash('File uploaded successfully', 'success')
                         return redirect(request.url)
                     else:
-                        flash('Only images are allowed', 'danger')  # Usar flash para mostrar el mensaje de error
-                        return redirect(request.url)  # Redirigir para que se muestre el mensaje en la plantilla
-                    return redirect(url_for('gallery'))
+                        # No es una imagen, guardar el archivo
+                        filename = secure_filename(file.filename)
+                        filepath = os.path.join(app.config['UPLOAD_FOLDER'], str(user.id), filename)
+                        os.makedirs(os.path.dirname(filepath), exist_ok=True)
+                        file.save(filepath)
+                        flash('File uploaded successfully', 'success')
+                    return redirect(url_for('cloud'))
             except jwt.ExpiredSignatureError:
                 flash('Token expired. Please log in again.', 'danger')
             except jwt.InvalidTokenError:
@@ -467,6 +507,81 @@ def get_images():
     else:
         # Si no se proporcionó un encabezado de autorización
         return jsonify({'error': 'Authorization header is missing'}), 401
+
+@app.route('/cloud')
+def cloud():
+    # Obtener el token JWT de la cookie
+    token = request.cookies.get('jwt_gallery')
+    if token:
+        try:
+            # Verificar y decodificar el token JWT
+            payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+            email = payload['email']
+            user = User.query.filter_by(email=email).first()
+            if user:
+                # Obtener la lista de archivos del usuario
+                user_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(user.id))
+                user_files = []
+                if os.path.exists(user_folder):
+                    user_files = os.listdir(user_folder)
+                return render_template('cloud.html', files=user_files)
+        except jwt.ExpiredSignatureError:
+            flash('Token expired. Please log in again.', 'danger')
+        except jwt.InvalidTokenError:
+            flash('Invalid token. Please log in again.', 'danger')
+    else:
+        flash('Unauthorized access. Please log in.', 'danger')
+    return redirect(url_for('login'))
+
+@app.route('/view_file')
+def view_file():
+    filename = request.args.get('file')
+    if filename:
+        # Obtener el token JWT de la cookie
+        token = request.cookies.get('jwt_gallery')
+        if token:
+            try:
+                # Verificar y decodificar el token JWT
+                payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+                email = payload['email']
+                user = User.query.filter_by(email=email).first()
+                if user:
+                    # Cargar el archivo sin verificar si pertenece al usuario
+                    user_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(user.id))
+                    filepath = os.path.join(user_folder, filename)
+                    if os.path.exists(filepath):
+                        # Leer el contenido del archivo
+                        with open(filepath, 'r') as file:
+                            content = file.read()
+                        # Devolver el contenido del archivo como respuesta
+                        return content, 200, {'Content-Type': 'text/plain; charset=utf-8'}
+                    else:
+                        flash('File not found.', 'danger')
+            except jwt.ExpiredSignatureError:
+                flash('Token expired. Please log in again.', 'danger')
+            except jwt.InvalidTokenError:
+                flash('Invalid token. Please log in again.', 'danger')
+        else:
+            flash('Unauthorized access. Please log in.', 'danger')
+            return redirect(url_for('login'))
+    else:
+        flash('File name not provided.', 'danger')
+    return redirect(url_for('cloud'))
+
+# Ruta para manejar las solicitudes DELETE para eliminar archivos
+@app.route('/delete_file', methods=['DELETE'])
+def delete_file_route():
+    file_name = request.args.get('file')
+    if file_name:
+        if delete_file(file_name):
+            flash('File deleted successfully', 'success')
+            return make_response("File deleted successfully", 200)
+        else:
+            flash('Failed to delete file', 'danger')
+            return make_response("Failed to delete file", 500)
+    else:
+        flash('No file specified for deletion', 'danger')
+        return make_response("No file specified for deletion", 400)
 
 if __name__ == '__main__':
     if try_connect_to_db():

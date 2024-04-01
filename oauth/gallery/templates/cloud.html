@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Storage</title>
+    <style>
+         h1 {
+            text-align: center;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .navbar {
+            background-color: #0056b3;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            color: #fff;
+            font-size: 24px;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            list-style-type: none;
+            margin-right: 20px;
+        }
+
+        .navbar-menu li {
+            margin-right: 20px;
+        }
+
+        .navbar-menu li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-menu li a:hover {
+            color: #ddd;
+        }
+
+        .gallery-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .image-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border: 1px solid #ddd;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        .image-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: center;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .image-container:hover .gallery-image {
+            transform: scale(1.1);
+        }
+
+        .image-container:hover .image-info {
+            opacity: 1;
+        }
+
+        .footer {
+            background-color: #0056b3;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+        }
+        .success-message {
+            color: green;
+            font-weight: bold;
+            text-align: center;
+        }
+        .file-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .file-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            padding: 10px;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+
+        .file-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .file-link {
+            color: #0056b3;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 5px; /* Espacio entre el nombre del archivo y el botón */
+        }
+
+        .no-files {
+            text-align: center;
+        }
+
+        .delete-button {
+            position: absolute;
+            bottom: 5px; /* Espacio desde abajo */
+            right: 10px; /* Espacio desde la derecha */
+            background-color: #ff0000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .delete-button:hover {
+            background-color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/" class="navbar-brand">Gallery</a>
+        <ul class="navbar-menu">
+            <li><a href="/gallery">Gallery</a></li>
+            <li><a href="/cloud">Cloud</a></li>
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/upload">Upload</a></li>
+        </ul>
+    </div>
+    <h1>Your Files</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == 'danger' %}
+                        <p class="error-message">{{ message }}</p>
+                    {% endif %}
+                    {% if category == 'success' %}
+                        <p class="success-message">{{ message }}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% if not files %}
+            <p class="no-files">You haven't uploaded any files yet.</p>
+        {% else %}
+            <ul class="file-list">
+                {% for file in files %}
+                    <li class="file-item">
+                        <a class="file-link" href="/view_file?file={{ file }}">{{ file }}</a>
+                        <button class="delete-button" onclick="deleteFile('{{ file }}')">Eliminar</button>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <script>
+            function deleteFile(fileName) {
+                // Hacer una solicitud al servidor para eliminar el archivo
+                fetch(`/delete_file?file=${encodeURIComponent(fileName)}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Si la eliminación es exitosa, recargar la página para reflejar los cambios
+                        window.location.reload();
+                    } else {
+                        // Si hay un error, mostrar un mensaje de error
+                        console.error('Error al eliminar el archivo:', response.statusText);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error de red al eliminar el archivo:', error);
+                });
+            }
+        </script>
+    <div class="footer">
+        <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0
+    </div>
+</body>
+</html>

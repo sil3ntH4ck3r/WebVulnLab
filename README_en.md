@@ -127,7 +127,7 @@ This script will download and install all the necessary dependencies, create the
 | Prototype Pollution  | http://prototypepollution.local/           |Functional                            |
 | Open Redirect| http://openredirect.local/ | Functional |
 | WebDAV| http://webdav.local/ | Functional |
-| SquidProxies| http://squidproxy.local/| Funcional |
+| SquidProxies| http://squidproxy.local/| Functional |
 | Cross-Origin Resource Sharing (CORS) Vulnerability | http://localhost:8029 | Semi-Functional |
 |                                                | Note: The CORS vulnerability should be tested using `localhost:8029`, as we haven't been able to make it work using `cors.local`. |
 | SQL Truncation| http://sqltruncation.local/ | Functional |
@@ -138,7 +138,8 @@ This script will download and install all the necessary dependencies, create the
 | Python Deserelization (DES-Yaml)| http://yamldeseralization.local/ | Functional |
 | Python Deserelization (DES-Pickle)| http://pickledeseralization.local/ | Functional |
 | GraphQL Introspection, Mutations| http://graphql.local/ | Functional |
-| OAuth 2.0| - | Working on it |
+| OAuth / Werkzeug Debugger Console Abuse| http://oauth_gallery.local/
+|                                | http://oauth_printing.local/ | Functional |
 | Active Directory| - | Working on it |
 
 Note that it is still in development, and not all containers are working correctly. This repository is updated frequently.
