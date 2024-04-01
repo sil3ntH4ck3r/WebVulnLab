@@ -123,7 +123,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Server-Side Template Injection (SSTI) | http://ssti.local/        |Funcional                              |
 | Client-Side Template Injection (CSTI)| http://csti.local/         |Funcional                              |
 | NoSQL Injections     | http://nosqlinjection.local/               |Funcional                              |
-| LDAP Injections      | http://ldapinjection.local/                |Functional                             |
+| LDAP Injections      | http://ldapinjection.local/                |Funcional                             |
 | API's Abuse y Mass-Asignament Attack| http://apiabuse.local/      |Funcional                              |
 | File Upload Abuse    | http://fileuploadabuse.local/              |Funcional                              |
 | Prototype Pollution  | http://prototypepollution.local/           |Funcional                              |
@@ -140,7 +140,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Python Deserelization (DES-Yaml)| http://yamldeseralization.local/ | Funcional |
 | Python Deserelization (DES-Pickle)| http://pickledeseralization.local/ | Funcional |
 | GraphQL Introspection, Mutations| http://graphql.local/ | Funcional |
-| OAuth / Werkzeug Debugger Console Abuse| (http://oauth_gallery.local)[http://oauth_gallery.local/] (http://oauth_printing.local/)[http://oauth_printing.local/] | Functional |
+| OAuth / Werkzeug Debugger Console Abuse| (http://oauth_gallery.local)[http://oauth_gallery.local/] (http://oauth_printing.local/)[http://oauth_printing.local/] | Funcional |
 | Active Directory| - | Trabajando en ello |
 
 Cabe destacar que aún está en desarrollo, y que no todos los contenedores están funcionando correctamente. Este repositorio se actualiza a menudo.
