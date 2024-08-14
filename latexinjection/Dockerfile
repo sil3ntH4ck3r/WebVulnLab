@@ -11,6 +11,7 @@ RUN apt-get update && \
 
 RUN chown -R www-data:www-data /var/www/html/
 RUN chmod 666 /var/www/html/index.php
+RUN chmod 777 /var/www/html
 
 CMD ["/usr/local/bin/startup.sh"]
 
