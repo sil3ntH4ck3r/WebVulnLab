@@ -7,7 +7,7 @@
   
         <?php
             error_reporting(0);
-            $file=$_GET["show"];
+            $file=$_GET["p"];
             //$file=preg_replace('/[^a-zA-Z0-9_]/' , '' , $file);
             //include($file);
 
@@ -16,7 +16,7 @@
             }
             else
             {
-                include("lfi.php");
+                include("index.html");
             }
         ?>
     </body>

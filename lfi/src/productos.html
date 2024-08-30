@@ -1,60 +1,244 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-	<meta charset="utf-8">
-	<title>Productos - Empresa de Ciberseguridad</title>
-	<link rel="stylesheet" href="productos.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LFI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-color: #0a192f;
+            --secondary-color: #112240;
+            --accent-color: #64ffda;
+            --text-color: #8892b0;
+            --light-text-color: #ccd6f6;
+            --background-color: #0a192f;
+            --card-background: rgba(17, 34, 64, 0.7);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: rgba(17, 34, 64, 0.9);
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            color: var(--light-text-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        main {
+            padding-top: 100px;
+            flex-grow: 1;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: var(--light-text-color);
+            margin-bottom: 50px;
+            text-align: center;
+            position: relative;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+        
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .product-card {
+            background-color: var(--card-background);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .product-card h3 {
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .product-card p {
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: transparent;
+            color: var(--accent-color);
+            padding: 8px 16px;
+            text-decoration: none;
+            border: 2px solid var(--accent-color);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .btn:hover {
+            background-color: rgba(100, 255, 218, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        footer {
+            background-color: var(--secondary-color);
+            color: var(--light-text-color);
+            text-align: center;
+            padding: 20px 0;
+            margin-top: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-
-	<!-- Encabezado -->
-	<header>
-        <nav>
-            <div class="container">
-                <h1 class="logo">Cybertec</h1>
-                <ul class="menu">
-                    <li><a href="http://lfi.local/lfi.php#">Inicio</a></li>
-                    <li><a href="http://lfi.local/?show=lfi.php#services">Servicios</a></li>
-                    <li><a href="http://lfi.local/?show=lfi.php#about">Sobre Nosotros</a></li>
-                    <li><a href="http://lfi.local/?show=lfi.php#contact">Contacto</a></li>
-                    <li><a href="http://lfi.local/?show=productos.html">Productos</a></li>
-                </ul>
-            </div>
+    <header>
+        <nav class="container">
+            <div class="logo">CiberShield</div>
+            <ul class="nav-links">
+                <li><a href="index.php?p=index.html">Inicio</a></li>
+                <li><a href="index.php?p=index.html#servicios">Servicios</a></li>
+                <li><a href="index.php?p=productos.html">Productos</a></li>
+                <li><a href="index.php?p=index.html#sobre-nosotros">Sobre Nosotros</a></li>
+                <li><a href="index.php?p=index.html#contacto">Contacto</a></li>
+            </ul>
         </nav>
     </header>
 
-	<!-- Sección de productos -->
-	<section class="productos">
-		<div class="producto">
-			<i class="fas fa-shield-alt"></i>
-			<h3>Protección contra ataques DDoS</h3>
-			<p>Ofrecemos soluciones avanzadas para proteger su sitio web o aplicación contra ataques DDoS, garantizando la disponibilidad de sus servicios en todo momento.</p>
-			<a href="#" class="btn">Más información</a>
-		</div>
-		<div class="producto">
-			<i class="fas fa-lock"></i>
-			<h3>Protección de datos</h3>
-			<p>Nuestra empresa ofrece soluciones de protección de datos para empresas de todos los tamaños, incluyendo cifrado, autenticación de usuarios y más.</p>
-			<a href="#" class="btn">Más información</a>
-		</div>
-		<div class="producto">
-			<i class="fas fa-user-secret"></i>
-			<h3>Gestión de identidad y acceso</h3>
-			<p>Ofrecemos soluciones avanzadas para la gestión de identidad y acceso, permitiendo a las empresas asegurar el acceso a sus sistemas y datos de manera segura y eficiente.</p>
-			<a href="#" class="btn">Más información</a>
-		</div>
-		<div class="producto">
-			<i class="fas fa-bug"></i>
-			<h3>Pruebas de penetración</h3>
-			<p>Nuestra empresa ofrece pruebas de penetración para identificar vulnerabilidades en su infraestructura y aplicaciones, ayudando a prevenir ataques y proteger su empresa.</p>
-			<a href="#" class="btn">Más información</a>
-		</div>
-	</section>
+    <main class="container">
+        <h1>Nuestros Productos</h1>
+        <div class="products">
+            <div class="product-card">
+                <img src="firewall.avif" alt="CiberShield Firewall">
+                <h3>CiberShield Firewall</h3>
+                <p>Protección avanzada contra intrusiones y ataques externos. Nuestro firewall de última generación ofrece una defensa robusta para su red empresarial.</p>
+                <a href="#" class="btn">Más información</a>
+            </div>
+            <div class="product-card">
+                <img src="av.avif" alt="CiberShield AntiVirus">
+                <h3>CiberShield AntiVirus</h3>
+                <p>Detección y eliminación de malware en tiempo real. Proteja sus dispositivos contra virus, spyware, ransomware y otras amenazas cibernéticas.</p>
+                <a href="#" class="btn">Más información</a>
+            </div>
+            <div class="product-card">
+                <img src="vpn.avif" alt="CiberShield VPN">
+                <h3>CiberShield VPN</h3>
+                <p>Conexiones seguras y privadas desde cualquier lugar. Cifre su tráfico de Internet y proteja su privacidad en línea con nuestra VPN de alta velocidad.</p>
+                <a href="#" class="btn">Más información</a>
+            </div>
+            <div class="product-card">
+                <img src="passwordManager.avif" alt="CiberShield Password Manager">
+                <h3>CiberShield Password Manager</h3>
+                <p>Gestión segura de contraseñas para empresas y particulares. Genere, almacene y administre contraseñas fuertes de forma segura y conveniente.</p>
+                <a href="#" class="btn">Más información</a>
+            </div>
+        </div>
+    </main>
 
-	<!-- Pie de página -->
-	<footer>
-		<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0
-	</footer>
-
+    <footer>
+        <div class="container">
+            <p>&copy; <a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0
+        </div>
+    </footer>
 </body>
 </html>
