@@ -1,89 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Panel de control</title>
+    <title>Padding Oracle Attack</title>
     <meta charset="utf-8">
     <?php
-    $conexion = mysqli_connect("db", "usuario", "contraseña", "database");
-    if ($conexion) {
-      $conexion->set_charset("utf8");
-    }
-    $sql = "SELECT * FROM usuarios";
-    $resultado = mysqli_query($conexion, $sql);
-    if (!$resultado) {
-    die("Error al ejecutar la consulta: " . mysqli_error($conexion));
+      $conexion = mysqli_connect("db", "usuario", "contraseña", "database");
+      if ($conexion) {
+        $conexion->set_charset("utf8");
+      }
+      $sql = "SELECT * FROM usuarios";
+      $resultado = mysqli_query($conexion, $sql);
+      if (!$resultado) {
+      die("Error al ejecutar la consulta: " . mysqli_error($conexion));
     }
     ?>
+    <link href="main.css" rel="stylesheet" />
     <style>
-        header {
-        background-color: #333;
-        color: #fff;
-        padding: 20px;
-        text-align: center;
-    }
-
-    nav {
-        background-color: #444;
-        padding: 10px;
-    }
-
-    nav ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        text-align: center;
-    }
-
-    nav ul li {
-        display: inline-block;
-        margin-right: 20px;
-    }
-
-    nav ul li:last-child {
-        margin-right: 0;
-    }
-
-    nav ul li a {
-        color: #fff;
-        text-decoration: none;
-        padding: 10px;
-        transition: background-color 0.3s;
-    }
-
-    nav ul li a:hover {
-        background-color: #555;
-    }
-
-    header h1 {
-        text-align: center;
-    font-size: 3rem;
-    margin-top: 1rem;
-    }
-
-    h1 {
-        text-align: center;
-        font-size: 3rem;
-        margin-top: 1rem;
-    }
-    footer {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        height: 50px;
-        background-color: #333;
-        color: #fff;
-        padding: 20px;
-        text-align: center;
-    }
-
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: sans-serif;
-        background: #ffffff;
-    }
-
-
+        
 
 .sidebar {
   width: 300px;
@@ -215,23 +148,30 @@ canvas {
 <body>
 
 <header>
-        <nav>
-            <div class="container">
-                <h1 class="logo">Padding Oracle Attack</h1>
-                <ul class="menu">
-                    <li><a href="http://paddingoracleattack.local/logout.php">Logout</a></li>
-                    <li><a href="http://paddingoracleattack.local/perfil.php">Perfil</a></li>
-                    <li><a href="http://paddingoracleattack.local/dashboard.php">Dashboard</a></li>
-                </ul>
+        <nav class="container">
+            <a class="logo"  href="index.php">TechNova</a>
+            <div class="nav-links">
+                <a href="http://paddingoracleattack.local/index.php#solutions">Soluciones</a>
+                <a href="http://paddingoracleattack.local/index.php#innovation">Innovación</a>
+                <a href="http://paddingoracleattack.local/index.php#vision">Nosotros</a>
+                <a href="http://paddingoracleattack.local/reiniciar.php">Reiniciar Base de Datos</a>
+                <?php
+                    if (isset($_COOKIE['cookieAuth']))
+                    {   
+                        echo '<a href="http://paddingoracleattack.local/logout.php">Logout</a>';
+                        echo '<a href="http://paddingoracleattack.local/perfil.php">Perfil</a>';
+                    }
+                ?>
             </div>
         </nav>
     </header>
 
-  <div class="container">
+  <br><br><br>
+    <div class="container">
     <div class="main">
       <h2>Admin Panel</h2>
       <div class="charts">
-        <h3>Grafica</h3>
+        <h3>Gráfica</h3>
         <div class="chart-container">
           <canvas id="grafica"></canvas>
         </div>
@@ -284,5 +224,35 @@ canvas {
       </div>
     </div>
   </div>
+  <br>
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>TechNova</h3>
+                    <p>Transformando el futuro, hoy.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="http://paddingoracleattack.local/index.php#solutions">Soluciones</a></li>
+                        <li><a href="http://paddingoracleattack.local/index.php#innovation">Innovación</a></li>
+                        <li><a href="http://paddingoracleattack.local/index.php#vision">Sobre nosotros</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contáctanos</h3>
+                    <p>info@webvulnlab.paddingoracleattack.local</p>
+                    <p>+1 (555) 123-4567</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span id="year"></span> <a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0                
+                <script>
+                    document.getElementById("year").textContent = new Date().getFullYear();
+                </script>
+            </div>
+        </div>
+    </footer>
 </body>
 	

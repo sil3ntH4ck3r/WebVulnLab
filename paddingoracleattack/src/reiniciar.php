@@ -35,5 +35,5 @@ $sql = "CREATE TABLE usuarios (
 // Cerrar la conexión
 mysqli_query($conexion, "INSERT INTO usuarios (nombre, contraseña, email) VALUES ('admin', 'P@$\$w0rd!', 'admin@admin.com')");
 mysqli_close($conexion);
-header("Location: index.php"); //redirigir al usuario a la página de inicio
+header("Location: logout.php"); //redirigir al usuario a la página de inicio
 ?>

@@ -1,5 +1,13 @@
 <?php
 session_start();
+
+// Comprobar si el usuario ya ha iniciado sesión
+if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+    $_SESSION['mensaje'] = 'Ya tienes una sesión activa, cierrala para iniciar sesión';
+    header('Location: index.php'); // Redirigir a la página principal u otra de tu elección
+    exit;
+}
+
 // Conectar a la base de datos
 $conexion = mysqli_connect("db", "usuario", "contraseña", "database");
 if ($conexion) {

@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html>
-
 <?php 
     //include "verificar.php";
         if ($_SESSION['loggedin']==true){
@@ -51,7 +48,7 @@
 
     function pkcs5_unpad($text) 
     { 
-        $pad = ord($text{strlen($text)-1}); 
+        $pad = ord($text[strlen($text) - 1]); 
         if ($pad === 0) return false;
         if ($pad > strlen($text)) return false; 
         if (strspn($text, chr($pad), strlen($text) - $pad) != $pad) return false; 
@@ -71,179 +68,207 @@
                 } else {
                 // la cookie no está establecida, mostramos un mensaje de error
                     //echo "La cookie no está establecida.";
+                    header('Location: index.php');
                 }
 
         ?>
+
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <title>Padding Oracle Attack</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <title>Padding Oracle Attack</title>
+    <link href="main.css" rel="stylesheet">
     <style>
-    header {
-        background-color: #333;
-        color: #fff;
-        padding: 20px;
-        text-align: center;
-    }
 
-    nav {
-        background-color: #444;
-        padding: 10px;
-    }
+        main {
+            padding-top: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
 
-    nav ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        text-align: center;
-    }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-    nav ul li {
-        display: inline-block;
-        margin-right: 20px;
-    }
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-    nav ul li:last-child {
-        margin-right: 0;
-    }
+        .profile-info {
+            flex-grow: 1;
+        }
 
-    nav ul li a {
-        color: #fff;
-        text-decoration: none;
-        padding: 10px;
-        transition: background-color 0.3s;
-    }
+        .profile-info h1 {
+            color: #007bff;
+            margin-bottom: 0.5rem;
+        }
 
-    nav ul li a:hover {
-        background-color: #555;
-    }
+        .profile-info p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
 
-    header h1 {
-        text-align: center;
-    font-size: 3rem;
-    margin-top: 1rem;
-    }
+        .edit-profile {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
 
-    h1 {
-        text-align: center;
-        font-size: 3rem;
-        margin-top: 1rem;
-    }
-    footer {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        height: 50px;
-        background-color: #333;
-        color: #fff;
-        padding: 20px;
-        text-align: center;
-    }
+        .edit-profile:hover {
+            background-color: #0056b3;
+        }
 
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: sans-serif;
-        background: #ffffff;
-    }
-    
+        .profile-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
 
-    .profile-container {
-  max-width: 800px;
-  margin: 0 auto;
-}
+        .detail-box {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-.profile {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-}
+        .detail-box h3 {
+            color: #007bff;
+            margin-bottom: 1rem;
+        }
 
-.profile img {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  margin-bottom: 20px;
-  object-fit: cover;
-}
+        .detail-box p {
+            color: #333;
+            margin-bottom: 1rem;
+        }
 
-.profile h1 {
-  font-size: 36px;
-  margin-bottom: 10px;
-}
+        .stats-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
 
-.profile p {
-  font-size: 18px;
-  margin-bottom: 20px;
-}
+        .stat-item {
+            background-color: #e9ecef;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
 
-.profile button {
-  background-color: #333;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  font-size: 18px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-}
-
-.profile button:hover {
-  background-color: #555;
-}
-
-.fa-user-circle {
-  font-size: 100px;
-  margin-right: 20px;
-}
-
-.fa-envelope {
-  font-size: 24px;
-  margin-right: 10px;
-}
-
-.fa-phone {
-  font-size: 24px;
-  margin-right: 10px;
-}
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+            }
+        }
+        .redacted {
+            background-color: black;
+            color: black;
+        }
     </style>
-    </style>
-
 </head>
 <body>
-
+    <br><br><br>
     <header>
-        <nav>
-            <div class="container">
-                <h1 class="logo">Cybertec</h1>
-                <ul class="menu">
-                    <li><a href="http://paddingoracleattack.local/logout.php">Logout</a></li>
-                    <li><a href="http://paddingoracleattack.local/perfil.php">Perfil</a></li>
-                    <?php
-                        if ($cookieUser=="admin"){
-                            echo '<li><a href="http://paddingoracleattack.local/dashboard.php">Dashboard</a></li>';
-                        } 
-                    ?>
-                </ul>
+        <nav class="container">
+            <a class="logo"  href="index.php">TechNova</a>
+            <div class="nav-links">
+                <a href="http://paddingoracleattack.local/index.php#solutions">Soluciones</a>
+                <a href="http://paddingoracleattack.local/index.php#innovation">Innovación</a>
+                <a href="http://paddingoracleattack.local/index.php#vision">Nosotros</a>
+                <a href="http://paddingoracleattack.local/reiniciar.php">Reiniciar Base de Datos</a>
+                <?php
+                if (isset($_COOKIE['cookieAuth']))
+                {   
+                    echo '<a href="http://paddingoracleattack.local/logout.php">Logout</a>';
+                    echo '<a href="http://paddingoracleattack.local/perfil.php">Perfil</a>';
+                }
+                if ($cookieUser=="admin"){
+                    echo '<a href="http://paddingoracleattack.local/dashboard.php">Dashboard</a>';
+                } 
+            ?>
             </div>
         </nav>
     </header>
 
-		<h1>Perfil de usuario</h1>
-	<div class="profile-container">
-		<div class="profile">
-			<div class="profile-info">
-				<h1>Usuario: <?php echo $cookieUser?></h1>
-			</div>
-		</div>
-    </div>
-</div>
+    <main class="container">
+        <!-- Encabezado del perfil -->
+        <div class="profile-header">
+            <img src="profile-pic-placeholder.jpg" alt="Imagen de Usuario" class="profile-image">
+            <div class="profile-info">
+                <h1>Usuario: <?php echo $cookieUser?></h1>
+                <!-- <p>Rol del Usuario</p> -->
+                <button class="edit-profile">Editar Perfil</button>
+            </div>
+        </div>
 
+        <!-- Sección de detalles de usuario -->
+        <div class="profile-details">
+            <div class="detail-box">
+                <h3>Detalles Personales</h3>
+                <p><strong>Email:</strong> <span class="redacted">usuario@correo.com</span></p>
+                <p><strong>Teléfono:</strong> No introducido</p>
+                <p><strong>Dirección:</strong> No introducida</p>
+            </div>
+
+            <div class="detail-box">
+                <h3>Estadísticas</h3>
+                <div class="stats-list">
+                    <div class="stat-item">Sin estadísticas</div>
+                </div>
+            </div>
+
+            <div class="detail-box">
+                <h3>Preferencias</h3>
+                <p><strong>Notificaciones:</strong> Activadas</p>
+                <p><strong>Idioma:</strong> Español</p>
+            </div>
+        </div>
+    </main>
+    <br>
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>TechNova</h3>
+                    <p>Transformando el futuro, hoy.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="http://paddingoracleattack.local/index.php#solutions">Soluciones</a></li>
+                        <li><a href="http://paddingoracleattack.local/index.php#innovation">Innovación</a></li>
+                        <li><a href="http://paddingoracleattack.local/index.php#vision">Sobre nosotros</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contáctanos</h3>
+                    <p>info@webvulnlab.paddingoracleattack.local</p>
+                    <p>+1 (555) 123-4567</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span id="year"></span> <a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0                
+                <script>
+                    document.getElementById("year").textContent = new Date().getFullYear();
+                </script>
+            </div>
+        </div>
+    </footer>
 </body>
-
-<footer>
-<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0
-</footer>
 </html>
