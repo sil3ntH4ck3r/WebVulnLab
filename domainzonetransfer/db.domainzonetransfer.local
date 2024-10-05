@@ -1,5 +1,5 @@
 $TTL    604800
-@       IN      SOA     domainzonetransfer.local. root.domainzonetransfer.local. (
+@       IN      SOA     domainzonetransfer.local. codefusiondev.domainzonetransfer.local. (
                               1         ; Serial
                          604800         ; Refresh
                           86400         ; Retry

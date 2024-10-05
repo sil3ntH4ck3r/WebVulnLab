@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - CodeFusion</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #1a1a1a;
+            color: #4ade80;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        .terminal {
+            background-color: #2a2a2a;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .red { background-color: #ff5f56; }
+        .yellow { background-color: #ffbd2e; }
+        .green { background-color: #27c93f; }
+
+        .terminal-title {
+            font-size: 14px;
+            color: #999;
+        }
+
+        #output {
+            height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+
+        .input-line {
+            display: flex;
+            align-items: center;
+        }
+
+        .prompt {
+            margin-right: 8px;
+        }
+
+        #commandInput {
+            flex-grow: 1;
+            background-color: transparent;
+            border: none;
+            color: #4ade80;
+            font-family: inherit;
+            font-size: inherit;
+        }
+
+        #commandInput:focus {
+            outline: none;
+        }
+
+        .nav-button {
+            background-color: #2a2a2a;
+            color: #4ade80;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .nav-button:hover {
+            background-color: #3a3a3a;
+        }
+
+        .private-badge {
+            background-color: #ff5f56;
+            color: #1a1a1a;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>&lt;CodeFusion /&gt; Admin</h1>
+            <span class="private-badge">PRIVADO</span>
+        </header>
+        <main class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-button red"></div>
+                <div class="terminal-button yellow"></div>
+                <div class="terminal-button green"></div>
+                <span class="terminal-title">admin@CodeFusion:~$</span>
+            </div>
+            <div id="output"></div>
+            <div class="input-line">
+                <span class="prompt">#</span>
+                <input type="text" id="commandInput" autofocus>
+            </div>
+        </main>
+    </div>
+    <script>
+        const output = document.getElementById('output');
+        const commandInput = document.getElementById('commandInput');
+
+        const content = {
+            dashboard: "puts 'Bienvenido al Panel de Administración'\n# Estadísticas del sistema:\n  - Usuarios activos: 1,234\n  - Proyectos en curso: 42\n  - Carga del servidor: 23%\n# Escribe 'help' para ver los comandos disponibles",
+            users: "SELECT username, email, last_login\nFROM users\nWHERE is_active = true\nORDER BY last_login DESC\nLIMIT 10;",
+            logs: "2023-05-10 14:23:45 [INFO] Usuario admin1 ha iniciado sesión\n2023-05-10 14:25:30 [WARNING] Intento de acceso no autorizado desde IP 192.168.1.100\n2023-05-10 14:30:15 [ERROR] Fallo en la actualización de la base de datos",
+            config: "app:\n  name: CodeFusion Admin\n  version: 1.0.0\n\ndatabase:\n  host: localhost\n  port: 5432\n  name: CodeFusion_prod\n\nsecurity:\n  enable_2fa: true\n  session_timeout: 3600",
+            help: `
+Comandos disponibles:
+
+- dashboard: Muestra el panel principal
+- users: Lista los usuarios activos
+- logs: Muestra los registros recientes
+- config: Muestra la configuración del sistema
+- clear: Limpia la pantalla
+- exit: Vuelve a la página principal
+`
+        };
+
+        let currentSection = 'dashboard';
+        let typingInterval;
+
+        function typeContent(text, index = 0) {
+            if (index < text.length) {
+                output.innerHTML += text.charAt(index);
+                output.scrollTop = output.scrollHeight;
+                typingInterval = setTimeout(() => typeContent(text, index + 1), 30);
+            }
+        }
+
+        function setSection(section) {
+            currentSection = section;
+            clearTimeout(typingInterval);
+            output.innerHTML = '';
+            typeContent(content[section]);
+        }
+
+        function handleCommand(command) {
+            const cmd = command.toLowerCase();
+            output.innerHTML += `\n# ${command}\n`;
+            
+            switch(cmd) {
+                case 'dashboard':
+                case 'users':
+                case 'logs':
+                case 'config':
+                case 'help':
+                    setSection(cmd);
+                    break;
+                case 'clear':
+                    output.innerHTML = '';
+                    break;
+                case 'exit':
+                    window.location.href = 'http://domainzonetransfer.local/index.html';
+                    break;
+                default:
+                    output.innerHTML += "Comando no reconocido. Escribe 'help' para ver los comandos disponibles.\n";
+            }
+        }
+
+        commandInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                handleCommand(this.value);
+                this.value = '';
+            }
+        });
+
+        // Inicializar con la sección dashboard
+        setSection('dashboard');
+    </script>
+</body>
+</html>

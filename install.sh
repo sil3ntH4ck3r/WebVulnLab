@@ -14,7 +14,7 @@ containers=(
   "blindxxe_v2;$PWD/blindxxe;8002:80" # Contenedor para Blind XXE
   "xxe_v2;$PWD/xxe;8003:80" # Contenedor para XXE
   "xss_v2;$PWD/xss;8004:80" # Contenedor para XSS
-  "domainzonetransfer_v2;$PWD/domainzonetransfer;53:53/udp -p 53:53/tcp" # Contenedor para Domain Zone Transfer
+  "domainzonetransfer_v2;$PWD/domainzonetransfer;8039:80 -p 53:53/tcp -p 53:53/udp" # Contenedor para Domain Zone Transfer
   "ssrf_v2;$PWD/ssrf;8006:80" # Contenedor para SSRF
   "typejuggling_v2;$PWD/typejuggling;8008:80" # Contenedor para Type Juggling
   "rfi_v2;$PWD/rfi;8009:80" # Contenedor para RFI
@@ -37,7 +37,7 @@ containers=(
   "racecondition_v2;$PWD/racecondition;8033:80" # Contenedor para Race Condition
   "cssi_v2;$PWD/cssi;8034:80" # Contenedor para CSS Injection
   "yamldeseralization_v2;$PWD/yamldeseralization;8036:5000" # Contenedor para YAML Deserialization
-  "pickledeseralization_v2;$PWD/pickledeseralization;8037:5000" # Contenedor para Pickle Deserialization
+  "pickledeseralization_v2;$PWD/pickledeseralization;8038:5000" # Contenedor para Pickle Deserialization
 )
 database=(
     "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2" # Contenedor para SQL Injection
@@ -200,6 +200,13 @@ setup_file_virtual_hosting() {
         echo "    ProxyPassReverse / http://localhost:8036/"
         echo "</VirtualHost>"
         echo
+        echo "<VirtualHost *:80>"
+        echo "    ServerName codefusiondev.domainzonetransfer.local"
+        echo "    ProxyPreserveHost On"
+        echo "    ProxyPass / http://localhost:8039/"
+        echo "    ProxyPassReverse / http://localhost:8039/"
+        echo "</VirtualHost>"
+        echo
     } >> "$config_file" 2>> "$error_file"
 
     # Añadir las entradas de VirtualHost
@@ -327,7 +334,7 @@ configure_virtual_host() {
         hosts_entries+=("$db_container_name.local")
     done
 
-    echo "127.0.0.1 ${hosts_entries[*]} tablero.local apiabuse.local mail.local webdav.local graphql.local oauth_printing.local oauth_gallery.local" >> /etc/hosts
+    echo "127.0.0.1 ${hosts_entries[*]} tablero.local codefusiondev.domainzonetransfer.local apiabuse.local mail.local webdav.local graphql.local oauth_printing.local oauth_gallery.local" >> /etc/hosts
 
 
     if [ $? -ne 0 ]; then

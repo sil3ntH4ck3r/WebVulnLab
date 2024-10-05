@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeFusion - Innovación en Programación</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #1a1a1a;
+            color: #4ade80;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        .terminal {
+            background-color: #2a2a2a;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .red { background-color: #ff5f56; }
+        .yellow { background-color: #ffbd2e; }
+        .green { background-color: #27c93f; }
+
+        .terminal-title {
+            font-size: 14px;
+            color: #999;
+        }
+
+        #output {
+            height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+
+        .input-line {
+            display: flex;
+            align-items: center;
+        }
+
+        .prompt {
+            margin-right: 8px;
+        }
+
+        #commandInput {
+            flex-grow: 1;
+            background-color: transparent;
+            border: none;
+            color: #4ade80;
+            font-family: inherit;
+            font-size: inherit;
+        }
+
+        #commandInput:focus {
+            outline: none;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .nav-button {
+            background-color: #2a2a2a;
+            color: #4ade80;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .nav-button:hover {
+            background-color: #3a3a3a;
+        }
+
+        #contactForm {
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        #contactForm input,
+        #contactForm textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #3a3a3a;
+            border: none;
+            border-radius: 4px;
+            color: #4ade80;
+            font-family: inherit;
+        }
+
+        #contactForm button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4ade80;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #contactForm button:hover {
+            background-color: #3fcf76;
+        }
+
+        .help-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .help-table th, .help-table td {
+            border: 1px solid #4ade80;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .help-table th {
+            background-color: #2a2a2a;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .terminal {
+                padding: 10px;
+            }
+
+            nav {
+                flex-wrap: wrap;
+            }
+
+            .nav-button {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>&lt;CodeFusion /&gt;</h1>
+        </header>
+        <main class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-button red"></div>
+                <div class="terminal-button yellow"></div>
+                <div class="terminal-button green"></div>
+                <span class="terminal-title">CodeFusion@innovacion:~$</span>
+            </div>
+            <div id="output"></div>
+            <div class="input-line">
+                <span class="prompt">$</span>
+                <input type="text" id="commandInput" autofocus>
+            </div>
+        </main>
+        <form id="contactForm">
+            <h2>Contáctanos</h2>
+            <input type="email" placeholder="Tu email" required>
+            <textarea placeholder="Tu mensaje" rows="4" required></textarea>
+            <button type="submit">Enviar mensaje</button>
+        </form>
+    </div>
+    <script>
+        const output = document.getElementById('output');
+        const commandInput = document.getElementById('commandInput');
+        const contactForm = document.getElementById('contactForm');
+
+        const content = {
+            home: "console.log('Bienvenido a CodeFusion');\n// Donde las ideas se convierten en código\n// Escribe 'help' para ver los comandos disponibles",
+            about: "class CodeFusion {\n  constructor() {\n    this.experiencia = 10;\n    this.proyectosExitosos = 500+;\n    this.clientesSatisfechos = '99%';\n  }\n}",
+            services: "const servicios = [\n  'Desarrollo Web',\n  'Aplicaciones Móviles',\n  'Inteligencia Artificial',\n  'Consultoría IT'\n];",
+            contact: "function contactar() {\n  email: 'info@CodeFusion.com',\n  telefono: '+34 123 456 789',\n  ubicacion: 'Madrid, España'\n}",
+            help: `
+Comandos disponibles:
+
+<table class="help-table">
+    <tr>
+        <th>Comando</th>
+        <th>Descripción</th>
+    </tr>
+    <tr>
+        <td>home</td>
+        <td>Muestra la página de inicio</td>
+    </tr>
+    <tr>
+        <td>about</td>
+        <td>Información sobre nuestra empresa</td>
+    </tr>
+    <tr>
+        <td>services</td>
+        <td>Lista de servicios que ofrecemos</td>
+    </tr>
+    <tr>
+        <td>contact</td>
+        <td>Muestra la información de contacto</td>
+    </tr>
+    <tr>
+        <td>clear</td>
+        <td>Limpia la pantalla del terminal</td>
+    </tr>
+    <tr>
+        <td>help</td>
+        <td>Muestra esta lista de comandos</td>
+    </tr>
+    <tr>
+        <td>projects</td>
+        <td>Muestra una lista de proyectos destacados</td>
+    </tr>
+    <tr>
+        <td>skills</td>
+        <td>Muestra nuestras habilidades técnicas</td>
+    </tr>
+    <tr>
+        <td>coffee</td>
+        <td>¿Necesitas un descanso?</td>
+    </tr>
+    <tr>
+        <td>easteregg</td>
+        <td>Descubre una sorpresa</td>
+    </tr>
+</table>
+
+Tip: Puedes usar las flechas arriba y abajo para navegar por el historial de comandos.
+`
+        };
+
+        let currentSection = 'home';
+        let typingInterval;
+        let commandHistory = [];
+        let historyIndex = -1;
+
+        function typeContent(text, index = 0) {
+            if (index < text.length) {
+                output.innerHTML += text.charAt(index);
+                output.scrollTop = output.scrollHeight;
+                typingInterval = setTimeout(() => typeContent(text, index + 1), 30);
+            }
+        }
+
+        function setSection(section) {
+            currentSection = section;
+            clearTimeout(typingInterval);
+            output.innerHTML = '';
+            typeContent(content[section]);
+            contactForm.style.display = section === 'contact' ? 'block' : 'none';
+        }
+
+        function handleCommand(command) {
+            const cmd = command.toLowerCase();
+            output.innerHTML += `\n$ ${command}\n`;
+            commandHistory.push(command);
+            historyIndex = commandHistory.length;
+            
+            switch(cmd) {
+                case 'about':
+                case 'services':
+                case 'contact':
+                case 'home':
+                case 'help':
+                    setSection(cmd);
+                    break;
+                case 'clear':
+                    output.innerHTML = '';
+                    break;
+                case 'projects':
+                    output.innerHTML += "Proyectos destacados:\n- App de delivery para StartupX\n- Plataforma e-learning para UniversidadY\n- Sistema IoT para SmartHomeZ\n";
+                    break;
+                case 'skills':
+                    output.innerHTML += "Nuestras habilidades técnicas:\n- Frontend: React, Vue, Angular\n- Backend: Node.js, Python, Java\n- Mobile: React Native, Flutter\n- DevOps: Docker, Kubernetes, AWS\n";
+                    break;
+                case 'coffee':
+                    output.innerHTML += "☕ Aquí tienes tu café virtual. ¡Ahora a programar!\n";
+                    break;
+                case 'easteregg':
+                    output.innerHTML += "🥚 ¡Felicidades! Has encontrado el huevo de pascua. Aquí tienes un cupón de descuento: CODE2024\n";
+                    break;
+                default:
+                    output.innerHTML += "Comando no reconocido. Escribe 'help' para ver los comandos disponibles.\n";
+            }
+        }
+
+        commandInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                handleCommand(this.value);
+                this.value = '';
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    this.value = commandHistory[historyIndex];
+                }
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    this.value = commandHistory[historyIndex];
+                } else {
+                    historyIndex = commandHistory.length;
+                    this.value = '';
+                }
+            }
+        });
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Formulario enviado!');
+            this.reset();
+        });
+
+        // Inicializar con la sección home
+        setSection('home');
+    </script>
+</body>
+</html>
