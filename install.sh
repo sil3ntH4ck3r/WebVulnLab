@@ -38,6 +38,7 @@ containers=(
   "cssi_v2;$PWD/cssi;8034:80" # Contenedor para CSS Injection
   "yamldeseralization_v2;$PWD/yamldeseralization;8036:5000" # Contenedor para YAML Deserialization
   "pickledeseralization_v2;$PWD/pickledeseralization;8038:5000" # Contenedor para Pickle Deserialization
+  "snmp_v2;$PWD/snmp;8040:80 -p 161:161/udp --sysctl net.ipv6.conf.all.disable_ipv6=0 --sysctl net.ipv6.conf.default.disable_ipv6=0 " # Contenedor para Pickle Deserialization
 )
 database=(
     "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2" # Contenedor para SQL Injection
@@ -360,13 +361,261 @@ build_local_server
 setup_file_virtual_hosting
 configure_virtual_host
 
+# Habilitando IPv6 en los contenedores Docker, para el contenedor snmp
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Salir inmediatamente si un comando falla, si una variable no está definida y si falla alguna parte de un pipeline
+set -euo pipefail
+
+# Variables
+FILE="/etc/docker/daemon.json"
+MAX_SUBNETS=100
+GENERATE_ULA=true
+TMP_FILE=""
+BACKUP_FILE=""
+LOG_FILE="/var/log/assign_subnet.log"
+
+# Funciones de Logging
+log_info() {
+    echo -e "${yellowColour}[${endColour}${blueColour}INFO${endColour}${yellowColour}]${endColour} ${grayColour} $(date '+%Y-%m-%d %H:%M:%S') - $* ${endColour}\n"
+}
+
+log_warn() {
+    echo -e "${yellowColour}[WARN]${endColour} ${grayColour} $(date '+%Y-%m-%d %H:%M:%S') - $* ${endColour}\n" | tee -a "$LOG_FILE" >&2
+}
+
+log_error() {
+    echo -e "${yellowColour}[${endColour}${redColour}ERROR${endColour}${yellowColour}]${endColour} ${grayColour} $(date '+%Y-%m-%d %H:%M:%S') - $* ${endColour}\n" | tee -a "$LOG_FILE" >&2
+}
+
+echo -e "\n${yellowColour}[${endColour}${blueColour}INFO${endColour}${yellowColour}]${endColour} ${grayColour} $(date '+%Y-%m-%d %H:%M:%S') - Configurando IPv6 para el contenedor snmp ${endColour}\n"
+
+# Función de limpieza en caso de error o interrupción
+cleanup() {
+    if [[ -n "$TMP_FILE" && -f "$TMP_FILE" ]]; then
+        sudo rm -f "$TMP_FILE"
+        log_info "Archivo temporal $TMP_FILE eliminado."
+    fi
+}
+trap cleanup EXIT INT TERM
+
+# Verificar si el script se ejecuta como root
+if [[ "$EUID" -ne 0 ]]; then
+    log_error "Este script debe ejecutarse con privilegios de superusuario. Usa sudo."
+    exit 1
+fi
+
+# Verificar si jq está instalado
+if ! command -v jq &> /dev/null; then
+    log_info "jq no está instalado. Instalándolo ahora..."
+    sudo apt-get update && sudo apt-get install -y jq
+    log_info "jq instalado correctamente."
+fi
+
+# Verificar si openssl está instalado (para generar prefijos ULA)
+if ! command -v openssl &> /dev/null; then
+    log_info "openssl no está instalado. Instalándolo ahora..."
+    sudo apt-get update && sudo apt-get install -y openssl
+    log_info "openssl instalado correctamente."
+fi
+
+# Función para comprobar si una subred está en uso
+is_subnet_in_use() {
+    local subnet=$1
+    if ip -6 addr show | grep -qE "${subnet%/*}"; then
+        return 0  # En uso
+    else
+        return 1  # Libre
+    fi
+}
+
+# Función para encontrar una subred libre
+find_free_subnet() {
+    local base_subnet=$1
+    for i in $(seq 1 "$MAX_SUBNETS"); do
+        SUBNET="${base_subnet}${i}::/64"
+        if ! is_subnet_in_use "$SUBNET"; then
+            echo "$SUBNET"
+            return 0
+        fi
+    done
+    echo "No hay subredes libres disponibles dentro de ${base_subnet}" >&2
+    return 1
+}
+
+# Función para detectar el prefijo IPv6 global existente
+detect_global_prefix() {
+    # Buscar direcciones IPv6 globales (excluyendo link-local y ULA)
+    local prefix=""
+    while read -r addr; do
+        IFS=':' read -r -a blocks <<< "$addr"
+        if [ ${#blocks[@]} -ge 3 ]; then
+            prefix="${blocks[0]}:${blocks[1]}:${blocks[2]}:"
+            echo "$prefix"
+            return 0
+        fi
+    done < <(ip -6 addr show scope global | grep -oP 'inet6 \K[^/]+(?=/)')
+    return 1
+}
+
+# Función para generar un prefijo ULA único
+generate_ula_prefix() {
+    # Generar un identificador de 40 bits en hexadecimal
+    local identifier
+    identifier=$(openssl rand -hex 5)
+    echo "fd${identifier}:"
+}
+
+# Verificar si la configuración de IPv6 ya existe en daemon.json
+ipv6_exists=false
+fixed_cidr_exists=false
+
+if [[ -f "$FILE" && -s "$FILE" ]]; then
+    # Validar que el JSON es válido
+    if ! jq empty "$FILE" 2>/dev/null; then
+        log_error "El archivo $FILE contiene JSON inválido. Por favor, corrígelo manualmente."
+        exit 1
+    fi
+
+    # Comprobar si "ipv6" ya está configurado
+    ipv6_check=$(jq 'has("ipv6")' "$FILE")
+    if [[ "$ipv6_check" == "true" ]]; then
+        ipv6_exists=true
+        log_info "La clave 'ipv6' ya existe en $FILE."
+    fi
+
+    # Comprobar si "fixed-cidr-v6" ya está configurado
+    fixed_cidr_check=$(jq 'has("fixed-cidr-v6")' "$FILE")
+    if [[ "$fixed_cidr_check" == "true" ]]; then
+        fixed_cidr_exists=true
+        log_info "La clave 'fixed-cidr-v6' ya existe en $FILE."
+    fi
+fi
+
+# Si tanto "ipv6" como "fixed-cidr-v6" ya están configurados, no hacer nada
+if $ipv6_exists && $fixed_cidr_exists; then
+    log_info "La configuración de IPv6 ya existe en $FILE. No se realizarán cambios."
+else
+    # Intentar detectar un prefijo IPv6 global existente
+    BASE_PREFIX=$(detect_global_prefix)
+
+    if [[ -z "$BASE_PREFIX" ]]; then
+        if $GENERATE_ULA; then
+            log_info "No se detectó un prefijo IPv6 global. Generando un prefijo ULA único..."
+            BASE_PREFIX=$(generate_ula_prefix)
+            log_info "Prefijo ULA generado: ${BASE_PREFIX}/48"
+        else
+            log_error "No se detectó un prefijo IPv6 global y la generación de ULA está deshabilitada."
+            exit 1
+        fi
+    else
+        log_info "Prefijo IPv6 global detectado: ${BASE_PREFIX}/48"
+    fi
+
+    # Encontrar una subred libre dentro del prefijo base
+    FREE_SUBNET=$(find_free_subnet "$BASE_PREFIX") || {
+        log_error "No se pudo encontrar una subred libre."
+        exit 1
+    }
+
+    log_info "Subred libre encontrada: $FREE_SUBNET"
+
+    # Crear una copia de seguridad del archivo existente, si no está vacío
+    if [[ -f "$FILE" && -s "$FILE" ]]; then
+        BACKUP_FILE="${FILE}.bak_$(date +%F_%T)"
+        sudo cp "$FILE" "$BACKUP_FILE" || {
+            log_error "No se pudo crear una copia de seguridad de $FILE."
+            exit 1
+        }
+        log_info "Copia de seguridad creada: $BACKUP_FILE"
+    fi
+
+    # Actualizar el JSON existente o crear uno nuevo
+    if [[ -f "$FILE" && -s "$FILE" ]]; then
+        if $ipv6_exists; then
+            # Actualizar solo "fixed-cidr-v6"
+            UPDATED_JSON=$(jq --arg cidr "$FREE_SUBNET" '.["fixed-cidr-v6"] = $cidr' "$FILE") || {
+                log_error "Error al actualizar 'fixed-cidr-v6' en $FILE."
+                exit 1
+            }
+            log_info "Actualizando 'fixed-cidr-v6' en $FILE."
+        else
+            # Añadir "ipv6" y "fixed-cidr-v6"
+            UPDATED_JSON=$(jq --arg cidr "$FREE_SUBNET" '. + { "ipv6": true, "fixed-cidr-v6": $cidr }' "$FILE") || {
+                log_error "Error al añadir 'ipv6' y 'fixed-cidr-v6' en $FILE."
+                exit 1
+            }
+            log_info "Añadiendo 'ipv6' y 'fixed-cidr-v6' en $FILE."
+        fi
+    else
+        # Crear un nuevo JSON con "ipv6" y "fixed-cidr-v6"
+        UPDATED_JSON=$(jq -n --arg cidr "$FREE_SUBNET" '
+            {
+                "ipv6": true,
+                "fixed-cidr-v6": $cidr
+            }
+        ') || {
+            log_error "Error al crear un nuevo JSON para $FILE."
+            exit 1
+        }
+        log_info "Creando un nuevo archivo JSON en $FILE con 'ipv6' y 'fixed-cidr-v6'."
+    fi
+
+    # Escribir el JSON actualizado en un archivo temporal
+    TMP_FILE=$(mktemp) || {
+        log_error "No se pudo crear un archivo temporal."
+        exit 1
+    }
+
+    echo "$UPDATED_JSON" | sudo tee "$TMP_FILE" > /dev/null || {
+        log_error "No se pudo escribir en el archivo temporal $TMP_FILE."
+        exit 1
+    }
+
+    # Validar el JSON temporal
+    if jq empty "$TMP_FILE" 2>/dev/null; then
+        # Mover el archivo temporal al destino
+        sudo mv "$TMP_FILE" "$FILE" || {
+            log_error "No se pudo mover el archivo temporal a $FILE."
+            exit 1
+        }
+        log_info "Subred asignada y añadida a $FILE: $FREE_SUBNET"
+    else
+        log_error "El JSON temporal es inválido. No se realizó ningún cambio."
+        sudo rm -f "$TMP_FILE"
+        exit 1
+    fi
+
+    # Reiniciar Docker para aplicar los cambios
+    if sudo systemctl restart docker; then
+        log_info "Docker ha sido reiniciado exitosamente para aplicar los cambios."
+    else
+        log_error "Error al reiniciar Docker. Restaurando la copia de seguridad."
+        if [[ -n "$BACKUP_FILE" && -f "$BACKUP_FILE" ]]; then
+            sudo cp "$BACKUP_FILE" "$FILE" || {
+                log_error "No se pudo restaurar la copia de seguridad desde $BACKUP_FILE."
+                exit 1
+            }
+            log_info "Copia de seguridad restaurada desde $BACKUP_FILE."
+        fi
+        sudo systemctl restart docker || {
+            log_error "Docker aún no se puede reiniciar correctamente. Revisa los logs para más detalles."
+            exit 1
+        }
+        exit 1
+    fi
+fi
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 # Preguntar al usuario si desea ignorar errores
-echo -e "\n${yellowColour}[${endColour}${Colour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}¿Desea ignorar los errores, a la hora de construirlos? (s/N)${endColour}"
+echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}¿Desea ignorar los errores, a la hora de construirlos? (s/N)${endColour}"
 read user_input_ignore_errors
 
 #Pregustar si desea ocultar el output de los comandos
 
-echo -e "\n${yellowColour}[${endColour}${Colour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}¿Desea ocultar el output de los comandos ejecutados durante la ejecución del script? (S/n)${endColour}"
+echo -e "\n${yellowColour}[${endColour}${blueColour}+${endColour}${yellowColour}]${endColour} ${blueColour}INFO${endColour} ${grayColour}¿Desea ocultar el output de los comandos ejecutados durante la ejecución del script? (S/n)${endColour}"
 read user_input_hide_output
 
 # Verificar si el usuario ingresó una respuesta válida

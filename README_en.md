@@ -140,6 +140,7 @@ This script will download and install all the necessary dependencies, create the
 | GraphQL Introspection, Mutations| http://graphql.local/ | Functional |
 | OAuth / Werkzeug Debugger Console Abuse| [http://oauth_gallery.local](http://oauth_gallery.local/) 
 |                                        |[http://oauth_printing.local/](http://oauth_printing.local/) | Functional |
+| SNMP Abuse + IPv6| http://snmp.local/ | Functional |
 | Active Directory| - | Working on it |
 
 Note that it is still in development, and not all containers are working correctly. This repository is updated frequently.

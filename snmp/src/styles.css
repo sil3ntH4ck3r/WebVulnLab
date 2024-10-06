@@ -1,0 +1,196 @@
+/* Estilos Generales */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif; /* Fuente estándar */
+    background-color: #0e0e0e;
+    color: #ffffff;
+    overflow-x: hidden;
+}
+
+.background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle at center, #1a1a1a, #0e0e0e);
+    z-index: -1;
+}
+
+.container {
+    width: 90%;
+    margin: auto;
+    overflow: hidden;
+}
+
+/* Encabezado */
+header {
+    text-align: center;
+    padding: 50px 0;
+    position: relative;
+}
+
+header h1 {
+    font-size: 4em;
+    color: #00d4ff;
+    letter-spacing: 2px;
+}
+
+header h1 span {
+    color: #ff00c8;
+}
+
+header p {
+    font-size: 1.2em;
+    color: #cccccc;
+    margin-top: 10px;
+}
+
+/* Animación del encabezado */
+header::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, #00d4ff, #ff00c8);
+    bottom: 0;
+    left: 0;
+}
+
+/* Panel de Información */
+.info-panel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 50px;
+}
+
+.info-card {
+    background: #1a1a1a;
+    border-radius: 15px;
+    width: 30%;
+    margin: 20px 0;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.info-card:hover {
+    transform: translateY(-10px);
+}
+
+.info-card::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(to right, #00d4ff, #ff00c8);
+    top: 0;
+    left: 0;
+}
+
+.info-icon {
+    font-size: 3em;
+    color: #00d4ff;
+    margin-bottom: 20px;
+}
+
+.info-content h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.info-content p {
+    font-size: 1.2em;
+    color: #cccccc;
+}
+
+/* Visualización de Recursos */
+.resource-visualization {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 50px 0;
+    position: relative;
+}
+
+#ram-usage-canvas {
+    background: #1a1a1a;
+    border-radius: 50%;
+}
+
+.resource-info {
+    position: absolute;
+    text-align: center;
+}
+
+.resource-info h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.resource-info p {
+    font-size: 2em;
+    color: #00d4ff;
+}
+
+/* Interfaces de Red */
+.network-interfaces {
+    background: #1a1a1a;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 50px;
+}
+
+.network-interfaces h3 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.interface-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.interface-item {
+    background: #262626;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 10px;
+    width: 150px;
+    text-align: center;
+}
+
+.interface-item h4 {
+    font-size: 1.2em;
+    color: #00d4ff;
+    margin-bottom: 10px;
+}
+
+.interface-item p {
+    font-size: 1em;
+    color: #cccccc;
+}
+
+/* Pie de página */
+footer {
+    text-align: center;
+    padding: 20px 0;
+    color: #666666;
+    background: #0e0e0e;
+    position: relative;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, #ff00c8, #00d4ff);
+    top: 0;
+    left: 0;
+}
