@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editar Imagen</title>
+    <script>
+        function showParams() {
+            var action = document.getElementById('action').value;
+            document.getElementById('angle_params').style.display = action == 'rotate_image' ? 'block' : 'none';
+            document.getElementById('resize_params').style.display = action == 'resize_image' ? 'block' : 'none';
+        }
+    </script>
+</head>
+<body>
+    <h1>Editar Imagen</h1>
+    <form action="" method="post">
+        <p>Selecciona la función de procesamiento:</p>
+        <select name="action" id="action" onchange="showParams()" required>
+            <option value="">--Selecciona una opción--</option>
+            <option value="rotate_image">Rotar Imagen</option>
+            <option value="grayscale_image">Escala de Grises</option>
+            <option value="resize_image">Redimensionar Imagen</option>
+        </select>
+        <div id="angle_params" style="display:none;">
+            <p>Ángulo de rotación:</p>
+            <input type="number" name="angle" value="90">
+        </div>
+        <div id="resize_params" style="display:none;">
+            <p>Ancho y Alto:</p>
+            <input type="number" name="width" value="200">
+            <input type="number" name="height" value="200">
+        </div>
+        <br>
+        <input type="submit" value="Procesar Imagen">
+    </form>
+</body>
+</html>

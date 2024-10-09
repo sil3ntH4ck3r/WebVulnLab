@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resultado de la Edición</title>
+</head>
+<body>
+    <h1>Imagen Procesada</h1>
+    <img src="{{ url_for('download_image', image_id=image_filename) }}" alt="Imagen procesada">
+    <p><a href="{{ url_for('index') }}">Volver al inicio</a></p>
+</body>
+</html>

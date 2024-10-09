@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  localstack:
+    image: localstack/localstack
+    environment:
+      - SERVICES=lambda,s3
+      - DEBUG=1
+      - LAMBDA_EXECUTOR=local
+    ports:
+      - "4566:4566"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    container_name: localstack_v2
+  webapp:
+    build: ./webapp
+    ports:
+      - "5000:5000"
+    environment:
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=us-east-1
+    depends_on:
+      - localstack
+    container_name: aws_v2

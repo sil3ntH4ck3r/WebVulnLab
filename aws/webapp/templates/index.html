@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editor de Imágenes</title>
+</head>
+<body>
+    <h1>Subir una Imagen</h1>
+    <form action="{{ url_for('index') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/png, image/jpeg" required>
+        <input type="submit" value="Subir Imagen">
+    </form>
+</body>
+</html>
