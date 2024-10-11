@@ -10,15 +10,17 @@ services:
       - "4566:4566"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
-    container_name: localstack_v2
+    container_name: localstack_db_v2 # En realidad sería localstack_v2, pero por logística va mejor que sea localstack_db_v2
   webapp:
     build: ./webapp
     ports:
-      - "5000:5000"
+      - "8041:5000"
     environment:
-      - AWS_ACCESS_KEY_ID=test
-      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_ACCESS_KEY_ID=5LG0Isfki7kW3drQHM3RbhK2y6akTc7jZVEsP
+      - AWS_SECRET_ACCESS_KEY=psTZvYjx)Z490YGUbQE.;x"g*:J-a0GP.yy(1
       - AWS_DEFAULT_REGION=us-east-1
     depends_on:
       - localstack
     container_name: aws_v2
+    volumes:
+      - ./webapp:/app

@@ -212,7 +212,7 @@ import base64
 @app.route('/edit/<image_id>', methods=['GET', 'POST'])
 def edit(image_id):
     if request.method == 'POST':
-        # Obtener el nombre de la acción desde el formulario
+
         action = request.form['action']
         function_name = action  # Variable que el usuario puede manipular
 
@@ -227,18 +227,40 @@ def edit(image_id):
         # Invocar la función Lambda y obtener la respuesta
         response_payload = invoke_lambda_function(function_name, image_id, additional_params)
 
-        # Decodificar la imagen base64
-        if 'image_base64' in response_payload:
-            image_data = base64.b64decode(response_payload['image_base64'])
-            # Guardar la imagen en /tmp para servirla
-            image_path = f'/tmp/{image_id}'
-            with open(image_path, 'wb') as f:
-                f.write(image_data)
-            # Mostrar la imagen al usuario
-            return send_file(image_path, mimetype='image/png')
-        else:
-            return f"Error: {response_payload}"
+        # Manejar errores de función Lambda
+        if 'FunctionError' in response_payload:
+            error_message = response_payload.get('error', 'Sin detalles adicionales.')
+            log_output = response_payload.get('LogResult', 'No hay logs disponibles.')
+            return f"""
+                <h2>Error en la función Lambda</h2>
+                <p><strong>Mensaje de error:</strong> {error_message}</p>
+                <h3>Logs de la función Lambda:</h3>
+                <pre>{log_output}</pre>
+            """
 
+        # Verificar el 'statusCode' y procesar el 'body'
+        status_code = response_payload.get('statusCode')
+        if status_code == 200:
+            body = response_payload.get('body', {})
+            if isinstance(body, str):
+                try:
+                    body = json.loads(body)
+                except json.JSONDecodeError:
+                    pass  # El cuerpo no es JSON, lo dejamos como está
+            if 'image_base64' in body:
+                image_data = base64.b64decode(body['image_base64'])
+                # Guardar la imagen en /tmp para servirla
+                image_path = f'/tmp/{image_id}'
+                with open(image_path, 'wb') as f:
+                    f.write(image_data)
+                # Renderizar una plantilla que muestra la imagen
+                return render_template('result.html', image_id=image_id)
+            else:
+                # Mostrar el 'body' como mensaje
+                return f"Mensaje de la función Lambda: {body.get('body', body)}"
+        else:
+            # Mostrar el contenido completo de response_payload para más detalles
+            return f"Error: La función Lambda devolvió el código {status_code}.<br>Detalles: {response_payload}"
     return render_template('edit.html', image_id=image_id)
 
 def invoke_lambda_function(function_name, image_id, additional_params=None):
@@ -248,11 +270,25 @@ def invoke_lambda_function(function_name, image_id, additional_params=None):
     response = lambda_client.invoke(
         FunctionName=function_name,
         InvocationType='RequestResponse',
-        Payload=json.dumps(payload)
+        Payload=json.dumps(payload),
+        LogType='Tail'  # Solicita los logs de la función Lambda
     )
-    response_payload = json.loads(response['Payload'].read().decode('utf-8'))
-    return response_payload
+    response_payload_raw = response['Payload'].read().decode('utf-8')
+    try:
+        response_payload = json.loads(response_payload_raw)
+    except json.JSONDecodeError:
+        response_payload = {'error': response_payload_raw}
 
+    # Manejar posibles errores
+    if 'FunctionError' in response:
+        response_payload['FunctionError'] = response['FunctionError']
+        # Decodificar los logs
+        if 'LogResult' in response:
+            import base64
+            log_result = base64.b64decode(response['LogResult']).decode('utf-8')
+            response_payload['LogResult'] = log_result
+
+    return response_payload
 
 @app.route('/result/<image_id>')
 def result(image_id):

@@ -36,9 +36,9 @@ containers=(
   "cors_v2;$PWD/cors;8029:80" # Contenedor para CORS
   "racecondition_v2;$PWD/racecondition;8033:80" # Contenedor para Race Condition
   "cssi_v2;$PWD/cssi;8034:80" # Contenedor para CSS Injection
-  "yamldeseralization_v2;$PWD/yamldeseralization;8036:5000" # Contenedor para YAML Deserialization
+  "yamldeseralization_v2;$PWD/yamldeseralization;8042:5000" # Contenedor para YAML Deserialization
   "pickledeseralization_v2;$PWD/pickledeseralization;8038:5000" # Contenedor para Pickle Deserialization
-  "snmp_v2;$PWD/snmp;8040:80 -p 161:161/udp --sysctl net.ipv6.conf.all.disable_ipv6=0 --sysctl net.ipv6.conf.default.disable_ipv6=0 " # Contenedor para Pickle Deserialization
+  "snmp_v2;$PWD/snmp;8040:80 -p 161:161/udp --sysctl net.ipv6.conf.all.disable_ipv6=0 --sysctl net.ipv6.conf.default.disable_ipv6=0 " # Contenedor para SNMP
 )
 database=(
     "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2" # Contenedor para SQL Injection
@@ -50,6 +50,7 @@ database=(
     "jwt_db_v2;$PWD/jwt;8032:80;jwt_v2" # Contenedor para JWT
 )
 otros=(
+    "Construyendo contenedores para AWS Abuse;docker-compose -f $PWD/aws/docker-compose.yml up -d" # Contenedor para AWS Abuse
     "Construyendo contenedores para API Abuse;docker-compose -f $PWD/apiabuse/docker-compose.yml up -d" # Contenedor para API abuse (recomiendo ejecutarlo solo, sin otros contenedores)
     "Contruyendo contenedores para WebDAV;docker-compose -f $PWD/webdav/docker-compose.yml up -d" # Contenedor para WebDAV
     "Contruyendo contenedores para GraphQL;docker-compose -f $PWD/graphql/docker-compose.yml up -d" # Contenedor para GrphQL
@@ -208,6 +209,13 @@ setup_file_virtual_hosting() {
         echo "    ProxyPassReverse / http://localhost:8039/"
         echo "</VirtualHost>"
         echo
+        echo "<VirtualHost *:80>"
+        echo "    ServerName aws.local"
+        echo "    ProxyPreserveHost On"
+        echo "    ProxyPass / http://localhost:8041/"
+        echo "    ProxyPassReverse / http://localhost:8041/"
+        echo "</VirtualHost>"
+        echo
     } >> "$config_file" 2>> "$error_file"
 
     # Añadir las entradas de VirtualHost
@@ -335,7 +343,7 @@ configure_virtual_host() {
         hosts_entries+=("$db_container_name.local")
     done
 
-    echo "127.0.0.1 ${hosts_entries[*]} tablero.local codefusiondev.domainzonetransfer.local apiabuse.local mail.local webdav.local graphql.local oauth_printing.local oauth_gallery.local" >> /etc/hosts
+    echo "127.0.0.1 ${hosts_entries[*]} tablero.local aws.local codefusiondev.domainzonetransfer.local apiabuse.local mail.local webdav.local graphql.local oauth_printing.local oauth_gallery.local" >> /etc/hosts
 
 
     if [ $? -ne 0 ]; then

@@ -143,6 +143,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | OAuth / Werkzeug Debugger Console Abuse| [http://oauth_gallery.local](http://oauth_gallery.local/) 
 |                                        |[http://oauth_printing.local/](http://oauth_printing.local/) | Funcional |
 | SNMP Abuse + IPv6| http://snmp.local/ | Funcional |
+| AWS| http://aws.local/ | En desarrollo, pero se puede empezar a probar |
 | Active Directory| - | Trabajando en ello |
 
 Cabe destacar que aún está en desarrollo, y que no todos los contenedores están funcionando correctamente. Este repositorio se actualiza a menudo.

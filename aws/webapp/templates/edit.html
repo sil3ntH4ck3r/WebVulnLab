@@ -9,28 +9,197 @@
             document.getElementById('resize_params').style.display = action == 'resize_image' ? 'block' : 'none';
         }
     </script>
+        <style>
+            :root {
+                --primary-color: #2c3e50;
+                --secondary-color: #34495e;
+                --accent-color: #3498db;
+                --background-color: #ecf0f1;
+                --text-color: #333;
+                --light-text-color: #7f8c8d;
+            }
+            body {
+                font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: var(--background-color);
+                color: var(--text-color);
+                line-height: 1.6;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 40px 20px;
+            }
+            header {
+                text-align: center;
+                margin-bottom: 40px;
+            }
+            h1, h2 {
+                color: var(--primary-color);
+                font-weight: 300;
+                margin-bottom: 10px;
+            }
+            h1 {
+                font-size: 3em;
+                letter-spacing: 2px;
+            }
+            h2 {
+                font-size: 2em;
+                margin-top: 0;
+            }
+            .tagline {
+                color: var(--light-text-color);
+                font-size: 1.2em;
+                margin-bottom: 30px;
+            }
+            .main-content {
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                flex-wrap: wrap;
+                gap: 40px;
+            }
+            .upload-section, .preview-section, .edit-section {
+                flex-basis: calc(50% - 20px);
+                background-color: #fff;
+                border-radius: 8px;
+                padding: 30px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                margin-bottom: 40px;
+            }
+            .upload-form, .edit-form {
+                text-align: center;
+            }
+            .file-input-wrapper {
+                position: relative;
+                overflow: hidden;
+                display: inline-block;
+                margin-bottom: 20px;
+            }
+            .file-input-wrapper input[type=file] {
+                font-size: 100px;
+                position: absolute;
+                left: 0;
+                top: 0;
+                opacity: 0;
+                cursor: pointer;
+            }
+            .btn {
+                display: inline-block;
+                padding: 12px 24px;
+                background-color: var(--accent-color);
+                color: #fff;
+                font-size: 1em;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.1s ease;
+            }
+            .btn:hover {
+                background-color: #2980b9;
+                transform: translateY(-2px);
+            }
+            .btn:active {
+                transform: translateY(0);
+            }
+            .submit-btn {
+                display: block;
+                width: 100%;
+                padding: 12px;
+                margin-top: 20px;
+                background-color: #2ecc71;
+            }
+            .submit-btn:hover {
+                background-color: #27ae60;
+            }
+            #file-name {
+                margin-top: 10px;
+                font-style: italic;
+                color: var(--light-text-color);
+            }
+            #preview-image {
+                max-width: 100%;
+                height: auto;
+                border-radius: 4px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            .image-info {
+                margin-top: 20px;
+                padding: 15px;
+                background-color: #f8f9fa;
+                border-radius: 4px;
+            }
+            .image-info h3 {
+                margin-top: 0;
+                color: var(--secondary-color);
+            }
+            .image-info p {
+                margin: 5px 0;
+            }
+            select, input[type="number"] {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 1em;
+            }
+            .param-group {
+                margin-top: 15px;
+            }
+            footer {
+                text-align: center;
+                padding: 20px;
+                background-color: var(--primary-color);
+                color: #fff;
+            }
+            @media (max-width: 768px) {
+                .main-content {
+                    flex-direction: column;
+                }
+                .upload-section, .preview-section, .edit-section {
+                    flex-basis: 100%;
+                }
+            }
+        </style>
 </head>
 <body>
-    <h1>Editar Imagen</h1>
-    <form action="" method="post">
-        <p>Selecciona la función de procesamiento:</p>
-        <select name="action" id="action" onchange="showParams()" required>
-            <option value="">--Selecciona una opción--</option>
-            <option value="rotate_image">Rotar Imagen</option>
-            <option value="grayscale_image">Escala de Grises</option>
-            <option value="resize_image">Redimensionar Imagen</option>
-        </select>
-        <div id="angle_params" style="display:none;">
-            <p>Ángulo de rotación:</p>
-            <input type="number" name="angle" value="90">
+    <div class="container">
+        <header>
+            <h1>PhotoPro Studio</h1>
+            <p class="tagline">Edición de imágenes profesional al alcance de tus manos</p>
+        </header>
+        <div class="main-content">
+            <section class="edit-section">
+                <h2>Editar Imagen</h2>
+                <form action="{{ url_for('edit', image_id=image_id) }}" method="post" class="edit-form">
+                    <select name="action" id="action" onchange="showParams()" required>
+                        <option value="">--Selecciona una opción--</option>
+                        <option value="rotate_image">Rotar Imagen</option>
+                        <option value="grayscale_image">Escala de Grises</option>
+                        <option value="resize_image">Redimensionar Imagen</option>
+                    </select>
+                    <div id="angle_params" class="param-group" style="display:none;">
+                        <label for="angle">Ángulo de rotación:</label>
+                        <input type="number" id="angle" name="angle" value="90">
+                    </div>
+                    <div id="resize_params" class="param-group" style="display:none;">
+                        <label for="width">Ancho:</label>
+                        <input type="number" id="width" name="width" value="200">
+                        <label for="height">Alto:</label>
+                        <input type="number" id="height" name="height" value="200">
+                    </div>
+                    <input type="submit" value="Procesar Imagen" class="btn submit-btn">
+                </form>
+            </section>
         </div>
-        <div id="resize_params" style="display:none;">
-            <p>Ancho y Alto:</p>
-            <input type="number" name="width" value="200">
-            <input type="number" name="height" value="200">
+    </div>
+    <br><br><br><br><br><br><br><br><br>
+    <footer>
+        <div class="container">
+            <p>&copy; <a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0
         </div>
-        <br>
-        <input type="submit" value="Procesar Imagen">
-    </form>
+    </footer>
 </body>
 </html>

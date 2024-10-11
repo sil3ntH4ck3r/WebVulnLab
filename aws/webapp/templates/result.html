@@ -1,11 +1,106 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Resultado de la Edición</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhotoPro Studio - Resultado de la Edición</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --background-color: #ecf0f1;
+            --text-color: #333;
+            --light-text-color: #7f8c8d;
+        }
+        body {
+            font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        header {
+            margin-bottom: 40px;
+        }
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5em;
+            font-weight: 300;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        .result-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--accent-color);
+            color: #fff;
+            font-size: 1em;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: var(--light-text-color);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Imagen Procesada</h1>
-    <img src="{{ url_for('download_image', image_id=image_filename) }}" alt="Imagen procesada">
-    <p><a href="{{ url_for('index') }}">Volver al inicio</a></p>
+    <div class="container">
+        <header>
+            <h1>Imagen Procesada</h1>
+        </header>
+        <main>
+            <img src="{{ url_for('download_image', image_id=image_id) }}" alt="Imagen Procesada" class="result-image">
+            <div class="actions">
+                <a href="{{ url_for('index') }}" class="btn">Volver al inicio</a>
+                <a href="{{ url_for('download_image', image_id=image_id) }}" class="btn" download>Descargar imagen</a>
+            </div>
+        </main>
+        <footer>
+            <div class="container">
+                <p>&copy; <a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0
+            </div>
+        </footer>
+    </div>
 </body>
 </html>
