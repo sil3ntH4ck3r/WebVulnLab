@@ -39,6 +39,7 @@ containers=(
   "yamldeseralization_v2;$PWD/yamldeseralization;8042:5000" # Contenedor para YAML Deserialization
   "pickledeseralization_v2;$PWD/pickledeseralization;8038:5000" # Contenedor para Pickle Deserialization
   "snmp_v2;$PWD/snmp;8040:80 -p 161:161/udp --sysctl net.ipv6.conf.all.disable_ipv6=0 --sysctl net.ipv6.conf.default.disable_ipv6=0 " # Contenedor para SNMP
+  #"httpsmuggling_v2;$PWD/httpsmuggling;8043:80" # Contenedor para HTTP Smuggling
 )
 database=(
     "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2" # Contenedor para SQL Injection
