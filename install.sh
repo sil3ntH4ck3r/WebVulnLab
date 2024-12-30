@@ -13,44 +13,47 @@ BACKUP_FILE=""
 LOG_FILE="/var/log/assign_subnet.log"
 
 # Establecer valor predeterminado para ignore_errors y hide_output
-ignore_errors="n"
-hide_output="s"
+ignore_errors="n"   # Si el usuario no escribe nada, asume n
+hide_output="s"     # Si el usuario no escribe nada, asume s
+
+ipv6_exists=false
+fixed_cidr_exists=false
 
 # Arrays
 containers=(
-  "menu_v2;$PWD/menu;8080:80"
-  "lfi_v2;$PWD/lfi;8000:80"
-  "csrf_v2;$PWD/csrf;8001:80"
-  "blindxxe_v2;$PWD/blindxxe;8002:80"
-  "xxe_v2;$PWD/xxe;8003:80"
-  "xss_v2;$PWD/xss;8004:80"
-  "domainzonetransfer_v2;$PWD/domainzonetransfer;8039:80 -p 53:53/tcp -p 53:53/udp"
-  "ssrf_v2;$PWD/ssrf;8006:80"
-  "typejuggling_v2;$PWD/typejuggling;8008:80"
-  "rfi_v2;$PWD/rfi;8009:80"
-  "insecuredeseralizationphp_v2;$PWD/insecuredeseralizationphp;8010:80"
-  "latexinjection_v2;$PWD/latexinjection;8011:80"
-  "xpathinjection_v2;$PWD/xpathinjection;8012:80"
-  "shellshock_v2;$PWD/shellshock;8013:80"
-  "blindxss_v2;$PWD/blindxss;8015:80"
-  "htmlinjection_v2;$PWD/htmlinjection;8016:80"
-  "ssti_v2;$PWD/ssti;8018:80"
-  "csti_v2;$PWD/csti;8019:80"
-  "nosqlinjection_v2;$PWD/nosqlinjection;8020:80"
-  "ldap_server_v2;$PWD/ldapinjection/ldapserver;389:389"
-  "ldapinjection_v2;$PWD/ldapinjection/webserver;8021:80"
-  "fileuploadabuse_v2;$PWD/fileuploadabuse;8024:80"
-  "prototypepollution_v2;$PWD/prototypepollution;8025:3000"
-  "openredirect_v2;$PWD/openredirect;8026:80"
-  "squidproxy_v2;$PWD/squidproxy;8028:80 -p 3128:3128 --cap-add=NET_ADMIN"
-  "cors_v2;$PWD/cors;8029:80"
-  "racecondition_v2;$PWD/racecondition;8033:80"
-  "cssi_v2;$PWD/cssi;8034:80"
-  "yamldeseralization_v2;$PWD/yamldeseralization;8042:5000"
-  "pickledeseralization_v2;$PWD/pickledeseralization;8038:5000"
-  "snmp_v2;$PWD/snmp;8040:80 -p 161:161/udp --sysctl net.ipv6.conf.all.disable_ipv6=0 --sysctl net.ipv6.conf.default.disable_ipv6=0 "
-  "http3_v2;$PWD/http3;8043:443"
-  "httpsmuggling_v2;$PWD/httpsmuggling;8043:80"
+  "menu_v2;$PWD/menu;8080:80;"
+  "lfi_v2;$PWD/lfi;8000:80;"
+  "csrf_v2;$PWD/csrf;8001:80;"
+  "blindxxe_v2;$PWD/blindxxe;8002:80;"
+  "xxe_v2;$PWD/xxe;8003:80;"
+  "xss_v2;$PWD/xss;8004:80;"
+  "domainzonetransfer_v2;$PWD/domainzonetransfer;8039:80 53:53/tcp 53:53/udp;"
+  "ssrf_v2;$PWD/ssrf;8006:80;"
+  "typejuggling_v2;$PWD/typejuggling;8008:80;"
+  "rfi_v2;$PWD/rfi;8009:80;"
+  "insecuredeseralizationphp_v2;$PWD/insecuredeseralizationphp;8010:80;"
+  "latexinjection_v2;$PWD/latexinjection;8011:80;"
+  "xpathinjection_v2;$PWD/xpathinjection;8012:80;"
+  "shellshock_v2;$PWD/shellshock;8013:80;"
+  "blindxss_v2;$PWD/blindxss;8015:80;"
+  "htmlinjection_v2;$PWD/htmlinjection;8016:80;"
+  "ssti_v2;$PWD/ssti;8018:80;"
+  "csti_v2;$PWD/csti;8019:80;"
+  "nosqlinjection_v2;$PWD/nosqlinjection;8020:80;"
+  "ldap_server_v2;$PWD/ldapinjection/ldapserver;389:389;"
+  "ldapinjection_v2;$PWD/ldapinjection/webserver;8021:80;"
+  "fileuploadabuse_v2;$PWD/fileuploadabuse;8024:80;"
+  "prototypepollution_v2;$PWD/prototypepollution;8025:3000;"
+  "openredirect_v2;$PWD/openredirect;8026:80;"
+  "squidproxy_v2;$PWD/squidproxy;8028:80 3128:3128;--cap-add=NET_ADMIN"
+  "cors_v2;$PWD/cors;8029:80;"
+  "racecondition_v2;$PWD/racecondition;8033:80;"
+  "cssi_v2;$PWD/cssi;8034:80;"
+  "yamldeseralization_v2;$PWD/yamldeseralization;8042:5000;"
+  "pickledeseralization_v2;$PWD/pickledeseralization;8038:5000;"
+  "snmp_v2;$PWD/snmp;8040:80 161:161/udp;--sysctl net.ipv6.conf.all.disable_ipv6=0 --sysctl net.ipv6.conf.default.disable_ipv6=0"
+  "http3_v2;$PWD/http3;8043:443/tcp 8043:443/udp 8044:80;"
+  "httpsmuggling_v2;$PWD/httpsmuggling;8043:80;"
 )
 
 database=(
@@ -69,8 +72,6 @@ otros=(
   "Contruyendo contenedores para WebDAV;docker-compose -f $PWD/webdav/docker-compose.yml up -d"
   "Contruyendo contenedores para GraphQL;docker-compose -f $PWD/graphql/docker-compose.yml up -d"
   "Contruyendo contenedores para OAuth;docker-compose -f $PWD/oauth/docker-compose.yml up -d"
-  "Configurando archivos para LDAP;configure_ldap_files"
-  "Configurando red para los contenedores;configure_network"
 )
 
 # Colores
@@ -92,42 +93,34 @@ cat << "EOF"
  \   \/\/   /_/ __ \  | __ \  \   Y   / |  |  \|  |   /    \ |    |    \__  \   | __ \ 
   \        / \  ___/  | \_\ \  \     /  |  |  /|  |__|   |  \|    |___  / __ \_ | \_\ \
    \__/\  /   \___  > |___  /   \___/   |____/ |____/|___|  /|_______ \(____  / |___  /
-        \/        \/      \/                              \/         \/     \/      \/ 
+        \/        \/      \/                              \/         \/     \/      \/
 EOF
-echo "                              Created by sil3nth4ck3r"
+echo -e "                              Created by sil3nth4ck3r \n"
 
 # ----------------------------------------------------------------------
 #                               LDAP Y RED
 # ----------------------------------------------------------------------
 
 configure_ldap_files(){
-    for container in "${containers[@]}"; do
-        IFS=';' read -ra container_info <<< "$container"
-        container_name=${container_info[0]}
-        container_dir=${container_info[1]}
-        container_ports=${container_info[2]}
 
-        if [ "$container_name" == "ldap_server_v2" ]; then
-            log_info "Configurando archivos para LDAP Server"
-            docker start ldap_server_v2 >> "$LOG_FILE" 2>&1
+    log_info "Configurando archivos para LDAP Server"
+    docker start ldap_server_v2 >> "$LOG_FILE" 2>&1
 
-            ldapadd -x -H ldap://localhost -D "cn=admin,dc=ldapinjection,dc=local" -w admin -f "$PWD/ldapinjection/ldapserver/users.ldif" >> "$LOG_FILE" 2>&1
-            if [ $? -ne 0 ]; then
-                log_error "Error al configurar users.ldif"
-            else
-                log_info "Configurado correctamente users.ldif"
-            fi
+    ldapadd -x -H ldap://localhost -D "cn=admin,dc=ldapinjection,dc=local" -w admin -f "$PWD/ldapinjection/ldapserver/users.ldif" >> "$LOG_FILE" 2>&1
+    if [ $? -ne 0 ]; then
+        log_error "Error al configurar users.ldif"
+    else
+        log_info "Configurado correctamente users.ldif"
+    fi
 
-            ldapadd -x -D "cn=admin,dc=ldapinjection,dc=local" -w admin -f "$PWD/ldapinjection/ldapserver/user1.ldif" >> "$LOG_FILE" 2>&1
-            if [ $? -ne 0 ]; then
-                log_error "Error al configurar user1.ldif"
-                docker stop ldap_server_v2 >> "$LOG_FILE" 2>&1
-            else
-                log_info "Configurado correctamente user1.ldif"
-                docker stop ldap_server_v2 >> "$LOG_FILE" 2>&1
-            fi
-        fi
-    done
+    ldapadd -x -D "cn=admin,dc=ldapinjection,dc=local" -w admin -f "$PWD/ldapinjection/ldapserver/user1.ldif" >> "$LOG_FILE" 2>&1
+    if [ $? -ne 0 ]; then
+        log_error "Error al configurar user1.ldif"
+        docker stop ldap_server_v2 >> "$LOG_FILE" 2>&1
+    else
+        log_info "Configurado correctamente user1.ldif"
+        docker stop ldap_server_v2 >> "$LOG_FILE" 2>&1
+    fi
 }
 
 configure_network() {
@@ -144,13 +137,6 @@ configure_network() {
         db_container_info=($(echo "$db_container" | tr ';' ' '))
         docker network.connect WebVulnLab-Network "${db_container_info[0]}" >> "$LOG_FILE" 2>&1
     done
-
-    # Suponiendo que uses un archivo de errores en configure_network
-    # if [ -s "$error_file" ]; then
-    #     log_error "Se encontraron errores. Revise el archivo $error_file."
-    # else
-    #     log_info "WebVulnLab-Network configurada correctamente."
-    # fi
 }
 
 # ----------------------------------------------------------------------
@@ -230,6 +216,12 @@ setup_file_virtual_hosting() {
         container_name=${container_info[0]%%_v2}
         container_ports=${container_info[2]}
         container_port=$(echo "$container_ports" | cut -d ':' -f 1)
+
+        # Si es http3, saltar la generación de VirtualHost y continuar con el siguiente contenedor
+        if [[ "$container_name" == "http3" ]]; then
+            log_info "Saltando entrada de VirtualHost para el contenedor http3_v2"
+            continue
+        fi
 
         {
             echo "<VirtualHost *:80>"
@@ -371,33 +363,166 @@ log_error() {
 }
 
 # ----------------------------------------------------------------------
-#                           CONFIGURACIÓN DE IPV6 
+#                           CLEANUP Y TRAPS
 # ----------------------------------------------------------------------
 
-cleanup() {
+# Guardar la configuración original de stty
+original_stty=$(stty -g)
+
+# Desactivar la eco de caracteres de control para ocultar ^C
+stty -echoctl
+
+cleanup_exit() {
     if [[ -n "$TMP_FILE" && -f "$TMP_FILE" ]]; then
         rm -f "$TMP_FILE"
         log_info "Archivo temporal $TMP_FILE eliminado."
     fi
+    # Restaurar configuración original de stty
+    stty "$original_stty"
 }
-trap cleanup EXIT INT TERM
 
+cleanup_signal() {
+    log_warn "Saliendo del programa..."
+    cleanup_exit
+    exit 1
+}
+
+trap cleanup_exit EXIT
+trap cleanup_signal INT TERM
+
+# ----------------------------------------------------------------------
+#                           DEPENDENCIAS
+# ----------------------------------------------------------------------
+
+# Verificar si el script se está ejecutando como root
 if [[ "$EUID" -ne 0 ]]; then
     log_error "Este script debe ejecutarse con privilegios de superusuario (sudo)."
     exit 1
 fi
 
-if ! command -v jq &> /dev/null; then
-    log_info "Instalando jq..."
-    apt-get update && apt-get install -y jq >> "$LOG_FILE" 2>&1
-    log_info "jq instalado correctamente."
+# Definir una lista de comandos y sus paquetes asociados
+declare -A CMD_TO_PKG=(
+    ["jq"]="jq"
+    ["openssl"]="openssl"
+    ["docker"]="docker-ce"
+    ["docker-compose"]="docker-compose"
+    ["php"]="php"
+    ["apache2"]="apache2"
+    ["ldapadd"]="ldap-utils"
+    ["ip"]="iproute2"
+    ["stty"]="coreutils"
+    ["sed"]="sed"
+    ["systemctl"]="systemd"
+    ["a2enmod"]="apache2"
+    ["a2ensite"]="apache2"
+)
+
+# Lista de comandos requeridos
+REQUIRED_COMMANDS=(
+    "jq"
+    "openssl"
+    "docker"
+    "docker-compose"
+    "php"
+    "apache2"
+    "ldapadd"
+    "ip"
+    "stty"
+    "sed"
+    "systemctl"
+    "a2enmod"
+    "a2ensite"
+)
+
+# Lista de paquetes a instalar
+INSTALL_PACKAGES=()
+
+# Verificar comandos faltantes y mapear a paquetes
+for cmd in "${REQUIRED_COMMANDS[@]}"; do
+    if ! command -v "$cmd" &> /dev/null; then
+        pkg=${CMD_TO_PKG[$cmd]}
+        if [[ -n "$pkg" && ! " ${INSTALL_PACKAGES[@]} " =~ " ${pkg} " ]]; then
+            INSTALL_PACKAGES+=("$pkg")
+        fi
+    fi
+done
+
+# Función para instalar Docker desde el repositorio oficial
+install_docker_official() {
+    log_info "Instalando Docker desde el repositorio oficial..."
+    
+    # Instalar paquetes necesarios para permitir a apt usar repositorios sobre HTTPS
+    apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
+
+    # Añadir la clave GPG oficial de Docker
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+    # Añadir el repositorio estable de Docker
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+      $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    # Instalar Docker Engine
+    apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io
+
+    if ! command -v docker &> /dev/null; then
+        log_error "Error al instalar Docker desde el repositorio oficial."
+        exit 1
+    fi
+
+    log_info "Docker instalado correctamente."
+}
+
+# Función para instalar docker-compose manualmente
+install_docker_compose() {
+    log_info "Instalando docker-compose manualmente..."
+    # Obtener la última versión de docker-compose
+    COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep tag_name | cut -d '"' -f 4)
+    curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose
+    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+    if ! command -v docker-compose &> /dev/null; then
+        log_error "Error al instalar docker-compose."
+        exit 1
+    fi
+    log_info "docker-compose instalado correctamente."
+}
+
+# Si docker está faltando, instalar desde el repositorio oficial
+if ! command -v docker &> /dev/null; then
+    install_docker_official
 fi
 
-if ! command -v openssl &> /dev/null; then
-    log_info "Instalando openssl..."
-    apt-get update && apt-get install -y openssl >> "$LOG_FILE" 2>&1
-    log_info "openssl instalado correctamente."
+# Si docker-compose está faltando, instalar manualmente
+if ! command -v docker-compose &> /dev/null; then
+    install_docker_compose
 fi
+
+# Si hay paquetes que instalar, instálalos
+if [ ${#INSTALL_PACKAGES[@]} -gt 0 ]; then
+    log_info "Instalando dependencias necesarias: ${INSTALL_PACKAGES[*]}"
+    apt-get update && apt-get install -y "${INSTALL_PACKAGES[@]}" >> "$LOG_FILE" 2>&1
+    if [ $? -ne 0 ]; then
+        log_error "Error al instalar las dependencias: ${INSTALL_PACKAGES[*]}"
+        exit 1
+    fi
+    log_info "Dependencias instaladas correctamente."
+fi
+
+# Verificar si Docker está activo y en ejecución
+if ! systemctl is-active --quiet docker; then
+    log_info "Iniciando el servicio de Docker..."
+    systemctl start docker
+    if ! systemctl is-active --quiet docker; then
+        log_error "Error al iniciar el servicio de Docker."
+        exit 1
+    fi
+    log_info "Servicio de Docker iniciado correctamente."
+fi
+
+# ----------------------------------------------------------------------
+#                           CONFIGURACIÓN DE IPV6 
+# ----------------------------------------------------------------------
 
 is_subnet_in_use() {
     local subnet=$1
@@ -439,9 +564,6 @@ generate_ula_prefix() {
     identifier=$(openssl rand -hex 5)
     echo "fd${identifier}:"
 }
-
-ipv6_exists=false
-fixed_cidr_exists=false
 
 if [[ -f "$FILE" && -s "$FILE" ]]; then
     if ! jq empty "$FILE" 2>/dev/null; then
@@ -550,25 +672,63 @@ fi
 # ----------------------------------------------------------------------
 log_info "¿Desea ignorar los errores a la hora de construirlos? (s/N)"
 read user_input_ignore_errors
-
-log_info "¿Desea ocultar el output de los comandos ejecutados durante el script? (S/n)"
-read user_input_hide_output
-
+# Si el usuario presiona Enter, se asume N
+if [[ -z "$user_input_ignore_errors" ]]; then
+    user_input_ignore_errors="n"
+fi
 if [[ "$user_input_ignore_errors" =~ [sS] ]]; then
     ignore_errors="s"
-elif [[ "$user_input_ignore_errors" =~ [nN] ]]; then
+else
     ignore_errors="n"
 fi
 
-if [[ "$user_input_hide_output" =~ [sS] ]]; then
-    hide_output="s"
-elif [[ "$user_input_hide_output" =~ [nN] ]]; then
+log_info "¿Desea ocultar el output de los comandos ejecutados durante el script? (S/n)"
+read user_input_hide_output
+# Si el usuario presiona Enter, se asume S
+if [[ -z "$user_input_hide_output" ]]; then
+    user_input_hide_output="s"
+fi
+if [[ "$user_input_hide_output" =~ [nN] ]]; then
     hide_output="n"
+else
+    hide_output="s"
 fi
 
 # ----------------------------------------------------------------------
 #                   CONSTRUIR/INICIAR CONTENEDORES
 # ----------------------------------------------------------------------
+
+# Comprueba si un puerto está en uso (ejemplo con lsof)
+is_port_in_use() {
+    local port="$1"
+    if lsof -i :"$port" -sTCP:LISTEN &>/dev/null; then
+        return 0  # Sí está en uso
+    else
+        return 1  # No está en uso
+    fi
+}
+
+# Mostrar propiedades del proceso
+show_port_details() {
+    local port="$1"
+    log_warn "Proceso(s) que ocupan el puerto $port:"
+    # Muestra el listado con detalles
+    lsof -i :"$port" -sTCP:LISTEN
+}
+
+# Mata el proceso que está usando un puerto
+kill_process_on_port() {
+    local port="$1"
+    local pid
+    pid="$(lsof -t -i :"$port" -sTCP:LISTEN 2>/dev/null)"
+    if [ -n "$pid" ]; then
+        log_warn "Matando proceso(s) $pid en puerto $port ..."
+        kill -9 "$pid"
+        log_info "Proceso $pid eliminado. Continuando."
+    else
+        log_warn "No se encontró PID ocupando el puerto $port"
+    fi
+}
 
 build_docker_image() {
     local container_name="$1"
@@ -577,17 +737,35 @@ build_docker_image() {
     local ignore_errors="$4"
 
     log_info "Construyendo imagen de $container_name"
-    if [ "$hide_output" = "s" ]; then
-        docker build -t "$container_name" "$container_dir" >> "$LOG_FILE" 2>&1
-    else
-        docker build -t "$container_name" "$container_dir"
-    fi
 
-    if [ $? -ne 0 ]; then
-        log_error "Error al construir la imagen de $container_name"
-        [ "$ignore_errors" = "n" ] && exit 1
+    if [ "$hide_output" = "s" ]; then
+        # CAPTURAMOS la salida de docker build
+        local build_out
+        build_out="$(docker build -t "$container_name" "$container_dir" 2>&1)"
+        local exit_code=$?
+        # La guardamos en el log
+        echo "$build_out" >> "$LOG_FILE"
+
+        # Verificamos si hubo error
+        if [ $exit_code -ne 0 ]; then
+            # Si hay error, lo mostramos en pantalla, aunque sea "silencioso"
+            log_error "Error al construir la imagen de $container_name. Detalles:"
+            echo "$build_out"
+
+            # Si ignore_errors = "n", detenemos el script
+            [ "$ignore_errors" = "n" ] && exit 1
+        else
+            log_info "Imagen $container_name construida correctamente"
+        fi
     else
-        log_info "Imagen $container_name construida correctamente"
+        # Modo no silencioso
+        docker build -t "$container_name" "$container_dir"
+        if [ $? -ne 0 ]; then
+            log_error "Error al construir la imagen de $container_name"
+            [ "$ignore_errors" = "n" ] && exit 1
+        else
+            log_info "Imagen $container_name construida correctamente"
+        fi
     fi
 }
 
@@ -595,29 +773,79 @@ run_docker_container() {
     local container_name="$1"
     local container_dir="$2"
     local container_ports="$3"
-    local hide_output="$4"
-    local ignore_errors="$5"
+    local container_options="$4"
+    local hide_output="$5"
+    local ignore_errors="$6"
 
     log_info "Iniciando contenedor $container_name"
-    if [ "$container_name" == "ldap_server_v2" ]; then
-        if [ "$hide_output" = "s" ]; then
-            docker run --name "$container_name" -d -p "$container_ports" "$container_name" >> "$LOG_FILE" 2>&1
-        else
-            docker run --name "$container_name" -d -p "$container_ports" "$container_name"
+
+    # 1) Verificar puertos ocupados
+    for port_map in $container_ports; do
+        local host_port="${port_map%%:*}"
+        if is_port_in_use "$host_port"; then
+            log_warn "El puerto $host_port ya está en uso."
+            show_port_details "$host_port"  # lsof del proceso
+
+            log_warn "¿Deseas matar el proceso que ocupa el puerto $host_port y continuar (k), o saltar este contenedor (s)? [k/s]"
+            read -r kill_or_skip
+            if [[ "$kill_or_skip" =~ ^[kK]$ ]]; then
+                kill_process_on_port "$host_port"
+            else
+                log_info "SALTANDO contenedor $container_name"
+                return 0
+            fi
         fi
-    else
-        if [ "$hide_output" = "s" ]; then
-            docker run --name "$container_name" -d -v "$container_dir/src":/var/www/html -p "$container_ports" "$container_name" >> "$LOG_FILE" 2>&1
-        else
-            docker run --name "$container_name" -d -v "$container_dir/src":/var/www/html -p "$container_ports" "$container_name"
-        fi
+    done
+
+    # 2) Argumentos de puertos
+    port_args=()
+    for port in $container_ports; do
+        port_args+=("-p" "$port")
+    done
+
+    # 3) Argumentos adicionales
+    additional_args=()
+    if [[ -n "$container_options" ]]; then
+        read -r -a additional_args <<< "$container_options"
     fi
 
-    if [ $? -ne 0 ]; then
-        log_error "Error al iniciar contenedor $container_name"
-        [ "$ignore_errors" = "n" ] && exit 1
+    # 4) Comando docker run
+    local -a run_cmd
+    run_cmd=(docker run --name "$container_name" -d
+              "${port_args[@]}"
+              "${additional_args[@]}"
+              -v "$container_dir/src":/var/www/html
+              "$container_name")
+
+    # 5) Ejecutar en modo silencioso o normal
+    if [ "$hide_output" = "s" ]; then
+        # CAPTURAMOS la salida de docker run
+        local run_output
+        run_output="$("${run_cmd[@]}" 2>&1)"
+        local exit_code=$?
+
+        # La guardamos en el log
+        echo "$run_output" >> "$LOG_FILE"
+
+        # Si hay error, se imprime en pantalla
+        if [ $exit_code -ne 0 ]; then
+            log_error "Error al iniciar contenedor $container_name. Detalles:"
+            echo "$run_output"
+            [ "$ignore_errors" = "n" ] && exit 1
+        else
+            log_info "Contenedor $container_name iniciado correctamente"
+        fi
     else
-        log_info "Contenedor $container_name iniciado correctamente"
+        # Modo no silencioso
+        "${run_cmd[@]}"
+        local exit_code=$?
+
+        if [ $exit_code -ne 0 ]; then
+            log_error "Error al iniciar contenedor $container_name"
+            [ "$ignore_errors" = "n" ] && exit 1
+        else
+            log_info "Contenedor $container_name iniciado correctamente"
+        fi
     fi
 }
 
@@ -629,46 +857,126 @@ run_docker_db() {
     local hide_output="$5"
     local ignore_errors="$6"
 
+    # 1) Verificar puertos ocupados
+    for port_map in $container_ports; do
+        local host_port="${port_map%%:*}"
+        if is_port_in_use "$host_port"; then
+            log_warn "El puerto $host_port está en uso."
+            show_port_details "$host_port"
+
+            echo "¿Deseas matar el proceso que ocupa el puerto $host_port y continuar (k), o saltar este contenedor (s)? [k/s]"
+            read -r kill_or_skip
+            if [[ "$kill_or_skip" =~ ^[kK]$ ]]; then
+                kill_process_on_port "$host_port"
+            else
+                log_info "SALTANDO contenedor $container_name"
+                return 0
+            fi
+        fi
+    done
+
+    # 2) Construir imagen
     log_info "Construyendo imagen para contenedor con BD: $container_name"
     if [ "$hide_output" = "s" ]; then
-        docker build -t "$container_name" "$container_dir" >> "$LOG_FILE" 2>&1
+        local build_out
+        build_out="$(docker build -t "$container_name" "$container_dir" 2>&1)"
+        local exit_code=$?
+
+        echo "$build_out" >> "$LOG_FILE"
+
+        if [ $exit_code -ne 0 ]; then
+            log_error "Error al construir la imagen $container_name. Detalles:"
+            echo "$build_out"
+            [ "$ignore_errors" = "n" ] && exit 1
+        else
+            log_info "Imagen $container_name construida correctamente"
+        fi
     else
         docker build -t "$container_name" "$container_dir"
+        local exit_code=$?
+
+        if [ $exit_code -ne 0 ]; then
+            log_error "Error al construir la imagen $container_name"
+            [ "$ignore_errors" = "n" ] && exit 1
+        else
+            log_info "Imagen $container_name construida correctamente"
+        fi
     fi
 
-    if [ $? -ne 0 ]; then
-        log_error "Error al construir la imagen $container_name"
-        [ "$ignore_errors" = "n" ] && exit 1
-    else
-        log_info "Imagen $container_name construida correctamente"
-    fi
-
+    # 3) Iniciar contenedor de DB
     log_info "Iniciando contenedor de base de datos $database_name"
     if [ "$hide_output" = "s" ]; then
-        docker run --name "$database_name" -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7 >> "$LOG_FILE" 2>&1
+        local db_out
+        db_out="$(docker run --name "$database_name" \
+            -e MYSQL_ROOT_PASSWORD=rootpassword \
+            -e MYSQL_DATABASE=database \
+            -e MYSQL_USER=usuario \
+            -e MYSQL_PASSWORD=contraseña \
+            -d mysql:5.7 2>&1)"
+        local exit_code=$?
+
+        echo "$db_out" >> "$LOG_FILE"
+
+        if [ $exit_code -ne 0 ]; then
+            log_error "Error al iniciar contenedor DB $database_name. Detalles:"
+            echo "$db_out"
+            [ "$ignore_errors" = "n" ] && exit 1
+        else
+            log_info "Contenedor DB $database_name iniciado correctamente"
+        fi
     else
-        docker run --name "$database_name" -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=database -e MYSQL_USER=usuario -e MYSQL_PASSWORD=contraseña -d mysql:5.7
+        docker run --name "$database_name" \
+            -e MYSQL_ROOT_PASSWORD=rootpassword \
+            -e MYSQL_DATABASE=database \
+            -e MYSQL_USER=usuario \
+            -e MYSQL_PASSWORD=contraseña \
+            -d mysql:5.7
+        local exit_code=$? 
+
+        if [ $exit_code -ne 0 ]; then
+            log_error "Error al iniciar contenedor DB $database_name"
+            [ "$ignore_errors" = "n" ] && exit 1
+        else
+            log_info "Contenedor DB $database_name iniciado correctamente"
+        fi
     fi
 
-    if [ $? -ne 0 ]; then
-        log_error "Error al iniciar contenedor DB $database_name"
-        [ "$ignore_errors" = "n" ] && exit 1
-    else
-        log_info "Contenedor DB $database_name iniciado correctamente"
-    fi
-
+    # 4) Iniciar contenedor de aplicación (link a DB)
     log_info "Iniciando contenedor de aplicación $container_name (link a DB)"
     if [ "$hide_output" = "s" ]; then
-        docker run --name "$container_name" --link "$database_name":db -p "$container_ports" -v "$container_dir/src":/var/www/html/ -d "$container_name" >> "$LOG_FILE" 2>&1
-    else
-        docker run --name "$container_name" --link "$database_name":db -p "$container_ports" -v "$container_dir/src":/var/www/html/ -d "$container_name"
-    fi
+        local app_out
+        app_out="$(docker run --name "$container_name" \
+            --network WebVulnLab-Network \
+            --link "$database_name":db \
+            -p "$container_ports" \
+            -v "$container_dir/src":/var/www/html/ \
+            -d "$container_name" 2>&1)"
+        local exit_code=$?
 
-    if [ $? -ne 0 ]; then
-        log_error "Error al iniciar contenedor $container_name"
-        [ "$ignore_errors" = "n" ] && exit 1
+        echo "$app_out" >> "$LOG_FILE"
+
+        if [ $exit_code -ne 0 ]; then
+            log_error "Error al iniciar contenedor $container_name. Detalles:"
+            echo "$app_out"
+            [ "$ignore_errors" = "n" ] && exit 1
+        else
+            log_info "Contenedor $container_name iniciado correctamente"
+        fi
     else
-        log_info "Contenedor $container_name iniciado correctamente"
+        docker run --name "$container_name" \
+            --network WebVulnLab-Network \
+            --link "$database_name":db \
+            -p "$container_ports" \
+            -v "$container_dir/src":/var/www/html/ \
+            -d "$container_name"
+        local exit_code=$? 
+
+        if [ $exit_code -ne 0 ]; then
+            log_error "Error al iniciar contenedor $container_name"
+            [ "$ignore_errors" = "n" ] && exit 1
+        else
+            log_info "Contenedor $container_name iniciado correctamente"
+        fi
     fi
 }
 
@@ -680,16 +988,29 @@ run_otros() {
 
     log_info "$info"
     if [ "$hide_output" = "s" ]; then
-        eval "$command >> \"$LOG_FILE\" 2>&1"
+        local other_out
+        other_out="$(eval "$command" 2>&1)"
+        local exit_code=$?
+
+        echo "$other_out" >> "$LOG_FILE"
+
+        if [ $exit_code -ne 0 ]; then
+            log_error "$info (falló). Detalles:"
+            echo "$other_out"
+            [ "$ignore_errors" = "n" ] && exit 1
+        else
+            log_info "$info (ejecutado correctamente)"
+        fi
     else
         eval "$command"
-    fi
+        local exit_code=$?
 
-    if [ $? -ne 0 ]; then
-        log_error "$info (falló)"
-        [ "$ignore_errors" = "n" ] && exit 1
-    else
-        log_info "$info (ejecutado correctamente)"
+        if [ $exit_code -ne 0 ]; then
+            log_error "$info (falló)"
+            [ "$ignore_errors" = "n" ] && exit 1
+        else
+            log_info "$info (ejecutado correctamente)"
+        fi
     fi
 }
 
@@ -707,15 +1028,24 @@ build_local_server
 setup_file_virtual_hosting
 configure_virtual_host
 
+configure_network
+
 # Ejemplo de contenedores
 for container in "${containers[@]}"; do
     IFS=';' read -ra container_info <<< "$container"
     container_name=${container_info[0]}
     container_dir=${container_info[1]}
     container_ports=${container_info[2]}
+    container_options=${container_info[3]}  # <--- Aquí capturamos un cuarto campo si existe
+
+    if [ "$container_name" == "ldap_server_v2" ]; then
+        configure_ldap_files
+    fi
 
     build_docker_image "$container_name" "$container_dir" "$hide_output" "$ignore_errors"
-    run_docker_container "$container_name" "$container_dir" "$container_ports" "$hide_output" "$ignore_errors"
+    run_docker_container "$container_name" "$container_dir" "$container_ports" "$container_options" "$hide_output" "$ignore_errors"
+
+    # Esto detiene todos los contenedores inmediatamente después de iniciarlos.
     docker stop $(docker ps -aq) >> "$LOG_FILE" 2>&1
 done
 
@@ -739,5 +1069,5 @@ for other in "${otros[@]}"; do
     docker stop $(docker ps -aq) >> "$LOG_FILE" 2>&1
 done
 
-log_info "Script finalizado con éxito."
+log_info "Script finalizado con éxito." 
 exit 0
