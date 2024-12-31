@@ -27,26 +27,32 @@ containers=(
   "blindxxe_v2;$PWD/blindxxe;8002:80;"
   "xxe_v2;$PWD/xxe;8003:80;"
   "xss_v2;$PWD/xss;8004:80;"
+  "sqli_v2;$PWD/sqli;8005:80;"
   "domainzonetransfer_v2;$PWD/domainzonetransfer;8039:80 53:53/tcp 53:53/udp;"
   "ssrf_v2;$PWD/ssrf;8006:80;"
+  "paddingoracleattack_v2;$PWD/paddingoracleattack;8007:80;"
   "typejuggling_v2;$PWD/typejuggling;8008:80;"
   "rfi_v2;$PWD/rfi;8009:80;"
   "insecuredeseralizationphp_v2;$PWD/insecuredeseralizationphp;8010:80;"
   "latexinjection_v2;$PWD/latexinjection;8011:80;"
   "xpathinjection_v2;$PWD/xpathinjection;8012:80;"
   "shellshock_v2;$PWD/shellshock;8013:80;"
+  "blindsqli_v2;$PWD/blindsqli;8014:80;"
   "blindxss_v2;$PWD/blindxss;8015:80;"
   "htmlinjection_v2;$PWD/htmlinjection;8016:80;"
+  "idor_v2;$PWD/idor;8017:80;"
   "ssti_v2;$PWD/ssti;8018:80;"
   "csti_v2;$PWD/csti;8019:80;"
   "nosqlinjection_v2;$PWD/nosqlinjection;8020:80;"
-  "ldap_server_v2;$PWD/ldapinjection/ldapserver;389:389;"
-  "ldapinjection_v2;$PWD/ldapinjection/webserver;8021:80;"
+  "ldap_server_v2;$PWD/ldapinjection/ldapserver;389:389;" # CAMBIAR A DOCKER-COMPOSE
+  "ldapinjection_v2;$PWD/ldapinjection/webserver;8021:80;" # CAMBIAR A DOCKER-COMPOSE
   "fileuploadabuse_v2;$PWD/fileuploadabuse;8024:80;"
   "prototypepollution_v2;$PWD/prototypepollution;8025:3000;"
   "openredirect_v2;$PWD/openredirect;8026:80;"
   "squidproxy_v2;$PWD/squidproxy;8028:80 3128:3128;--cap-add=NET_ADMIN"
   "cors_v2;$PWD/cors;8029:80;"
+  "sqltruncation_v2;$PWD/sqltruncation;8030:80;"
+  "jwt_v2;$PWD/jwt;8032:80;"
   "racecondition_v2;$PWD/racecondition;8033:80;"
   "cssi_v2;$PWD/cssi;8034:80;"
   "yamldeseralization_v2;$PWD/yamldeseralization;8042:5000;"
@@ -54,23 +60,14 @@ containers=(
   "snmp_v2;$PWD/snmp;8040:80 161:161/udp;--sysctl net.ipv6.conf.all.disable_ipv6=0 --sysctl net.ipv6.conf.default.disable_ipv6=0"
   "http3_v2;$PWD/http3;8043:443/tcp 8043:443/udp 8044:80;"
   "httpsmuggling_v2;$PWD/httpsmuggling;8043:80;"
-)
-
-database=(
-  "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
-  "blindsqli_db_v2;$PWD/blindsqli;8014:80;blindsqli_v2"
-  "paddingoracleattack_db_v2;$PWD/paddingoracleattack;8007:80;paddingoracleattack_v2"
-  "idor_db_v2;$PWD/idor;8017:80;idor_v2"
-  "sqltruncation_db_v2;$PWD/sqltruncation;8030:80;sqltruncation_v2"
-  "sessionpuzzling_db_v2;$PWD/sessionpuzzling;8031:80;sessionpuzzling_v2"
-  "jwt_db_v2;$PWD/jwt;8032:80;jwt_v2"
+  "sessionpuzzling_v2;$PWD/sessionpuzzling;8031:80;"
 )
 
 otros=(
   "Construyendo contenedores para AWS Abuse;docker-compose -f $PWD/aws/docker-compose.yml up -d"
   "Construyendo contenedores para API Abuse;docker-compose -f $PWD/apiabuse/docker-compose.yml up -d"
-  "Contruyendo contenedores para WebDAV;docker-compose -f $PWD/webdav/docker-compose.yml up -d"
-  "Contruyendo contenedores para GraphQL;docker-compose -f $PWD/graphql/docker-compose.yml up -d"
+  "Contruyendo contenedores para WebDAV;docker-compose -f $PWD/webdav/docker-compose.yml up -d" # CAMBIAR A CONTENEDOR SOLO NORMAL
+  "Contruyendo contenedores para GraphQL;docker-compose -f $PWD/graphql/docker-compose.yml up -d" # CAMBIAR A CONTENEDOR SOLO NORMAL
   "Contruyendo contenedores para OAuth;docker-compose -f $PWD/oauth/docker-compose.yml up -d"
 )
 
@@ -131,11 +128,6 @@ configure_network() {
     for container in "${containers[@]}"; do
         container_info=($(echo "$container" | tr ';' ' '))
         docker network connect WebVulnLab-Network "${container_info[0]}" >> "$LOG_FILE" 2>&1
-    done
-
-    for db_container in "${database[@]}"; do
-        db_container_info=($(echo "$db_container" | tr ';' ' '))
-        docker network.connect WebVulnLab-Network "${db_container_info[0]}" >> "$LOG_FILE" 2>&1
     done
 }
 
@@ -233,23 +225,6 @@ setup_file_virtual_hosting() {
         } >> "$config_file" 2>> "$error_file"
     done
 
-    # Añadir las entradas de VirtualHost para contenedores con base de datos
-    for db_container in "${database[@]}"; do
-        db_container_info=($(echo "$db_container" | tr ';' ' '))
-        db_container_name=${db_container_info[0]%%_db_v2}
-        db_container_ports=${db_container_info[2]}
-        db_container_port=$(echo "$db_container_ports" | cut -d ':' -f 1)
-
-        {
-            echo "<VirtualHost *:80>"
-            echo "    ServerName $db_container_name.local"
-            echo "    ProxyPass / http://localhost:$db_container_port/"
-            echo "    ProxyPassReverse / http://localhost:$db_container_port/"
-            echo "</VirtualHost>"
-            echo
-        } >> "$config_file" 2>> "$error_file"
-    done
-
     log_info "Archivo Apache VirtualHost (WebVulnLab.conf) generado."
 
     if [ -s "$error_file" ]; then
@@ -328,11 +303,6 @@ configure_virtual_host() {
         container_info=($(echo "$container" | tr ';' ' '))
         container_name=${container_info[0]%%_v2}
         hosts_entries+=("$container_name.local")
-    done
-    for db_container in "${database[@]}"; do
-        db_container_info=($(echo "$db_container" | tr ';' ' '))
-        db_container_name=${db_container_info[0]%%_db_v2}
-        hosts_entries+=("$db_container_name.local")
     done
 
     echo "127.0.0.1 ${hosts_entries[*]} tablero.local aws.local codefusiondev.domainzonetransfer.local apiabuse.local mail.local webdav.local graphql.local oauth_printing.local oauth_gallery.local" >> /etc/hosts
@@ -849,137 +819,6 @@ run_docker_container() {
     fi
 }
 
-run_docker_db() {
-    local database_name="$1"
-    local container_dir="$2"
-    local container_ports="$3"
-    local container_name="$4"
-    local hide_output="$5"
-    local ignore_errors="$6"
-
-    # 1) Verificar puertos ocupados
-    for port_map in $container_ports; do
-        local host_port="${port_map%%:*}"
-        if is_port_in_use "$host_port"; then
-            log_warn "El puerto $host_port está en uso."
-            show_port_details "$host_port"
-
-            echo "¿Deseas matar el proceso que ocupa el puerto $host_port y continuar (k), o saltar este contenedor (s)? [k/s]"
-            read -r kill_or_skip
-            if [[ "$kill_or_skip" =~ ^[kK]$ ]]; then
-                kill_process_on_port "$host_port"
-            else
-                log_info "SALTANDO contenedor $container_name"
-                return 0
-            fi
-        fi
-    done
-
-    # 2) Construir imagen
-    log_info "Construyendo imagen para contenedor con BD: $container_name"
-    if [ "$hide_output" = "s" ]; then
-        local build_out
-        build_out="$(docker build -t "$container_name" "$container_dir" 2>&1)"
-        local exit_code=$?
-
-        echo "$build_out" >> "$LOG_FILE"
-
-        if [ $exit_code -ne 0 ]; then
-            log_error "Error al construir la imagen $container_name. Detalles:"
-            echo "$build_out"
-            [ "$ignore_errors" = "n" ] && exit 1
-        else
-            log_info "Imagen $container_name construida correctamente"
-        fi
-    else
-        docker build -t "$container_name" "$container_dir"
-        local exit_code=$?
-
-        if [ $exit_code -ne 0 ]; then
-            log_error "Error al construir la imagen $container_name"
-            [ "$ignore_errors" = "n" ] && exit 1
-        else
-            log_info "Imagen $container_name construida correctamente"
-        fi
-    fi
-
-    # 3) Iniciar contenedor de DB
-    log_info "Iniciando contenedor de base de datos $database_name"
-    if [ "$hide_output" = "s" ]; then
-        local db_out
-        db_out="$(docker run --name "$database_name" \
-            -e MYSQL_ROOT_PASSWORD=rootpassword \
-            -e MYSQL_DATABASE=database \
-            -e MYSQL_USER=usuario \
-            -e MYSQL_PASSWORD=contraseña \
-            -d mysql:5.7 2>&1)"
-        local exit_code=$?
-
-        echo "$db_out" >> "$LOG_FILE"
-
-        if [ $exit_code -ne 0 ]; then
-            log_error "Error al iniciar contenedor DB $database_name. Detalles:"
-            echo "$db_out"
-            [ "$ignore_errors" = "n" ] && exit 1
-        else
-            log_info "Contenedor DB $database_name iniciado correctamente"
-        fi
-    else
-        docker run --name "$database_name" \
-            -e MYSQL_ROOT_PASSWORD=rootpassword \
-            -e MYSQL_DATABASE=database \
-            -e MYSQL_USER=usuario \
-            -e MYSQL_PASSWORD=contraseña \
-            -d mysql:5.7
-        local exit_code=$? 
-
-        if [ $exit_code -ne 0 ]; then
-            log_error "Error al iniciar contenedor DB $database_name"
-            [ "$ignore_errors" = "n" ] && exit 1
-        else
-            log_info "Contenedor DB $database_name iniciado correctamente"
-        fi
-    fi
-
-    # 4) Iniciar contenedor de aplicación (link a DB)
-    log_info "Iniciando contenedor de aplicación $container_name (link a DB)"
-    if [ "$hide_output" = "s" ]; then
-        local app_out
-        app_out="$(docker run --name "$container_name" \
-            --network WebVulnLab-Network \
-            --link "$database_name":db \
-            -p "$container_ports" \
-            -v "$container_dir/src":/var/www/html/ \
-            -d "$container_name" 2>&1)"
-        local exit_code=$?
-
-        echo "$app_out" >> "$LOG_FILE"
-
-        if [ $exit_code -ne 0 ]; then
-            log_error "Error al iniciar contenedor $container_name. Detalles:"
-            echo "$app_out"
-            [ "$ignore_errors" = "n" ] && exit 1
-        else
-            log_info "Contenedor $container_name iniciado correctamente"
-        fi
-    else
-        docker run --name "$container_name" \
-            --network WebVulnLab-Network \
-            --link "$database_name":db \
-            -p "$container_ports" \
-            -v "$container_dir/src":/var/www/html/ \
-            -d "$container_name"
-        local exit_code=$? 
-
-        if [ $exit_code -ne 0 ]; then
-            log_error "Error al iniciar contenedor $container_name"
-            [ "$ignore_errors" = "n" ] && exit 1
-        else
-            log_info "Contenedor $container_name iniciado correctamente"
-        fi
-    fi
-}
-
 run_otros() {
     local info="$1"
     local command="$2"
@@ -1046,17 +885,6 @@ for container in "${containers[@]}"; do
     run_docker_container "$container_name" "$container_dir" "$container_ports" "$container_options" "$hide_output" "$ignore_errors"
 
     # Esto detiene todos los contenedores inmediatamente después de iniciarlos.
-    docker stop $(docker ps -aq) >> "$LOG_FILE" 2>&1
-done
-
-for db in "${database[@]}"; do
-    IFS=';' read -ra db_info <<< "$db"
-    database_name=${db_info[0]}
-    container_dir=${db_info[1]}
-    container_ports=${db_info[2]}
-    container_name=${db_info[3]}
-
-    run_docker_db "$database_name" "$container_dir" "$container_ports" "$container_name" "$hide_output" "$ignore_errors"
     docker stop $(docker ps -aq) >> "$LOG_FILE" 2>&1
 done
 

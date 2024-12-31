@@ -1,0 +1,14 @@
+CREATE DATABASE IF NOT EXISTS `database` CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+CREATE USER IF NOT EXISTS 'usuario'@'%' IDENTIFIED BY 'passwprd';
+
+GRANT ALL PRIVILEGES ON `database`.* TO 'usuario'@'%';
+
+FLUSH PRIVILEGES;
+
+CREATE TABLE IF NOT EXISTS `productos` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `nombre` VARCHAR(255) NOT NULL,
+    `descripcion` TEXT,
+    `precio` DECIMAL(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

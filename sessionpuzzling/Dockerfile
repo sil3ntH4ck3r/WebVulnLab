@@ -1,12 +1,9 @@
-FROM php:7.2-apache
+FROM php:7.3-apache
 
-COPY src/ /var/www/html/
-
-COPY startup.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/startup.sh
+COPY ./src/ /var/www/html/
 
 # Instalar dependencias
-RUN apt-get update && apt-get install -y libmcrypt-dev xvfb x11vnc x11-xkb-utils xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic x11-apps python3
+RUN apt-get update && apt-get install -y libmcrypt-dev xvfb x11vnc x11-xkb-utils xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic x11-apps python3 default-mysql-server
 RUN docker-php-ext-install mysqli
 
 # Habilitar la extensión de PHP en Apache
@@ -31,4 +28,12 @@ RUN echo "* * * * * /usr/bin/python3 /usr/local/bin/request.py >> /var/log/cron.
 RUN chmod 600 /var/spool/cron/crontabs/root
 RUN chown root:crontab /var/spool/cron/crontabs/root
 
-CMD ["/usr/local/bin/startup.sh"]
+# Copiar el script de arranque
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+# Exponer puertos: 80 (Apache) y 3306 (MySQL)
+EXPOSE 80 3306
+
+# El contenedor ejecutará start.sh al iniciarse
+CMD ["/start.sh"]

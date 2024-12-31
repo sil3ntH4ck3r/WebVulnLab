@@ -1,6 +1,6 @@
 <?php
 // Conexión a la base de datos
-$db = mysqli_connect("db", "usuario", "contraseña", "database");
+$db = $conexion = mysqli_connect("127.0.0.1", "usuario", "password", "database");
 
 // Crear tabla productos
 mysqli_query($db, "CREATE TABLE productos (

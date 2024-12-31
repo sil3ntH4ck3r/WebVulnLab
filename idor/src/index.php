@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-$servername = "db";
+$servername = "127.0.0.1";
 $username = "usuario";
-$password = "contraseña";
+$password = "password";
 $dbname = "database";
 
 // Crear conexión

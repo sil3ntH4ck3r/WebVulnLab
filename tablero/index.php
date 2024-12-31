@@ -161,7 +161,19 @@ if (isset($_POST['action']) && isset($_POST['container_id'])) {
 
                         if (strpos($processedName, '_db_') === false && strpos($processedName, '_server') === false):
                     ?>
-                    <h2><a href="http://<?php echo $processedName; ?>.local" target="_blank"><?php echo $container['Names'][0]; ?></a></h2>
+                    <?php if ($processedName == "http3"): ?>
+                        <h2>
+                            <a href="https://<?php echo htmlspecialchars($processedName); ?>.local" target="_blank">
+                                <?php echo htmlspecialchars($container['Names'][0]); ?>
+                            </a>
+                        </h2>
+                    <?php else: ?>
+                        <h2>
+                            <a href="http://<?php echo htmlspecialchars($processedName); ?>.local" target="_blank">
+                                <?php echo htmlspecialchars($container['Names'][0]); ?>
+                            </a>
+                        </h2>
+                    <?php endif; ?>
                     <?php else: ?>
                     <h2><?php echo $container['Names'][0]; ?></h2>
                     <?php endif; ?>

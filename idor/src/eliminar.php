@@ -1,6 +1,6 @@
 <?php
 // Conexión a la base de datos
-$conexion = mysqli_connect("db", "usuario", "contraseña", "database");
+$conexion = mysqli_connect("127.0.0.1", "usuario", "password", "database");
 if ($conexion) {
   $conexion->set_charset("utf8");
 }

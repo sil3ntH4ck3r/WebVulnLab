@@ -9,7 +9,7 @@
 <body>
 
 <?php
-$conexion = mysqli_connect("db", "usuario", "contraseña", "database");
+$conexion = mysqli_connect("127.0.0.1", "usuario", "password", "database");
 if ($conexion) {
   $conexion->set_charset("utf8");
 }
@@ -27,7 +27,7 @@ $result = mysqli_query($conexion, $sql);
 if ($result === false) {
   // La tabla no existe, crearla
   // Conexión a la base de datos
-    $db = mysqli_connect("db", "usuario", "contraseña", "database");
+    $db = mysqli_connect("127.0.0.1", "usuario", "password", "database");
 
     // Crear tabla productos
     mysqli_query($db, "CREATE TABLE productos (
@@ -59,7 +59,7 @@ mysqli_close($conexion);
     <?php
         error_reporting(0); //desactivar warnings
         // Conexión a la base de datos
-        $db = mysqli_connect("db", "usuario", "contraseña", "database");
+        $db = mysqli_connect("127.0.0.1", "usuario", "password", "database");
 
         // Verificar si la tabla productos ya contiene datos
         $result = mysqli_query($db, "SELECT COUNT(*) FROM productos");

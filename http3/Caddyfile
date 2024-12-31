@@ -1,14 +1,10 @@
-# Servir HTTP y redirigirlo a HTTPS
-http://http3.local:80 {
-    respond "Redirigiendo a HTTPS" 301 {
-        # Redirige a https://http3.local/ con la misma URI
-        location /
-        to https://http3.local{uri}
-    }
+# Redireccionar HTTP a HTTPS en el dominio http3.local
+http://http3.local:8045 {
+    redir https://http3.local:8043{uri} 301
 }
 
 # Servir HTTPS con HTTP/3
-https://http3.local:443 {
+https://http3.local:8043 {
     tls /usr/share/caddy/certs/http3.local.pem /usr/share/caddy/certs/http3.local-key.pem
 
     @http3 protocol http/3
@@ -25,7 +21,7 @@ https://http3.local:443 {
         encode gzip
     }
 
-    # Si no coincide con HTTP/3 ni HTTP/2, da un error
+    # Si no coincide con HTTP/3 ni HTTP/2, devolver un error
     handle {
         respond "Protocolo no soportado" 400
     }

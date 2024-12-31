@@ -1,14 +1,24 @@
 FROM php:7.3-apache
 
-# Instalar dependencias
-RUN apt-get update && apt-get install -y libmcrypt-dev
-RUN docker-php-ext-install mysqli
+# Instalar dependencias necesarias (MySQL, etc.)
+RUN apt-get update && apt-get install -y \
+    default-mysql-server \
+    && docker-php-ext-install mysqli \
+    && rm -rf /var/lib/apt/lists/*
 
-# Habilitar la extensión de PHP en Apache
-RUN a2enmod rewrite
+# Habilitar rewrite (si lo necesitas)
+#RUN a2enmod rewrite
 
-# Copiar la configuración de Apache
-#COPY apache2.conf /etc/apache2/apache2.conf
+# Copiar el script de arranque
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
 
-# Iniciar Apache en el contenedor
-CMD ["apache2-foreground"]
+# Copiar la aplicación PHP a /var/www/html/
+# Ajusta la ruta según dónde tengas tu "src"
+COPY ./src/ /var/www/html/
+
+# Exponer puertos: 80 (Apache) y 3306 (MySQL)
+EXPOSE 80 3306
+
+# El contenedor ejecutará start.sh al iniciarse
+CMD ["/start.sh"]

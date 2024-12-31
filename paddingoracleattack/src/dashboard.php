@@ -4,7 +4,7 @@
     <title>Padding Oracle Attack</title>
     <meta charset="utf-8">
     <?php
-      $conexion = mysqli_connect("db", "usuario", "contraseña", "database");
+      $conexion = mysqli_connect("127.0.0.1", "usuario", "password", "database");
       if ($conexion) {
         $conexion->set_charset("utf8");
       }

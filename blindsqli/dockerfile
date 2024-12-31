@@ -1,2 +1,46 @@
-FROM php:7.4-apache
-RUN docker-php-ext-install mysqli
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Variables de entorno para MySQL
+ENV MYSQL_ROOT_PASSWORD=rootpassword
+ENV MYSQL_DATABASE=database
+ENV MYSQL_USER=usuario
+ENV MYSQL_PASSWORD=password
+
+# Instalar paquetes necesarios
+RUN apt-get update && apt-get install -y \
+    apache2 \
+    mysql-server \
+    php \
+    libapache2-mod-php \
+    php-mysqli \
+    curl \
+    unzip \
+    vim \
+    && rm -rf /var/lib/apt/lists/*
+
+# Habilitar módulo PHP en Apache
+RUN a2enmod php7.4
+
+# Crear un usuario y grupo para ejecutar servicios (opcional)
+RUN groupadd -r appuser && useradd -r -g appuser -d /home/appuser appuser
+RUN mkdir -p /home/appuser && chown -R appuser:appuser /home/appuser
+
+# Copiar el código fuente de la aplicación
+COPY ./src/ /var/www/html/
+RUN chown -R www-data:www-data /var/www/html/
+
+# Copiar el script SQL de inicialización y el script de arranque
+COPY ./mysql-init/init.sql /docker-entrypoint-initdb.d/init.sql
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+# Definir volumen para MySQL (datos persistentes)
+VOLUME /var/lib/mysql
+
+# Exponer puertos
+EXPOSE 80 3306
+
+# Usar start.sh como punto de entrada
+CMD ["/start.sh"]

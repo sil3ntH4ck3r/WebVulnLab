@@ -12,9 +12,9 @@ if (!isset($_SESSION['user_id'])) {
 
 // Obtén el ID del usuario de la variable de sesión
 $user_id = $_SESSION['user_id'];
-$servername = "db";
+$servername = "127.0.0.1";
 $username = "usuario";
-$password = "contraseña";
+$password = "password";
 $dbname = "database";
 
 // Create connection

@@ -1,6 +1,6 @@
 <?php
 // Conexión a la base de datos
-$db = mysqli_connect("db", "usuario", "contraseña", "database");
+$db = mysqli_connect("127.0.0.1", "usuario", "password", "database");
 
 // Vaciar la tabla usuarios
 mysqli_query($db, "DROP TABLE usuarios");
