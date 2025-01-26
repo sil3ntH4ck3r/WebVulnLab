@@ -44,11 +44,10 @@ containers=(
   "ssti_v2;$PWD/ssti;8018:80;"
   "csti_v2;$PWD/csti;8019:80;"
   "nosqlinjection_v2;$PWD/nosqlinjection;8020:80;"
-  "ldap_server_v2;$PWD/ldapinjection/ldapserver;389:389;" # CAMBIAR A DOCKER-COMPOSE
-  "ldapinjection_v2;$PWD/ldapinjection/webserver;8021:80;" # CAMBIAR A DOCKER-COMPOSE
   "fileuploadabuse_v2;$PWD/fileuploadabuse;8024:80;"
   "prototypepollution_v2;$PWD/prototypepollution;8025:3000;"
   "openredirect_v2;$PWD/openredirect;8026:80;"
+  "webdav_v2;$PWD/webdav;8027:80;"
   "squidproxy_v2;$PWD/squidproxy;8028:80 3128:3128;--cap-add=NET_ADMIN"
   "cors_v2;$PWD/cors;8029:80;"
   "sqltruncation_v2;$PWD/sqltruncation;8030:80;"
@@ -65,8 +64,8 @@ containers=(
 
 otros=(
   "Construyendo contenedores para AWS Abuse;docker-compose -f $PWD/aws/docker-compose.yml up -d"
+  "Construyendo contenedores para LDAP Injection;docker-compose -f $PWD/ldapinjection/docker-compose.yml up -d"
   "Construyendo contenedores para API Abuse;docker-compose -f $PWD/apiabuse/docker-compose.yml up -d"
-  "Contruyendo contenedores para WebDAV;docker-compose -f $PWD/webdav/docker-compose.yml up -d" # CAMBIAR A CONTENEDOR SOLO NORMAL
   "Contruyendo contenedores para GraphQL;docker-compose -f $PWD/graphql/docker-compose.yml up -d" # CAMBIAR A CONTENEDOR SOLO NORMAL
   "Contruyendo contenedores para OAuth;docker-compose -f $PWD/oauth/docker-compose.yml up -d"
 )
@@ -154,6 +153,12 @@ setup_file_virtual_hosting() {
         echo "    ServerName apiabuse.local"
         echo "    ProxyPass / http://localhost:8022/"
         echo "    ProxyPassReverse / http://localhost:8022/"
+        echo "</VirtualHost>"
+        echo
+        echo "<VirtualHost *:80>"
+        echo "    ServerName ldapinjection.local"
+        echo "    ProxyPass / http://localhost:8021/"
+        echo "    ProxyPassReverse / http://localhost:8021/"
         echo "</VirtualHost>"
         echo
         echo "<VirtualHost *:80>"
@@ -305,7 +310,7 @@ configure_virtual_host() {
         hosts_entries+=("$container_name.local")
     done
 
-    echo "127.0.0.1 ${hosts_entries[*]} tablero.local aws.local codefusiondev.domainzonetransfer.local apiabuse.local mail.local webdav.local graphql.local oauth_printing.local oauth_gallery.local" >> /etc/hosts
+    echo "127.0.0.1 ${hosts_entries[*]} tablero.local ldapinjection.local aws.local codefusiondev.domainzonetransfer.local apiabuse.local mail.local webdav.local graphql.local oauth_printing.local oauth_gallery.local" >> /etc/hosts
 
     if [ $? -ne 0 ]; then
         log_error "Error al modificar /etc/hosts. Revisar $log_file."
@@ -360,7 +365,7 @@ cleanup_signal() {
 trap cleanup_exit EXIT
 trap cleanup_signal INT TERM
 
-# ----------------------------------------------------------------------
+# ---------------------------------------------------------------------- 
 #                           DEPENDENCIAS
 # ----------------------------------------------------------------------
 
@@ -405,7 +410,13 @@ REQUIRED_COMMANDS=(
 )
 
 # Lista de paquetes a instalar
-INSTALL_PACKAGES=()
+INSTALL_PACKAGES=(
+    "build-essential"
+    "cmake"
+    "git"
+    "libjson-c-dev"
+    "libwebsockets-dev"
+)
 
 # Verificar comandos faltantes y mapear a paquetes
 for cmd in "${REQUIRED_COMMANDS[@]}"; do
@@ -420,7 +431,7 @@ done
 # Función para instalar Docker desde el repositorio oficial
 install_docker_official() {
     log_info "Instalando Docker desde el repositorio oficial..."
-    
+
     # Instalar paquetes necesarios para permitir a apt usar repositorios sobre HTTPS
     apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
 
@@ -458,7 +469,59 @@ install_docker_compose() {
     log_info "docker-compose instalado correctamente."
 }
 
-# Si docker está faltando, instalar desde el repositorio oficial
+# Función para instalar ttyd
+install_ttyd() {
+    log_info "Instalando ttyd..."
+
+    if command -v ttyd &> /dev/null; then
+        log_info "ttyd ya está instalado. Saltando instalación."
+        return
+    fi
+
+    TTYD_DIR="/opt/ttyd"
+
+    git clone https://github.com/tsl0922/ttyd.git "$TTYD_DIR"
+    if [[ $? -ne 0 ]]; then
+        log_error "Error al clonar el repositorio de ttyd."
+        exit 1
+    fi
+
+    mkdir -p "$TTYD_DIR/build" && cd "$TTYD_DIR/build"
+
+    cmake ..
+    if [[ $? -ne 0 ]]; then
+        log_error "Error al ejecutar cmake para ttyd."
+        exit 1
+    fi
+
+    make
+    if [[ $? -ne 0 ]]; then
+        log_error "Error al compilar ttyd."
+        exit 1
+    fi
+
+    make install
+    if [[ $? -ne 0 ]]; then
+        log_error "Error al instalar ttyd."
+        exit 1
+    fi
+
+    if ! command -v ttyd &> /dev/null; then
+        log_error "Error al instalar ttyd correctamente."
+        exit 1
+    fi
+
+    log_info "ttyd instalado correctamente."
+
+    log_info "Eliminando archivos temporales de ttyd..."
+    rm -rf "$TTYD_DIR"
+    if [[ $? -ne 0 ]]; then
+        log_error "Error al eliminar el directorio temporal de ttyd."
+        exit 1
+    fi
+    log_info "Archivos temporales de ttyd eliminados."
+}
+
 if ! command -v docker &> /dev/null; then
     install_docker_official
 fi
@@ -491,7 +554,41 @@ if ! systemctl is-active --quiet docker; then
 fi
 
 # ----------------------------------------------------------------------
-#                           CONFIGURACIÓN DE IPV6 
+#                           CONFIGURACIÓN TERMINAL
+# ----------------------------------------------------------------------
+
+log_info "Configurando los archivos necesarios para la terminal vía web"
+
+WRAPPER_SCRIPT="/usr/local/bin/docker_exec_wrapper.sh"
+
+if [ ! -f "./docker_exec_wrapper.sh" ]; then
+    log_error "El script docker_exec_wrapper.sh no se encuentra en el directorio actual."
+    exit 1
+fi
+
+if [ ! -f "$WRAPPER_SCRIPT" ] || ! cmp -s "./docker_exec_wrapper.sh" "$WRAPPER_SCRIPT"; then
+    cp "./docker_exec_wrapper.sh" "$WRAPPER_SCRIPT"
+    log_info "Script docker_exec_wrapper.sh copiado a $WRAPPER_SCRIPT"
+else
+    log_info "El script docker_exec_wrapper.sh ya está presente en $WRAPPER_SCRIPT"
+fi
+
+chmod 755 "$WRAPPER_SCRIPT"
+chown root:root "$WRAPPER_SCRIPT"
+log_info "Permisos y propiedad asignados a $WRAPPER_SCRIPT"
+
+SUDOERS_FILE="/etc/sudoers.d/www-data-docker-exec"
+
+if [ ! -f "$SUDOERS_FILE" ]; then
+    echo "www-data ALL=(ALL) NOPASSWD: $WRAPPER_SCRIPT" > "$SUDOERS_FILE"
+    chmod 440 "$SUDOERS_FILE"
+    log_info "Regla sudoers creada en $SUDOERS_FILE"
+else
+    log_info "El archivo sudoers $SUDOERS_FILE ya existe. Se omite la creación."
+fi
+
+# ----------------------------------------------------------------------
+#                           CONFIGURACIÓN DE IPV6
 # ----------------------------------------------------------------------
 
 is_subnet_in_use() {
@@ -877,10 +974,6 @@ for container in "${containers[@]}"; do
     container_ports=${container_info[2]}
     container_options=${container_info[3]}  # <--- Aquí capturamos un cuarto campo si existe
 
-    if [ "$container_name" == "ldap_server_v2" ]; then
-        configure_ldap_files
-    fi
-
     build_docker_image "$container_name" "$container_dir" "$hide_output" "$ignore_errors"
     run_docker_container "$container_name" "$container_dir" "$container_ports" "$container_options" "$hide_output" "$ignore_errors"
 
@@ -892,6 +985,10 @@ for other in "${otros[@]}"; do
     IFS=';' read -ra otros_info <<< "$other"
     info=${otros_info[0]}
     command=${otros_info[1]}
+
+    if [ "$info" == "Construyendo contenedores para LDAP Injection" ]; then
+        configure_ldap_files
+    fi
 
     run_otros "$info" "$command" "$hide_output" "$ignore_errors"
     docker stop $(docker ps -aq) >> "$LOG_FILE" 2>&1

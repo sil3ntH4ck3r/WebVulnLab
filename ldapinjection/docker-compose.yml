@@ -1,0 +1,25 @@
+version: '3'
+services:
+  api:
+    build:
+      context: ./ldapserver
+      dockerfile: Dockerfile
+    ports:
+      - 389:389
+    networks:
+      - ldap-network
+    container_name: ldap_server_v2
+  web:
+    build:
+      context: ./webserver
+      dockerfile: Dockerfile
+    ports:
+      - 8021:80
+    volumes:
+      - ./webserver/src:/var/www/html/
+    networks:
+      - ldap-network
+    container_name: ldapinjection_v2
+networks:
+  ldap-network:
+    driver: bridge
