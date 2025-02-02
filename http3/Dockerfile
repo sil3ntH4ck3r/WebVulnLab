@@ -1,14 +1,16 @@
-# Usar la imagen oficial de Caddy
 FROM caddy:latest
 
-# Copiar los archivos del sitio web
-COPY src/h2 /usr/share/caddy/sitio-http2
-COPY src/h3 /usr/share/caddy/sitio-http3
-
-# Copiar el Caddyfile
+# Copiamos el Caddyfile a la ubicación que Caddy usa por defecto
 COPY Caddyfile /etc/caddy/Caddyfile
 
-COPY certs /usr/share/caddy/certs
+# Copiamos los directorios con los contenidos HTML
+COPY src/html_http2 /var/www/html/html_http2
+COPY src/html_http3 /var/www/html/html_http3
 
-# Exponer los puertos necesarios
-EXPOSE 80 443/udp 443/tcp
+# Exponemos los puertos necesarios:
+# - El 80 (opcional, si se quiere redirigir HTTP a HTTPS)
+# - El 443 en TCP para HTTPS (HTTP/2 y HTTP/1.x)
+# - El 443 en UDP para HTTP/3
+EXPOSE 80
+EXPOSE 443/tcp
+EXPOSE 443/udp

@@ -94,6 +94,31 @@ EOF
 echo -e "                              Created by sil3nth4ck3r \n"
 
 # ----------------------------------------------------------------------
+#                         CERTIFICADOS PARA HTTP3
+# ----------------------------------------------------------------------
+
+generate_http3_certificates() {
+    local cert="/etc/ssl/certs/http3.local.crt"
+    local key="/etc/ssl/private/http3.local.key"
+    if [ ! -f "$cert" ] || [ ! -f "$key" ]; then
+        log_info "Generando certificados autofirmados para http3.local..."
+        # Asegurarse de que existen los directorios
+        mkdir -p /etc/ssl/certs /etc/ssl/private
+        openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+            -keyout "$key" -out "$cert" \
+            -subj "/CN=http3.local"
+        if [ $? -eq 0 ]; then
+            log_info "Certificados generados correctamente en $cert y $key."
+        else
+            log_error "Error generando certificados para http3.local."
+            exit 1
+        fi
+    else
+        log_info "Certificados para http3.local ya existen."
+    fi
+}
+
+# ----------------------------------------------------------------------
 #                               LDAP Y RED
 # ----------------------------------------------------------------------
 
@@ -203,6 +228,20 @@ setup_file_virtual_hosting() {
         echo "    ProxyPreserveHost On"
         echo "    ProxyPass / http://localhost:8041/"
         echo "    ProxyPassReverse / http://localhost:8041/"
+        echo "</VirtualHost>"
+        echo
+        echo "<VirtualHost *:443>"
+        echo "    ServerName http3.local"
+        echo "    ProxyPreserveHost On"
+        echo "    SSLEngine on"
+        echo "    SSLCertificateFile /etc/ssl/certs/http3.local.crt"
+        echo "    SSLCertificateKeyFile /etc/ssl/private/http3.local.key"
+        echo "    SSLProxyEngine On"
+        echo "    SSLProxyVerify none"
+        echo "    SSLProxyCheckPeerCN off"
+        echo "    SSLProxyCheckPeerName off"
+        echo "    ProxyPass / https://localhost:8043/"
+        echo "    ProxyPassReverse / https://localhost:8043/"
         echo "</VirtualHost>"
         echo
     } >> "$config_file" 2>> "$error_file"
@@ -961,9 +1000,18 @@ fi
 
 # Configuración de servidor local y virtual host
 build_local_server
+
+# Si se está instalando el contenedor http3_v2, generar los certificados
+for container in "${containers[@]}"; do
+    IFS=';' read -ra container_info <<< "$container"
+    if [ "${container_info[0]}" == "http3_v2" ]; then
+        generate_http3_certificates
+        break
+    fi
+done
+
 setup_file_virtual_hosting
 configure_virtual_host
-
 configure_network
 
 # Ejemplo de contenedores

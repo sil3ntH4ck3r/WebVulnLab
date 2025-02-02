@@ -1,28 +1,21 @@
-# Redireccionar HTTP a HTTPS en el dominio http3.local
-http://http3.local:8045 {
-    redir https://http3.local:8043{uri} 301
-}
+https://http3.local {
+    tls internal
 
-# Servir HTTPS con HTTP/3
-https://http3.local:8043 {
-    tls /usr/share/caddy/certs/http3.local.pem /usr/share/caddy/certs/http3.local-key.pem
+    @http3 {
+        expression {http.request.proto} == "HTTP/3"
+    }
 
-    @http3 protocol http/3
     handle @http3 {
-        root * /usr/share/caddy/sitio-http3
+        # Servir archivos desde el directorio destinado a HTTP/3
+        root * /var/www/html/html_http3
+        try_files {path} /index.html
         file_server
-        encode gzip
     }
 
-    @http2 protocol http/2
-    handle @http2 {
-        root * /usr/share/caddy/sitio-http2
-        file_server
-        encode gzip
-    }
-
-    # Si no coincide con HTTP/3 ni HTTP/2, devolver un error
+    # Si NO es HTTP/3, se asume HTTP/2 o HTTP/1.x
     handle {
-        respond "Protocolo no soportado" 400
+        root * /var/www/html/html_http2
+        try_files {path} /index.html
+        file_server
     }
 }
