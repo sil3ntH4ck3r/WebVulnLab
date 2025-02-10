@@ -41,6 +41,6 @@ app.get('/protected-content', (req, res) => {
     res.send(content);
 });
 
-app.listen(3000, () => {
-  console.log('Laboratorio de Prototype Pollution en el puerto 3000');
+app.listen(80, () => {
+  console.log('Laboratorio de Prototype Pollution en el puerto 80');
 });

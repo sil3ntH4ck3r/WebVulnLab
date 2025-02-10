@@ -28,7 +28,7 @@ const Header = () => {
             <NavLink to="/login" className="button">Iniciar sesión</NavLink>
           </>
         )}
-        <NavLink to="http://mail.local" className="button">Mail</NavLink>
+        <NavLink to="http://mail.local:8025" className="button">Mail</NavLink>
       </nav>
     </header>
   );

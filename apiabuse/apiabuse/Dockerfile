@@ -17,7 +17,8 @@ RUN npm install jwt-decode
 RUN npm run build
 
 # Expone el puerto en el que se ejecuta la aplicación web
-EXPOSE 3000
+EXPOSE 80
 
 # Comando para iniciar la aplicación web
+ENV PORT=80
 CMD ["npm", "start"]

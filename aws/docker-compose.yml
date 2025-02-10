@@ -10,7 +10,7 @@ services:
       AWS_SECRET_ACCESS_KEY: test
       DEBUG: 1
     ports:
-      - "4566"
+      - "4566:4566"
     volumes:
       - localstack_data:/tmp/localstack
     healthcheck:
@@ -20,6 +20,9 @@ services:
       retries: 5
       start_period: 10s
     container_name: aws_server_v2
+    networks:
+      WebVulnLab-Network:
+        ipv4_address: 172.18.0.45
 
   web:
     build: ./web
@@ -28,8 +31,15 @@ services:
     ports:
       - "8041:80"
     volumes:
-    - ./web/index.php:/var/www/html/index.php
+      - ./web/index.php:/var/www/html/index.php
     container_name: aws_v2
+    networks:
+      WebVulnLab-Network:
+        ipv4_address: 172.18.0.46
 
 volumes:
   localstack_data:
+
+networks:
+  WebVulnLab-Network:
+    external: true

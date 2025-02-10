@@ -132,8 +132,7 @@ Este script descargará e instalará todas las dependencias necesarias, creará 
 | Open Redirect| http://openredirect.local/ | Funcional |
 | WebDAV| http://webdav.local/ | Funcional |
 | SquidProxies| http://squidproxy.local/| Funcional |
-| Intercambio de recursos de origen cruzado (CORS) | http://localhost:8029 | Semifuncional |
-|                                                | Nota: la vulnerabilidad CORS se debe practicar utilizando `localhost:8029`, ya que no hemos logrado que funcione a través de `cors.local`. |
+| Intercambio de recursos de origen cruzado (CORS) | http://cors.local/ | Funcional |
 | SQL Truncation| http://sqltruncation.local/ | Funcional |
 |Session Puzzling / Session Fixation / Session Variable Overloading| http://sessionpuzzling.local/ | Funcional |
 | Json Web Token| http://jwt.local/ | Funcional |
@@ -173,77 +172,6 @@ cd ruta/al/proyecto
 El script verificará si hay nuevas versiones disponibles y te mostrará un mensaje indicando si hay actualizaciones.
 
 4. Si la actualización se completa con éxito, el script mostrará un mensaje indicando que la actualización ha sido exitosa. En caso de algún problema durante la actualización, se mostrará un mensaje de error correspondiente.
-
-## Errores comunes  <a name="errores"></a>
-
-### Error al resolver la URL de la vulnerabilidad
-
-Si no puedes resolver la URL de la vulnerabilidad, pueden existir varios factores que contribuyan a este problema. Aquí hay algunas posibles soluciones:
-
-1. **Contenedores no iniciados correctamente:**
-
-    - Comprueba si los contenedores están activos ejecutando el comando `docker ps` en la línea de comandos. Si los contenedores están en funcionamiento, es posible que el problema esté relacionado con la configuración de Apache.
-    - Si los contenedores no aparecen en la lista o se muestra un estado de "exited" al ejecutar el comando `docker ps -a`, es probable que haya un problema con el inicio de los contenedores. Asegúrate de seguir las instrucciones de configuración y los comandos de inicio adecuados para los contenedores.
-
-2. **Configuración de Apache inactiva:**
-
-    - Verifica que la configuración de Apache esté activa y correctamente configurada. Revisa los archivos de configuración relevantes, como el archivo de configuración principal de Apache (/etc/apache2/sites-available/WebVulnLab.conf), para asegurarte de que todos los ajustes necesarios estén presentes y sean correctos.
-    - Asegúrate de haber reiniciado Apache después de realizar cambios en la configuración o despues de encender el equipo. Puedes hacerlo ejecutando el comando adecuado según tu sistema operativo (sudo service apache2 restart en Linux, por ejemplo).
-
-3. **Solicitar ayuda a través de la sección "Issues" del proyecto:**
-
-    - Si has intentado las soluciones anteriores y aún no puedes resolver el problema, puedes pedir ayuda a través de la sección de "Issues" en el repositorio de GitHub del proyecto. Describe detalladamente el problema que estás enfrentando, incluyendo cualquier mensaje de error relevante, y proporciona información sobre tu entorno de ejecución (sistema operativo, versiones de software, etc.).
-
-### Servicio no disponible al ingresar el dominio
-
-Si al ingresar el dominio te muestra el mensaje "Service Unavailable", es probable que el contenedor correspondiente no esté encendido. Aquí hay algunas posibles soluciones:
-
-1. **Verificar estado del contenedor:**
-
-    - Utiliza el comando `docker ps` en la línea de comandos para verificar si el contenedor necesario está en ejecución.
-    - Si el contenedor no aparece en la lista o muestra un estado de "exited" al ejecutar el comando `docker ps -a`, es posible que haya ocurrido un problema durante el inicio del contenedor. Asegúrate de seguir las instrucciones adecuadas para iniciar correctamente el contenedor.
-
-Si el contenedor no está en ejecución, puedes seguir estos pasos adicionales:
-
-2. **Reiniciar el contenedor a través de la API REST de Docker:**
-
-    - Accede al dominio tablero.local en tu navegador. Este dominio está habilitado para interactuar con la API REST de Docker y te permite controlar los contenedores.
-    - Utiliza las funcionalidades provistas por el tablero para reiniciar el contenedor específico que no está en funcionamiento.
-    - Verifica si el reinicio del contenedor a través de tablero.local resuelve el problema y permite el acceso al dominio.
-
-    **NOTA:** Si no puedes acceder al dominio tablero.local, te recomiendo seguir los pasos mencionados en la sección anterior de "Errores Comunes" del README, puede clicar [aquí](#errores). Puedes encontrar información sobre cómo solucionar si la configuración de Apache esta inactiva, entre otros.
-
-Si después de reiniciar el contenedor aún enfrentas el error "Service Unavailable", considera estas posibles soluciones adicionales:
-
-3. **Revisar los registros del contenedor:**
-
-    - Utiliza el comando `docker logs <nombre_del_contenedor>` para ver los registros del contenedor y buscar posibles errores o problemas durante la ejecución.
-    - Examina los registros en busca de mensajes de error o advertencias que puedan proporcionar información sobre el motivo detrás del servicio no disponible.
-
-4. **Solicitar ayuda a través de la sección "Issues" del proyecto:**
-
-Si has intentado las soluciones anteriores y aún no puedes resolver el problema, puedes pedir ayuda a través de la sección de "Issues" en el repositorio de GitHub del proyecto. Describe detalladamente el problema que estás enfrentando, incluyendo cualquier mensaje de error relevante, y proporciona información sobre tu entorno de ejecución (sistema operativo, versiones de software, etc.).
-
-### Error de Proxy
-
-Si al ingresar el dominio te muestra el mensaje "Proxy Error", es probable que el contenedor correspondiente no tenga el servicio Apahce encendido. Aquí hay algunas posibles soluciones:
-
-1. **Encender servicio Apache**
-
-    - Dentro del contenedor, ejecuta el siguiente comando para verificar si el servicio Apache está en funcionamiento:
-
-        ```
-        service apache2 status
-        ```
-
-    - Si el servicio está detenido, puedes iniciarlo ejecutando:
-
-        ```
-        service apache2 start
-        ```
-    **NOTA:** Para ejecutar comandos dentro de un contenedor y obtener una consola interactiva, puedes utilizar el comando `docker exec -it <nombre_del_contenedor> /bin/bash`. Cuando hayas terminado de ejecutar los comandos en el contenedor, puedes salir de la consola interactiva escribiendo `exit`.
-
-
 
 ## Contribuir <a name="contribuir"></a>
 

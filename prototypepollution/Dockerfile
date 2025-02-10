@@ -10,6 +10,6 @@ RUN npm install
 
 COPY src/ /var/www/html
 
-EXPOSE 3000
+EXPOSE 80
 
 CMD ["npm", "start"]

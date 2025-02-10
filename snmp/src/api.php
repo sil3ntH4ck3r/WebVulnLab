@@ -6,8 +6,8 @@
     // Configurar el modo de recuperación de valores
     snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 
-    $host = '127.0.0.1'; // O la IP del contenedor
-    $community = 'public';
+    $host = '172.18.0.37'; // O la IP del contenedor
+    $community = 'internal';
 
     // Descripción del Sistema
     $description = snmpget($host, $community, 'SNMPv2-MIB::sysDescr.0');

@@ -350,6 +350,10 @@ def generate_document():
     for img_obj in selected_image_objects:
         img = PILImage.open(BytesIO(img_obj.data))
         img = img.resize((400, 400))  # Ajustar el tamaño de la imagen si es necesario
+        
+        if img.mode in ("RGBA", "P"):
+            img = img.convert("RGB")
+        
         img_bytes = BytesIO()
         img.save(img_bytes, format='JPEG')
         img_bytes.seek(0)

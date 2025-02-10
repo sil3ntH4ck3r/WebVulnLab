@@ -5,11 +5,12 @@ services:
       context: ./api-server
       dockerfile: Dockerfile
     ports:
-      - 3001:3001
+      - "3001:3001"
     depends_on:
       - db
     networks:
-      - app-network
+      WebVulnLab-Network:
+        ipv4_address: 172.18.0.41
     container_name: api_server_v2
 
   db:
@@ -19,9 +20,10 @@ services:
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: apiabuse_database
     ports:
-      - 5432:5432
+      - "5432:5432"
     networks:
-      - app-network
+      WebVulnLab-Network:
+        ipv4_address: 172.18.0.42
     container_name: apiabuse_db_v2
 
   web:
@@ -29,21 +31,23 @@ services:
       context: ./apiabuse
       dockerfile: Dockerfile
     ports:
-      - 8022:3000
+      - "8022:80"
     volumes:
       - ./apiabuse/src:/app/src
     networks:
-      - app-network
+      WebVulnLab-Network:
+        ipv4_address: 172.18.0.43
     container_name: apiabuse_v2
 
   mailhog:
     image: mailhog/mailhog
     ports:
-      - 8023:8025
+      - "8023:8025"
     networks:
-      - app-network
+      WebVulnLab-Network:
+        ipv4_address: 172.18.0.44
     container_name: mail_v2
 
 networks:
-  app-network:
-    driver: bridge
+  WebVulnLab-Network:
+    external: true

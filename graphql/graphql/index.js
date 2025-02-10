@@ -343,7 +343,7 @@ app.use('/graphql', checkAuthentication, graphqlHTTP({
 
 app.use(express.static(path.join(__dirname, 'src')));
 
-const port = 3000;
+const port = 80;
 
 // Inicia el servidor web Express en el puerto 3000
 app.listen(port, () => {

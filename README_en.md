@@ -129,8 +129,7 @@ This script will download and install all the necessary dependencies, create the
 | Open Redirect| http://openredirect.local/ | Functional |
 | WebDAV| http://webdav.local/ | Functional |
 | SquidProxies| http://squidproxy.local/| Functional |
-| Cross-Origin Resource Sharing (CORS) Vulnerability | http://localhost:8029 | Semi-Functional |
-|                                                | Note: The CORS vulnerability should be tested using `localhost:8029`, as we haven't been able to make it work using `cors.local`. |
+| Cross-Origin Resource Sharing (CORS) Vulnerability | http://cors.local | Functional |
 | SQL Truncation| http://sqltruncation.local/ | Functional |
 |Session Puzzling / Session Fixation / Session Variable Overloading| http://sessionpuzzling.local/ | Functional |
 | Json Web Token| http://jwt.local/ | Functional |
@@ -171,79 +170,6 @@ The script will check if there are new versions available and display a message 
 4. If the update is successfully completed, the script will display a message indicating the successful update. In case of any issues during the update, an appropriate error message will be shown.
 
 By following these steps, you will be able to check and apply updates to the project using the provided script.
-
-
-## Common Errors <a name="errors"></a>
-
-### Error resolving vulnerability URL
-
-If you are unable to resolve the vulnerability URL, there may be several factors contributing to this problem. Here are some possible solutions:
-
-1. **Containers not started correctly:**
-
-   - Check if the containers are active by running the `docker ps` command in the command line. If the containers are running, the issue might be related to the Apache configuration.
-   - If the containers do not appear in the list or show an "exited" state when running the `docker ps -a` command, there may be a problem with container startup. Make sure to follow the appropriate configuration instructions and startup commands for the containers.
-
-2. **Inactive Apache configuration:**
-
-   - Verify that the Apache configuration is active and correctly set up. Review the relevant configuration files, such as the main Apache configuration file (`/etc/apache2/sites-available/WebVulnLab.conf`), to ensure that all necessary settings are present and correct.
-   - Make sure to restart Apache after making configuration changes or after system startup. You can do this by executing the appropriate command based on your operating system (e.g., `sudo service apache2 restart` in Linux).
-
-3. **Request assistance through the "Issues" section of the project:**
-
-   - If you have tried the above solutions and still cannot resolve the issue, you can seek help through the "Issues" section in the project's GitHub repository. Provide a detailed description of the problem you are facing, including any relevant error messages, and provide information about your runtime environment (operating system, software versions, etc.).
-
-### Service Unavailable when entering the domain
-
-If the domain displays the "Service Unavailable" message when accessed, it is likely that the corresponding container is not running. Here are some possible solutions:
-
-1. **Check container status:**
-
-   - Use the `docker ps` command in the command line to verify if the required container is running.
-   - If the container does not appear in the list or shows an "exited" state when running the `docker ps -a` command, there may have been an issue during container startup. Make sure to follow the appropriate instructions to start the container correctly.
-
-If the container is not running, you can follow these additional steps:
-
-2. **Restart the container through the Docker REST API:**
-
-   - Access the `tablero.local` domain in your browser. This domain is enabled to interact with the Docker REST API and allows you to control the containers.
-   - Use the functionalities provided by the "tablero" to restart the specific container that is not functioning.
-   - Verify if restarting the container through `tablero.local` resolves the issue and allows access to the domain.
-
-   **NOTE:** If you are unable to access the `tablero.local` domain, I recommend following the steps mentioned in the previous section of "Common Errors" in the README. You can click [here](#errors) to navigate to that section. You can find information on how to address issues such as inactive Apache configuration, among others.
-
-If you still encounter the "Service Unavailable" error after restarting the container, consider these additional possible solutions:
-
-3. **Review container logs:**
-
-   - Use the `docker logs <container_name>` command to view the container logs and search for possible errors or issues during execution.
-   - Examine the logs for error messages or warnings that may provide information about the reason behind the service being unavailable.
-
-4. **Request assistance through the "Issues" section of the project:**
-
-   - If you have tried the above solutions and still cannot resolve the issue, you can seek help through the "Issues" section in the project's GitHub repository. Provide a detailed description of the problem you are facing, including any relevant error messages, and provide information about your runtime environment (operating system, software versions, etc.).
-
-### Proxy Error
-
-If when entering the domain it shows the message "Proxy Error", it is likely that the corresponding container does not have the Apache service turned on. Here are some possible solutions:
-
-1. **Turn on Apache service**
-
-    - Inside the container, execute the following command to verify if the Apache service is running:
-
-        ```
-        service apache2 status
-        ```
-      This command will provide information about the status of the Apache service within the container.
-
-    - If the service is stopped, you can start it by executing:
-
-        ```
-        service apache2 start
-        ```
-      This command will start the Apache service within the container.
-
-    **NOTE:** To execute commands within a container and obtain an interactive console, you can use the command `docker exec -it <container_name> /bin/bash`. When you have finished executing commands in the container, you can exit the interactive console by typing `exit`.
 
 ## Contribute <a name="contribute"></a>
 

@@ -19,7 +19,7 @@ COPY index.js .
 COPY src/ ./src
 
 # Expone el puerto
-EXPOSE 3000
+EXPOSE 80
 
 # Iniciar servidor
 CMD ["npm", "start"]

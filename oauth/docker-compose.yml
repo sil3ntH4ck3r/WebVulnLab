@@ -8,6 +8,9 @@ services:
       - POSTGRES_USER=username
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=printing_db
+    networks:
+      WebVulnLab-Network:
+        ipv4_address: 172.18.0.50
 
   gallery_db:
     container_name: oauth_gallery_db_v2
@@ -16,6 +19,9 @@ services:
       - POSTGRES_USER=username
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=gallery_db
+    networks:
+      WebVulnLab-Network:
+        ipv4_address: 172.18.0.51
 
   printing:
     container_name: oauth_printing_v2
@@ -30,6 +36,9 @@ services:
       - printing_db
     volumes:
       - ./printing:/app
+    networks:
+      WebVulnLab-Network:
+        ipv4_address: 172.18.0.52
 
   gallery:
     container_name: oauth_gallery_v2
@@ -44,7 +53,10 @@ services:
       - gallery_db
     volumes:
       - ./gallery:/app
+    networks:
+      WebVulnLab-Network:
+        ipv4_address: 172.18.0.53
 
 networks:
-  default:
-    name: printing_network
+  WebVulnLab-Network:
+    external: true

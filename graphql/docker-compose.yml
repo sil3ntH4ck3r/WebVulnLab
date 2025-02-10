@@ -9,7 +9,8 @@ services:
       - db_data:/var/lib/mysql
     container_name: graphql_db_v2
     networks:
-      - graphql_network
+      WebVulnLab-Network:
+        ipv4_address: 172.18.0.48
 
   graphql:
     build: ./graphql
@@ -19,7 +20,8 @@ services:
       - db
     container_name: graphql_v2
     networks:
-      - graphql_network
+      WebVulnLab-Network:
+        ipv4_address: 172.18.0.49
     volumes:
       - ./graphql/src:/var/www/html/src
 
@@ -27,4 +29,5 @@ volumes:
   db_data:
 
 networks:
-  graphql_network:
+  WebVulnLab-Network:
+    external: true

@@ -1,8 +1,8 @@
 https://http3.local {
     tls internal
-
+    reverse_proxy localhost:8043
     @http3 {
-        expression {http.request.proto} == "HTTP/3"
+        expression {http.request.proto} == "HTTP/3.0"
     }
 
     handle @http3 {
