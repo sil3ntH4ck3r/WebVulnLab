@@ -1,9 +1,897 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Web HTTP/3</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayuntamiento de Villa Horizonte - HTTP/3 (Versión Beta)</title>
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --secondary-color: #1565c0;
+            --accent-color: #ff9800;
+            --background-color: #f5f7fa;
+            --text-color: #333;
+            --light-text: #fff;
+            --warning-color: #f44336;
+            --beta-color: #9c27b0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Beta banner */
+        .beta-banner {
+            background-color: var(--warning-color);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+        }
+        
+        .beta-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: var(--beta-color);
+            color: white;
+            padding: 5px 15px;
+            font-weight: bold;
+            transform: translateY(-50%);
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--light-text);
+            padding: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background-color: var(--light-text);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .http3-badge {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        nav ul li a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 5px 0;
+        }
+        
+        nav ul li a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+        
+        nav ul li a:hover:after {
+            width: 100%;
+        }
+        
+        .geometric-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.2;
+        }
+        
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+        }
+        
+        .shape-1 {
+            width: 150px;
+            height: 150px;
+            background-color: white;
+            top: -50px;
+            left: 10%;
+        }
+        
+        .shape-2 {
+            width: 80px;
+            height: 80px;
+            background-color: var(--accent-color);
+            bottom: -20px;
+            right: 20%;
+        }
+        
+        .shape-3 {
+            width: 120px;
+            height: 120px;
+            background-color: var(--secondary-color);
+            top: 30px;
+            right: 5%;
+        }
+        
+        /* Under construction overlay */
+        .construction-overlay {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            max-width: 400px;
+        }
+        
+        .construction-icon {
+            font-size: 2.5rem;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            background: url('/api/placeholder/1200/400') center/cover no-repeat;
+            position: relative;
+            color: var(--light-text);
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+        }
+        
+        .hero h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--accent-color);
+            color: var(--light-text);
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #e68a00;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Infrastructure Upgrade Section - Highlighting this section */
+        .infrastructure {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #1a237e, #0d47a1);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            border: 8px solid var(--accent-color);
+            box-shadow: 0 0 30px rgba(255, 152, 0, 0.5);
+        }
+        
+        .infrastructure::before {
+            content: 'NUEVA TECNOLOGÍA';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 5px 15px;
+            font-weight: bold;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .infrastructure-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+        
+        .infrastructure-text {
+            flex: 1;
+        }
+        
+        .infrastructure-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .infrastructure-text p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .infrastructure-image {
+            flex: 1;
+            position: relative;
+        }
+        
+        .http-version {
+            background-color: white;
+            color: var(--primary-color);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .http-version h3 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .http-version p {
+            color: var(--text-color);
+            margin-bottom: 20px;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 75%;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            border-radius: 10px;
+            position: relative;
+            animation: progress 2s ease-in-out;
+        }
+        
+        @keyframes progress {
+            from { width: 0; }
+            to { width: 75%; }
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .http-comparison {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        .http-version-card {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .http-version-card h4 {
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+        
+        .http-version-card.current {
+            background-color: rgba(46, 125, 50, 0.2);
+            border: 2px solid var(--primary-color);
+        }
+        
+        .http-version-card.target {
+            background-color: rgba(21, 101, 192, 0.2);
+            border: 2px solid var(--secondary-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .http-version-card.target::after {
+            content: 'USANDO AHORA';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 3px 8px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            transform: rotate(45deg) translate(15%, -50%);
+        }
+        
+        /* HTTP/3 Features */
+        .http3-features {
+            padding: 80px 0;
+            background-color: #f0f8ff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--secondary-color);
+            position: relative;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+        
+        .wip-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #ffeb3b;
+            color: #333;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        /* Coming Soon Section */
+        .coming-soon {
+            padding: 40px 0;
+            background-color: #f5f5f5;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .coming-soon h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+        
+        .coming-soon p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+        
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            max-width: 800px;
+            margin: 40px auto;
+            position: relative;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: #ddd;
+            z-index: 1;
+        }
+        
+        .timeline-point {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            width: 120px;
+        }
+        
+        .timeline-dot {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            border: 4px solid #ddd;
+            font-size: 1.2rem;
+        }
+        
+        .timeline-point.active .timeline-dot {
+            border-color: var(--accent-color);
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .timeline-point.completed .timeline-dot {
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .timeline-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .timeline-date {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 60px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .footer-logo h3 {
+            font-size: 1.5rem;
+        }
+        
+        .footer-contact p {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .http3-footer-notice {
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-top: 20px;
+            position: relative;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        /* Glitches for effect */
+        .glitch-section {
+            position: relative;
+        }
+        
+        .glitch-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background-color: rgba(255, 0, 0, 0.1);
+            z-index: 100;
+            animation: glitch 5s infinite;
+            display: none;
+        }
+        
+        @keyframes glitch {
+            0% { transform: translateX(0); opacity: 0; }
+            10% { transform: translateX(0); opacity: 1; }
+            11% { transform: translateX(100px); opacity: 0; }
+            50% { transform: translateX(0); opacity: 0; }
+            90% { transform: translateX(0); opacity: 0; }
+            100% { transform: translateX(0); opacity: 0; }
+        }
+        
+        /* Debug Info */
+        .debug-info {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #00ff00;
+            font-family: monospace;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            max-width: 300px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .debug-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            font-weight: bold;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .hero h2 {
+                font-size: 2.2rem;
+            }
+            
+            .infrastructure-content {
+                flex-direction: column;
+            }
+            
+            .http-comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 30px;
+            }
+            
+            .timeline::before {
+                width: 4px;
+                height: 100%;
+                left: 25px;
+                top: 0;
+            }
+            
+            .timeline-point {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                text-align: left;
+            }
+            
+            .construction-overlay {
+                width: 100%;
+                left: 0;
+                bottom: 0;
+                border-radius: 0;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Esta es la Web servida por HTTP/3</h1>
-</body>
-</html>
+    <!-- Beta Banner -->
+    <div class="beta-banner">
+        ⚠️ Este sitio está en fase de pruebas y utiliza la nueva tecnología HTTP/3. El acceso es limitado a personal autorizado.
+        <span class="beta-badge">BETA</span>
+    </div>
+    
+    <!-- Header -->
+    <header>
+        <div class="geometric-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+        <div class="container header-content">
+            <div class="logo">
+                <div class="logo-icon">VH</div>
+                <h1>Villa Horizonte <span class="http3-badge">HTTP/3</span></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Inicio</a></li>
+                    <li><a href="#">Ayuntamiento</a></li>
+                    <li><a href="#">Servicios</a></li>
+                    <li><a href="#">Actualidad</a></li>
+                    <li><a href="#">Turismo</a></li>
+                    <li><a href="#">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Construction Overlay -->
+    <div class="construction-overlay">
+        <div class="construction-icon">🚧</div>
+        <div>
+            <strong>Sitio en desarrollo</strong>
+            <p>Esta versión HTTP/3 está en fase de pruebas y solo disponible para desarrolladores y personal autorizado.</p>
+        </div>
+    </div>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h2>Bienvenido a Villa Horizonte</h2>
+            <p>Descubre nuestra hermosa localidad rodeada de naturaleza, historia y cultura. Un lugar único para vivir, trabajar y disfrutar.</p>
+            <a href="#" class="btn">Descubrir Villa Horizonte</a>
+        </div>
+    </section>
+    
+    <!-- Infrastructure Upgrade Section - Highlighted -->
+    <section class="infrastructure">
+        <div class="container infrastructure-content">
+            <div class="infrastructure-text">
+                <h2>Modernizando nuestra infraestructura digital</h2>
+                <p>En Villa Horizonte estamos comprometidos con ofrecer a nuestros ciudadanos los servicios digitales más avanzados y eficientes. Por ello, estamos en proceso de migración de nuestra infraestructura web a HTTP/3.</p>
+                <p>Esta actualización tecnológica nos permitirá ofrecer una experiencia más rápida, segura y fiable en todos nuestros servicios online, reduciendo los tiempos de carga y mejorando la respuesta del sistema.</p>
+                <a href="#" class="btn">Conoce más sobre esta iniciativa</a>
+            </div>
+            <div class="infrastructure-image">
+                <div class="http-version">
+                    <h3>Migración a HTTP/3 <span>🚀</span></h3>
+                    <p>Actualmente estamos en proceso de actualización. Pronto disfrutarás de una experiencia web mejorada.</p>
+                    <div class="progress-container">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span>Progreso: 75%</span>
+                        <span>Finalización: Abril 2025</span>
+                    </div>
+                    <div class="http-comparison">
+                        <div class="http-version-card">
+                            <h4>HTTP/1.1</h4>
+                            <p>Versión anterior</p>
+                        </div>
+                        <div class="http-version-card current">
+                            <h4>HTTP/2</h4>
+                            <p>Versión actual</p>
+                        </div>
+                        <div class="http-version-card target">
+                            <h4>HTTP/3</h4>
+                            <p>Beta activa</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- HTTP/3 Features Section -->
+    <section class="http3-features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Ventajas de HTTP/3</h2>
+                <p>Descubre cómo la nueva tecnología HTTP/3 mejorará tu experiencia en nuestros servicios digitales.</p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Mayor velocidad</h3>
+                    <p>Reduce significativamente los tiempos de carga de las páginas web gracias al protocolo QUIC.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Seguridad mejorada</h3>
+                    <p>Cifrado integrado por defecto en todas las conexiones para proteger mejor tus datos.</p>
+                    <span class="wip-badge">En desarrollo</span>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mejor experiencia móvil</h3>
+                    <p>Optimizado para conexiones inestables y cambios entre redes, ideal para dispositivos móviles.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Multiplexación mejorada</h3>
+                    <p>Permite múltiples flujos de datos simultáneos sin bloqueos entre ellos.</p>
+                    <span class="wip-badge">En desarrollo</span>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Menor latencia</h3>
+                    <p>Establece conexiones más rápidas gracias a la reducción de handshakes iniciales.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💻</div>
+                    <h3>Compatibilidad futura</h3>
+                    <p>Preparados para las próximas innovaciones en servicios web y aplicaciones del Ayuntamiento.</p>
+                    <span class="wip-badge">En desarrollo</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Coming Soon Section -->
+    <section class="coming-soon">
+        <div class="container">
+            <h2>Próximos pasos</h2>
+            <p>Estamos trabajando para implementar HTTP/3 en todos nuestros servicios digitales. Aquí puedes ver nuestro plan de despliegue.</p>
+            
+            <div class="timeline">
+                <div class="timeline-point completed">
+                    <div class="timeline-dot">✓</div>
+                    <div class="timeline-label">Fase de planificación</div>
+                    <div class="timeline-date">Enero 2025</div>
+                </div>
+                <div class="timeline-point completed">
+                    <div class="timeline-dot">✓</div>
+                    <div class="timeline-label">Desarrollo</div>
+                    <div class="timeline-date">Febrero 2025</div>
+                </div>
+                <div class="timeline-point active">
+                    <div class="timeline-dot">🔄</div>
+                    <div class="timeline-label">Pruebas beta</div>
+                    <div class="timeline-date">Marzo 2025</div>
+                </div>
+                <div class="timeline-point">
+                    <div class="timeline-dot">4</div>
+                    <div class="timeline-label">Lanzamiento</div>
+                    <div class="timeline-date">Abril 2025</div>
+                </div>
+                <div class="timeline-point">
+                    <div class="timeline-dot">5</div>
+                    <div class="timeline-label">Expansión</div>
+                    <div class="timeline-date">Mayo 2025</div>
+                </div>
+            </div>
+            
+            <a href="#" class="btn">Suscríbete para recibir actualizaciones</a>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <div class="footer-logo-icon">VH</div>
+                        <h3>Villa Horizonte</h3>
+                    </div>
+                    <p>Ayuntamiento comprometido con el bienestar y desarrollo sostenible de todos los ciudadanos de nuestra hermosa localidad.</p>
+                    <div class="footer-contact">
+                        <p>📍 Plaza Mayor, 1, Villa Horizonte</p>
+                        <p>📞 +34 123 456 789</p>
+                        <p>📧 info@http3.local</p>
+                    </div>
+                    <div class="http3-footer-notice">
+                        <p><strong>🚧 Versión HTTP/3 Beta</strong> - Esta es una versión de prueba que implementa el protocolo HTTP/3. Si encuentras algún error, por favor, rep
