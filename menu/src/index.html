@@ -1,92 +1,370 @@
 <!DOCTYPE html>
-<html>
-
-  <head>
+<html lang="es">
+<head>
     <title>WebVulnLab</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="index.css">
     <meta charset="UTF-8">
-  </head>
-
-  <body>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary-color: #4a6bff;
+            --accent-color: #f0576c;
+            --dark-color: #1a1a2e;
+            --light-color: #f5f5f7;
+            --gray-color: #f0f0f5;
+            --text-color: #333344;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-color);
+        }
+        
+        header {
+            background-color: var(--dark-color);
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: var(--primary-color);
+        }
+        
+        .hero {
+            padding: 6rem 0 4rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--dark-color), #2a2a4e);
+            color: white;
+        }
+        
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+            margin-left: 1rem;
+        }
+        
+        .steps {
+            padding: 5rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.2rem;
+        }
+        
+        .steps-container {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+        
+        .step {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+            text-align: center;
+        }
+        
+        .step-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .step h3 {
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+        
+        .cta-buttons {
+            text-align: center;
+        }
+        
+        .pricing {
+            background-color: var(--gray-color);
+            padding: 5rem 0;
+            text-align: center;
+        }
+        
+        .price-card {
+            background-color: white;
+            padding: 3rem 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .price-tag {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 1rem 0;
+        }
+        
+        .features {
+            margin: 2rem 0;
+        }
+        
+        .features li {
+            list-style: none;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .features li::before {
+            content: "✓";
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+        
+        .benefits {
+            padding: 5rem 0;
+            background-color: white;
+        }
+        
+        .benefits-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+        }
+        
+        .benefit {
+            text-align: center;
+        }
+        
+        .benefit-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .benefit h3 {
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .steps-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .step {
+                width: 100%;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .btn {
+                display: block;
+                margin: 1rem auto;
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
     <header>
-      <nav>
-        <ul>
-          <li><a href="index.html">Inicio</a></li>
-          <li><a href="responsabilidad.html">Acerca de</a></li>
-        </ul>
-      </nav>
-      <h1>WebVulnLab</h1>
+        <div class="container header-content">
+            <a href="index.html" class="logo">WebVulnLab</a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <!-- <li><a href="academia.html">Academia</a></li> -->
+                    <li><a href="responsabilidad.html">Acerca de</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
-
-    <main>
-      <h1>Aprende ciberseguridad con un solo clic</h1>
-      <h2>¿Como empezar?</h2>
-      <section class="steps">
-
-        <div class="step">
-          <div class="step-number">1</div>
-          <div class="step-text">Ejecuta el script de instalación</div>
+    
+    <section class="hero">
+        <div class="container">
+            <h1>Aprende ciberseguridad de forma práctica</h1>
+            <p>Plataforma de entrenamiento gratuita con más de 35 vulnerabilidades web para practicar en un entorno seguro y controlado</p>
+            <div>
+                <a href="http://lfi.local/" class="btn btn-primary">Empezar ahora</a>
+                <a href="http://tablero.local" class="btn btn-outline">Ver tablero</a>
+            </div>
         </div>
-
-        <div class="step">
-          <div class="step-number">2</div>
-          <div class="step-text">Disfruta practicando las vulnerabilidades web más conocidas</div>
-        </div>
-
-      </section>
-
-      <div class="header-buttons">
-        <a href="http://lfi.local/lfi.php"><button class="start-button">Empieza</button></a>
-        <a href="http://tablero.local"><button class="board-button">Tablero</button></a>
-      </div>
-
-      <h2>Precio</h2>
-
-      <section class="price">
-
-        <p><br><br>No tendrás que pagar nada. Es un proyecto de código abierto, donde todo el mundo puede hacer sus aportaciones.</p>
-
-        <aside class="card">
-          <h2>GRATIS</h2>
-          <ul>
-              <li id="zeroprecio">0€</li>
-              <li><strong>+35</strong> Vulnerabilidades</li>
-              <li><strong>+40</strong> Contenedores Docker</li>
-              <li><strong>Proyecto público</strong></li>
-          </ul>
-        </aside>
-
-      </section>
-    </main>
-
-    <section class="services">
-      <h2>Nuestras increíbles ventajas</h2>
-      <div class="services-container">
-        <aside>
-          <h3>Sin conexión internet</h3>
-          <p>Podrás practicar en cualquier parte del mundo. No se necesita conexión a internet para disfrutar</p>
-        </aside>
-        <aside>
-          <h3>Sitio Descentralizado</h3>
-          <p>Hay disponibles +35 contenedores con vulnerabilidades web, que cada uno de ellos es independiente, si da error uno, no se te acabara la diversión</p>
-        </aside>
-        <aside>
-          <h3>Mejora Constante</h3>
-          <p>No paramos de crear. Queremos añadir muchisimas más vulnerabilidades. Crear una sección de pivoting... y muchas cosas más</p>
-        </aside>
-        <aside>
-          <h3>Para todos los niveles</h3>
-          <p>No hay niveles, podrás vulnerar desde lo más fácil a lo más complicado</p>
-        </aside>
-      </div>
     </section>
     
-
-    <footer>
-      <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0
-    </footer>
+    <section class="steps">
+        <div class="container">
+            <h2 class="section-title">¿Cómo empezar?</h2>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Ejecuta el script de instalación</h3>
+                    <p>Instala fácilmente todo el entorno con un simple comando en tu terminal</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Practica vulnerabilidades web</h3>
+                    <p>Accede a más de 35 tipos diferentes de vulnerabilidades web para mejorar tus habilidades en pentesting</p>
+                </div>
+            </div>
+        </div>
+    </section>
     
-  </body>
+    <section class="pricing">
+        <div class="container">
+            <h2 class="section-title">Precio</h2>
+            <div class="price-card">
+                <h3>Proyecto de código abierto</h3>
+                <div class="price-tag">0€</div>
+                <p>WebVulnLab es completamente gratuito. Es un proyecto de código abierto donde cualquiera puede contribuir y mejorar la plataforma.</p>
+                <ul class="features">
+                    <li><strong>+35</strong> Vulnerabilidades web</li>
+                    <li><strong>+40</strong> Contenedores Docker</li>
+                    <li>Proyecto de código abierto</li>
+                    <li>Actualizaciones continuas</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    <section class="benefits">
+        <div class="container">
+            <h2 class="section-title">Nuestras ventajas</h2>
+            <div class="benefits-container">
+                <div class="benefit">
+                    <div class="benefit-icon">🌐</div>
+                    <h3>Sin conexión a internet</h3>
+                    <p>Practica en cualquier lugar sin necesidad de conexión a internet</p>
+                </div>
+                <div class="benefit">
+                    <div class="benefit-icon">🧩</div>
+                    <h3>Arquitectura descentralizada</h3>
+                    <p>Más de 35 contenedores independientes. Si falla uno, puedes seguir practicando con los demás</p>
+                </div>
+                <div class="benefit">
+                    <div class="benefit-icon">🚀</div>
+                    <h3>Mejora continua</h3>
+                    <p>Constantemente añadimos nuevas vulnerabilidades y características para mantenernos actualizados</p>
+                </div>
+                <div class="benefit">
+                    <div class="benefit-icon">🎯</div>
+                    <h3>Para todos los niveles</h3>
+                    <p>Desde principiantes hasta expertos, encontrarás desafíos adaptados a tu nivel de conocimiento</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p><a href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> creado por <a href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> está bajo licencia <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer">CC BY-NC-SA 4.0</a></p>
+        </div>
+    </footer>
+</body>
 </html>

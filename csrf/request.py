@@ -5,6 +5,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 from xvfbwrapper import Xvfb
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 # Iniciar el servidor X virtual
 vdisplay = Xvfb()
@@ -18,13 +20,19 @@ options.add_argument("--headless")
 driver = webdriver.Firefox(options=options)
 
 # Navegar a la página de login
-driver.get("http://csrf.local")
+driver.get("http://csrf.local/login.php")
 
 # Esperar 2 segundos para asegurarse de que la página de login se cargue completamente
 time.sleep(2)
 
 # Verificar si hay campos de inicio de sesión en la página por su atributo 'id'
-username_input = driver.find_element(By.NAME, 'username')     # Cambia 'username' por el nombre real del campo de nombre de usuario
+# Espera a que el campo de usuario sea clickeable
+username_input = WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.NAME, "username"))
+)
+# Asegúrate de que el elemento esté en vista
+driver.execute_script("arguments[0].scrollIntoView(true);", username_input)
+
 password_input = driver.find_element(By.NAME, 'password')     # Cambia 'password' por el nombre real del campo de contraseña
 login_button = driver.find_element(By.XPATH, '//button[contains(text(), "Iniciar sesión")]')  # Encuentra el botón por su texto
 

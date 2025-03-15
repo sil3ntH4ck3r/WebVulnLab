@@ -20,6 +20,9 @@ ipv6_exists=false
 fixed_cidr_exists=false+
 
 containers=(
+  #Siguen la siguiente estructura:
+    #nombreContenedor ; rutaDockerfile ; mapeoDePuertos ; parametrosAdicionales ; ipEstatica
+    
   "menu_v2;$PWD/menu;8080:80;;172.18.0.2"
   "lfi_v2;$PWD/lfi;8000:80;;172.18.0.3"
   "csrf_v2;$PWD/csrf;8001:80;;172.18.0.4"
@@ -27,7 +30,7 @@ containers=(
   "xxe_v2;$PWD/xxe;8003:80;;172.18.0.6"
   "xss_v2;$PWD/xss;8004:80;;172.18.0.7"
   "sqli_v2;$PWD/sqli;8005:80;;172.18.0.8"
-  "domainzonetransfer_v2;$PWD/domainzonetransfer;8039:80 53:53/tcp 53:53/udp;;172.18.0.9"
+  "domainzonetransfer_v2;$PWD/domainzonetransfer;8039:80;;172.18.0.9"
   "ssrf_v2;$PWD/ssrf;8006:80;;172.18.0.10"
   "paddingoracleattack_v2;$PWD/paddingoracleattack;8007:80;;172.18.0.11"
   "typejuggling_v2;$PWD/typejuggling;8008:80;;172.18.0.12"
@@ -795,7 +798,7 @@ EOF
 
     # Actualizar /etc/hosts para que tablero.local apunte a 127.0.0.1
     if ! grep -qE "^[[:space:]]*127\.0\.0\.1[[:space:]]+tablero\.local" /etc/hosts; then
-         echo "127.0.0.1 tablero.local oauth_printing.local oauth_gallery.local" >> /etc/hosts
+         echo "127.0.0.1 tablero.local" >> /etc/hosts
          if [ $? -eq 0 ]; then
              log_info "Entrada añadida a /etc/hosts: 127.0.0.1 tablero.local"
          else

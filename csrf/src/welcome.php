@@ -3,7 +3,6 @@ session_start();
 
 // Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION['username'])) {
-    // Redirigir al usuario a la página de inicio de sesión
     header('Location: index.php');
     exit;
 }
@@ -13,23 +12,14 @@ $username = $_SESSION['username'];
 $login_successful = true;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submitComment"])) {
-    // Check if the comment is not empty
     if (!empty($_POST["comment"])) {
         $comment = $_POST["comment"];
-        
-        // Open the comments.txt file in append mode
+        // Abrir el archivo para añadir el comentario
         $file = fopen("comments.txt", "a");
-        
         if ($file) {
-            // Format the comment and user information
             $commentLine = "User: $username\nComment: $comment\n\n";
-            
-            // Write the comment to the file
             fwrite($file, $commentLine);
-            
-            // Close the file
             fclose($file);
-            
             echo "<script>alert('Comentario añadido correctamente');</script>";
         } else {
             echo "<script>alert('Error al subir el comentario.');</script>";
@@ -38,244 +28,210 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submitComment"])) {
         echo "<script>alert('El comentario no puede estar vacío.');</script>";
     }
 }
-
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>CSRF</title>
-    <style>
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 20px;
-            text-align: center;
-        }
-
-        nav {
-            background-color: #444;
-            padding: 10px;
-        }
-
-        nav ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-
-        nav ul li {
-            display: inline-block;
-            margin-right: 20px;
-        }
-
-        nav ul li:last-child {
-            margin-right: 0;
-        }
-
-        nav ul li a {
-            color: #fff;
-            text-decoration: none;
-            padding: 10px;
-            transition: background-color 0.3s;
-        }
-
-        nav ul li a:hover {
-            background-color: #555;
-        }
-
-        header h1 {
-            text-align: center;
-            font-size: 3rem;
-            margin-top: 1rem;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 3rem;
-            margin-top: 1rem;
-        }
-
-        footer {
-            position: absolute;
-            bottom: 0;
-            width: 97.9vw;
-            height: 50px;
-            background-color: #333;
-            color: #fff;
-            padding: 20px;
-            text-align: center;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: sans-serif;
-            background: #ffffff;
-        }
-
-        .login-box {
-            width: 360px;
-            height: 400px;
-            background: #ffffff;
-            color: #000000;
-            top: 50%;
-            left: 50%;
-            position: absolute;
-            transform: translate(-50%, -50%);
-            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .login-box h2 {
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-            font-size: 22px;
-            color: #000000;
-        }
-
-        .login-box form {
-            padding: 20px;
-            text-align: center;
-        }
-
-        .login-box form .user-box {
-            position: relative;
-            margin: 20px 0;
-        }
-
-        .login-box form .user-box input {
-            width: 100%;
-            padding: 10px 0;
-            font-size: 16px;
-            color: #000000;
-            border: none;
-            border-bottom: 1px solid #000000;
-            outline: none;
-            background: transparent;
-        }
-
-        .login-box form .user-box label {
-            position: absolute;
-            top: 0;
-            left: 0;
-            padding: 10px 0;
-            font-size: 16px;
-            color: #000000;
-            pointer-events: none;
-            transition: 0.5s;
-        }
-
-        .login-box form .user-box input:focus ~ label,
-        .login-box form .user-box input:valid ~ label {
-            top: -20px;
-            left: 0;
-            color: #000000;
-            font-size: 12px;
-        }
-
-        .login-box button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            border: none;
-            background-color: #000000;
-            color: #ffffff;
-            font-size: 18px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin: 30px 0;
-            transition: 0.5s;
-        }
-
-        .login-box button:hover {
-            background-color: #ffffff;
-            color: #000000;
-            border: 1px solid #000000;
-        }
-
-        .mensaje {
-            text-align: center;
-            font-size: 24px;
-            color: #4CAF50;
-            margin-bottom: 20px;
-        }
-        .comment-container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-        
-        .comment-container h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        
-        .comment-container form {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .comment-container textarea {
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            resize: vertical;
-        }
-        
-        .comment-container button {
-            background-color: #333;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-        }
-        
-        .comment-container button:hover {
-            background-color: #555;
-        }
-    </style>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>CSRF</title>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+   <style>
+       :root {
+           --primary-color: #1e7a66;
+           --secondary-color: #6eaa95;
+           --accent-color: #f5f5f5;
+           --text-color: #333;
+           --light-text: #fff;
+           --error-color: #d9534f;
+           --success-color: #5cb85c;
+           --warning-color: #f0ad4e;
+       }
+       * {
+           margin: 0;
+           padding: 0;
+           box-sizing: border-box;
+       }
+       body {
+           background-color: #f8f9fa;
+           font-family: 'Roboto', 'Segoe UI', sans-serif;
+           color: var(--text-color);
+           line-height: 1.6;
+       }
+       header {
+           background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+           color: var(--light-text);
+           padding: 1.5rem 0;
+           text-align: center;
+       }
+       header .logo {
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           gap: 0.5rem;
+       }
+       header .logo i {
+           font-size: 2rem;
+       }
+       header h1 {
+           font-size: 2.5rem;
+       }
+       header .tagline {
+           font-size: 1.2rem;
+           font-style: italic;
+           margin-top: 0.5rem;
+       }
+       nav {
+           background-color: #fff;
+           padding: 1rem 0;
+           box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+           text-align: center;
+       }
+       nav ul {
+           list-style: none;
+           padding: 0;
+           margin: 0;
+       }
+       nav ul li {
+           display: inline-block;
+           margin: 0 0.5rem;
+       }
+       nav ul li a {
+           color: var(--primary-color);
+           text-decoration: none;
+           padding: 0.5rem 1rem;
+           transition: background-color 0.3s;
+       }
+       nav ul li a:hover {
+           background-color: var(--primary-color);
+           color: var(--light-text);
+       }
+       .container {
+           max-width: 800px;
+           margin: 2rem auto;
+           padding: 0 1rem;
+       }
+       .welcome-message {
+           text-align: center;
+           margin-bottom: 2rem;
+       }
+       .welcome-message h2 {
+           font-size: 2rem;
+           margin-bottom: 0.5rem;
+       }
+       .welcome-message p {
+           font-size: 1.2rem;
+       }
+       .comment-container {
+           background-color: var(--accent-color);
+           border: 1px solid #ddd;
+           border-radius: 8px;
+           padding: 2rem;
+           margin-bottom: 2rem;
+       }
+       .comment-container h2 {
+           font-size: 1.8rem;
+           margin-bottom: 1rem;
+           color: var(--primary-color);
+       }
+       .comment-container p {
+           font-size: 1rem;
+           margin-bottom: 1.5rem;
+       }
+       .comment-container form {
+           display: flex;
+           flex-direction: column;
+       }
+       .comment-container textarea {
+           padding: 0.8rem;
+           font-size: 1rem;
+           border: 1px solid #ddd;
+           border-radius: 4px;
+           resize: vertical;
+           min-height: 100px;
+           margin-bottom: 1rem;
+       }
+       .comment-container button {
+           padding: 0.8rem;
+           background-color: var(--primary-color);
+           color: var(--light-text);
+           border: none;
+           border-radius: 4px;
+           cursor: pointer;
+           font-size: 1rem;
+           transition: background-color 0.3s;
+           width: fit-content;
+           align-self: center;
+       }
+       .comment-container button:hover {
+           background-color: #155d4e;
+       }
+       .additional-info {
+           text-align: center;
+           margin-top: 2rem;
+           padding: 1rem;
+           background-color: #fff;
+           border-radius: 8px;
+           box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+       }
+       .additional-info h2 {
+           color: var(--primary-color);
+           margin-bottom: 0.5rem;
+       }
+       .additional-info p {
+           font-size: 1rem;
+       }
+       footer {
+           background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+           color: var(--light-text);
+           text-align: center;
+           padding: 1rem;
+           font-size: 0.9rem;
+       }
+   </style>
 </head>
 <body>
-    <header>
-        <h1>Cybertec</h1>
-    </header>
-
-    <?php if ($login_successful): ?>
-        <nav>
-            <ul>
-                <li><a href="welcome.php">Bienvenido</a></li>
-                <li><a href="logout.php">Cerrar sesión</a></li>
-                <li><a href="change.php">Cambiar contraseña</a></li>
-            </ul>
-        </nav>
-    <?php endif; ?>
-
-    <div class="content" style="text-align: center;">
-        <h2 style="font-size: 2rem;">Bienvenido, <?php echo $username; ?>!</h2>
-        <p style="font-size: 1.5rem;">Has iniciado sesión correctamente.</p>
-        <div class="comment-container">
-                        <h2>Contacto con el Administrador</h2>
-                        <p>¿Tienes alguna queja, sugerencia o pregunta? ¡No dudes en ponerte en contacto con el administrador! Utiliza el formulario a continuación para compartir tus comentarios. Revisamos todos los mensajes con atención y te responderemos lo antes posible.</p>
-                        <form method="post" action="">
-                            <textarea name="comment" placeholder="Ingresa tu comentario"></textarea>
-                            <button type="submit" name="submitComment">Enviar</button>
-                        </form>
-        </div>
-    </div>
-
-    <footer>
-    <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0
-    </footer>
+   <header>
+       <div class="logo">
+           <i class="fas fa-mortar-pestle"></i>
+           <h1>Farmacia Saludable</h1>
+       </div>
+       <p class="tagline">Tu salud, nuestra prioridad</p>
+   </header>
+   <?php if ($login_successful): ?>
+   <nav>
+       <ul>
+           <li><a href="welcome.php">Bienvenido</a></li>
+           <li><a href="logout.php">Cerrar sesión</a></li>
+           <li><a href="change.php">Cambiar contraseña</a></li>
+       </ul>
+   </nav>
+   <?php endif; ?>
+   <div class="container">
+       <div class="welcome-message">
+           <h2>Bienvenido, <?php echo htmlspecialchars($username); ?>!</h2>
+           <p>Has iniciado sesión correctamente. Aquí puedes ponerte en contacto con el administrador para cualquier duda o sugerencia.</p>
+       </div>
+       <div class="comment-container">
+           <h2>Contacto con el Administrador</h2>
+           <p>¿Tienes alguna queja, sugerencia o pregunta? ¡No dudes en ponerte en contacto con el administrador! Utiliza el formulario a continuación para compartir tus comentarios. Revisamos todos los mensajes con atención y te responderemos lo antes posible.</p>
+           <form method="post" action="">
+               <textarea name="comment" placeholder="Ingresa tu comentario" required></textarea>
+               <button type="submit" name="submitComment">Enviar comentario</button>
+           </form>
+       </div>
+       <div class="additional-info">
+           <h2>Información Adicional</h2>
+           <p>Para más información sobre nuestros servicios o para consultar dudas frecuentes, visita nuestra sección de <a href="#" style="color: var(--primary-color); text-decoration: underline;">Preguntas Frecuentes</a>.</p>
+       </div>
+   </div>
+   <footer>
+       <p>
+           <a href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev" target="_blank" style="color: var(--light-text); text-decoration: none;">WebVulnLab</a> by 
+           <a href="https://github.com/sil3ntH4ck3r" target="_blank" style="color: var(--light-text); text-decoration: none;">sil3nth4ck3r</a> is licensed under 
+           <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" style="color: var(--light-text); text-decoration: none;">CC BY-NC-SA 4.0</a>
+       </p>
+   </footer>
 </body>
 </html>

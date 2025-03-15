@@ -1,17 +1,17 @@
-FROM php:7.2-apache
+FROM python:3.9-slim
 
-# Copia los archivos del sitio web
-COPY src/ /var/www/html/
+WORKDIR /app
 
-# Expone el puerto 80 para el servicio web público
-EXPOSE 80
+# Instalar dependencias del sistema para decodificar códigos QR
+RUN apt-get update && apt-get install -y libzbar0 && rm -rf /var/lib/apt/lists/*
 
-# Instala Python y otras dependencias necesarias
-RUN apt-get update && apt-get install -y python3
+# Copiar archivo de requerimientos e instalar dependencias de Python
+COPY src/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia el script de inicio y otorga permisos de ejecución
-COPY startup.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/startup.sh
+# Copiar el código fuente
+COPY src/ .
 
-# Define el comando de inicio para ejecutar el script
-CMD ["/usr/local/bin/startup.sh"]
+EXPOSE 5000
+
+CMD ["python", "app.py"]

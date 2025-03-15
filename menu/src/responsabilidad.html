@@ -1,45 +1,185 @@
 <!DOCTYPE html>
-<html>
-
-  <head>
-    <title>WebVulnLab</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="responsabilidad.css">
+<html lang="es">
+<head>
+    <title>WebVulnLab - Descargo de Responsabilidad</title>
     <meta charset="UTF-8">
-  </head>
-
-  <body>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary-color: #4a6bff;
+            --accent-color: #f0576c;
+            --dark-color: #1a1a2e;
+            --light-color: #f5f5f7;
+            --gray-color: #f0f0f5;
+            --text-color: #333344;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-color);
+        }
+        
+        header {
+            background-color: var(--dark-color);
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: var(--primary-color);
+        }
+        
+        .disclaimer {
+            padding: 5rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.2rem;
+            color: var(--dark-color);
+        }
+        
+        .disclaimer-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            padding: 3rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .disclaimer-content {
+            margin-bottom: 2rem;
+        }
+        
+        .disclaimer-content p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .disclaimer-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .disclaimer-separator {
+            height: 2px;
+            background-color: var(--gray-color);
+            margin: 2rem 0;
+            width: 100%;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .disclaimer-card {
+                padding: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
     <header>
-      <nav>
-        <ul>
-          <li><a href="index.html">Inicio</a></li>
-          <li><a href="responsabilidad.html">Acerca de</a></li>
-        </ul>
-      </nav>
-      <h1>WebVulnLab</h1>
+        <div class="container header-content">
+            <a href="index.html" class="logo">WebVulnLab</a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="academia.html">Academia</a></li>
+                    <li><a href="responsabilidad.html">Acerca de</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
-
-    <main>
-      <h1>Descargo de responsabilidad</h1>
-      <section style="text-align: center; overflow-x: auto;">
-        <p>El contenido creado por WebVulnLab se proporciona únicamente con fines educativos y de aprendizaje.</p>
-        <p>No se debe utilizar para ningún otro propósito.</p>
-        <p>Al utilizar nuestro contenido, usted acepta que WebVulnLab no será responsable de ningún daño directo, indirecto, incidental o consecuente que surja de su uso.</p>
-        <p>También reconoce que el uso de nuestro contenido se realiza bajo su propio riesgo y responsabilidad.</p>
-        <p>Nada en nuestro contenido debe interpretarse como asesoramiento profesional o recomendación de seguridad, y no garantizamos que la información proporcionada sea precisa, completa o actualizada.</p>
-        <p>Por lo tanto, no aceptamos ninguna responsabilidad legal o de otra índole por cualquier daño o perjuicio que resulte del uso de nuestro contenido.</p>
-        <p>Todo el contenido creado por sil3nth4ck3r es propiedad exclusiva de sil3nth4ck3r.</p>
-        <p>Cualquier reproducción, distribución o uso no autorizado de nuestro contenido está estrictamente prohibido y puede estar sujeto a acciones legales según lo permitido por la ley.</p>
+    
+    <section class="disclaimer">
+        <div class="container">
+            <h1 class="section-title">Descargo de Responsabilidad</h1>
+            
+            <div class="disclaimer-card">
+                <div class="disclaimer-content">
+                    <p>El contenido creado por WebVulnLab se proporciona <strong>únicamente con fines educativos y de aprendizaje</strong>. No se debe utilizar para ningún otro propósito.</p>
+                    
+                    <p>Al utilizar nuestro contenido, usted acepta que WebVulnLab no será responsable de ningún daño directo, indirecto, incidental o consecuente que surja de su uso. También reconoce que el uso de nuestro contenido se realiza bajo su propio riesgo y responsabilidad.</p>
+                    
+                    <p>Nada en nuestro contenido debe interpretarse como asesoramiento profesional o recomendación de seguridad, y no garantizamos que la información proporcionada sea precisa, completa o actualizada. Por lo tanto, no aceptamos ninguna responsabilidad legal o de otra índole por cualquier daño o perjuicio que resulte del uso de nuestro contenido.</p>
+                </div>
+                
+                <div class="disclaimer-separator"></div>
+                
+                <div class="disclaimer-content">
+                    <p>Todo el contenido creado por sil3nth4ck3r es propiedad exclusiva de sil3nth4ck3r.</p>
+                    
+                    <p>Cualquier reproducción, distribución o uso no autorizado de nuestro contenido está estrictamente prohibido y puede estar sujeto a acciones legales según lo permitido por la ley.</p>
+                </div>
+            </div>
+        </div>
     </section>
     
-    
-    
-	</main>    
-
     <footer>
-      <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0
+        <div class="container">
+            <p><a href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> creado por <a href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> está bajo licencia <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer">CC BY-NC-SA 4.0</a></p>
+        </div>
     </footer>
-    
-  </body>
+</body>
 </html>
