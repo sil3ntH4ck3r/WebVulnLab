@@ -142,6 +142,7 @@ This script will download and install all the necessary dependencies, create the
 |                                        |[http://oauth_printing.local/](http://oauth_printing.local/) | Functional |
 | SNMP Abuse + IPv6| http://snmp.local/ | Functional |
 | AWS Lambda Abuse| http://aws.local/ | Functional |
+| HTTP/3 | https://http3.local/ | Functional |
 | HTTP smuggling | - | Working on it |
 | Active Directory| - | Working on it |
 

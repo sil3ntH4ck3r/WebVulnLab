@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Cambiar los permisos del archivo index.php
-chmod 666 /var/www/html/index.php
 chown -R www-data:www-data /var/www/html
 
 # Iniciar el servidor Apache

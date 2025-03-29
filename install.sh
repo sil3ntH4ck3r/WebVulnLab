@@ -60,7 +60,7 @@ containers=(
   "pickledeseralization_v2;$PWD/pickledeseralization;8038:80;;172.18.0.36"
   "snmp_v2;$PWD/snmp;8040:80 161:161/udp;--sysctl net.ipv6.conf.all.disable_ipv6=0 --sysctl net.ipv6.conf.default.disable_ipv6=0;172.18.0.37"
   "http3_v2;$PWD/http3;;;172.18.0.38"
-  "httpsmuggling_v2;$PWD/httpsmuggling;8043:80;;172.18.0.39"
+  #"httpsmuggling_v2;$PWD/httpsmuggling;8043:80;;172.18.0.39"
   "sessionpuzzling_v2;$PWD/sessionpuzzling;8031:80;;172.18.0.40"
 )
 
@@ -238,6 +238,7 @@ install_docker_official() {
     fi
     log_info "Docker instalado correctamente."
 }
+
 install_docker_compose() {
     log_info "Instalando docker-compose manualmente..."
     COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep tag_name | cut -d '"' -f 4)
@@ -250,53 +251,79 @@ install_docker_compose() {
     fi
     log_info "docker-compose instalado correctamente."
 }
+
 install_ttyd() {
-    log_info "Instalando ttyd..."
+    log_info "Actualizando repositorios..."
+    sudo apt-get update
+    if [[ $? -ne 0 ]]; then
+        log_error "Error al actualizar repositorios."
+        exit 1
+    fi
+
+    log_info "Instalando dependencias: build-essential, cmake, git, libjson-c-dev, libwebsockets-dev..."
+    sudo apt-get install -y build-essential cmake git libjson-c-dev libwebsockets-dev
+    if [[ $? -ne 0 ]]; then
+        log_error "Error al instalar las dependencias."
+        exit 1
+    fi
+
     if command -v ttyd &> /dev/null; then
         log_info "ttyd ya está instalado. Saltando instalación."
         return
     fi
-    TTYD_DIR="/opt/ttyd"
-    git clone https://github.com/tsl0922/ttyd.git "$TTYD_DIR"
+
+    log_info "Clonando el repositorio de ttyd..."
+    git clone https://github.com/tsl0922/ttyd.git
     if [[ $? -ne 0 ]]; then
         log_error "Error al clonar el repositorio de ttyd."
         exit 1
     fi
-    mkdir -p "$TTYD_DIR/build" && cd "$TTYD_DIR/build"
-    cmake ..
+
+    cd ttyd || { log_error "No se pudo acceder al directorio ttyd."; exit 1; }
+    log_info "Creando y accediendo al directorio build..."
+    mkdir -p build && cd build
     if [[ $? -ne 0 ]]; then
-        log_error "Error al ejecutar cmake para ttyd."
+        log_error "Error al crear o acceder al directorio build."
         exit 1
     fi
+
+    log_info "Ejecutando cmake..."
+    cmake ..
+    if [[ $? -ne 0 ]]; then
+        log_error "Error al ejecutar cmake."
+        exit 1
+    fi
+
+    log_info "Compilando ttyd..."
     make
     if [[ $? -ne 0 ]]; then
         log_error "Error al compilar ttyd."
         exit 1
     fi
-    make install
+
+    log_info "Instalando ttyd..."
+    sudo make install
     if [[ $? -ne 0 ]]; then
         log_error "Error al instalar ttyd."
         exit 1
     fi
+
     if ! command -v ttyd &> /dev/null; then
-        log_error "Error al instalar ttyd correctamente."
+        log_error "ttyd no se instaló correctamente."
         exit 1
     fi
+
     log_info "ttyd instalado correctamente."
-    log_info "Eliminando archivos temporales de ttyd..."
-    rm -rf "$TTYD_DIR"
-    if [[ $? -ne 0 ]]; then
-        log_error "Error al eliminar el directorio temporal de ttyd."
-        exit 1
-    fi
-    log_info "Archivos temporales de ttyd eliminados."
 }
+
 if ! command -v docker &> /dev/null; then
     install_docker_official
 fi
+
 if ! command -v docker-compose &> /dev/null; then
     install_docker_compose
 fi
+
 if [ ${#INSTALL_PACKAGES[@]} -gt 0 ]; then
     log_info "Instalando dependencias necesarias: ${INSTALL_PACKAGES[*]}"
     apt-get update && apt-get install -y "${INSTALL_PACKAGES[@]}" >> "$LOG_FILE" 2>&1
@@ -306,6 +333,7 @@ if [ ${#INSTALL_PACKAGES[@]} -gt 0 ]; then
     fi
     log_info "Dependencias instaladas correctamente."
 fi
+
 if ! systemctl is-active --quiet docker; then
     log_info "Iniciando el servicio de Docker..."
     systemctl start docker
@@ -314,6 +342,11 @@ if ! systemctl is-active --quiet docker; then
         exit 1
     fi
     log_info "Servicio de Docker iniciado correctamente."
+fi
+
+# Verificamos e instalamos ttyd si no está presente
+if ! command -v ttyd &> /dev/null; then
+    install_ttyd
 fi
 
 # ----------------------------------------------------------------------

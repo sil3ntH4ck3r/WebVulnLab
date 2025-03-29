@@ -319,7 +319,7 @@ if __name__ == '__main__':
 <body>
     <header>
         <div class="container">
-            <h1 class="app-title">QR Safety Analyzer</h1>
+            <h1 class="app-title">Secure Scan & Risk Finder</h1>
             <p>Analiza la seguridad de los códigos QR antes de escanearlos</p>
         </div>
     </header>
@@ -657,6 +657,6 @@ if __name__ == '__main__':
     internal_thread.daemon = False  # Permite que se cierre al terminar la app principal
     internal_thread.start()
     
-    print("Inicializando el servicio QR Safety Analyzer...")
+    print("Inicializando el servicio Secure Scan & Risk Finder...")
     print("Puedes acceder a la aplicación en http://localhost:80")
     app.run(host='0.0.0.0', port=80, debug=False)

@@ -27,7 +27,7 @@ def deserialize():
         input_data = request.form.get('input')
         yaml_bytes = base64.b64decode(input_data)
         content = yaml.load(yaml_bytes, Loader=yaml.Loader)
-        return content['yaml']
+        return str(content['yaml'])
     except Exception as e:
         return str(e), 400
 

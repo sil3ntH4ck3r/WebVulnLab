@@ -1,0 +1,6 @@
+User: testing
+Comment: http://sessionpuzzling.local/perfil.php?session_id=admincookie
+
+User: testing
+Comment: http://sessionpuzzling.local/index.php?session_id=admincookie
+
