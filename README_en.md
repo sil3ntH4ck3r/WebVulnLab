@@ -1,195 +1,224 @@
-# WebVulnLab (2.0v)
+<div align="center">
+  
+# 🛡️ WebVulnLab (v2.0)
+
+![GitHub stars](https://img.shields.io/github/stars/sil3ntH4ck3r/WebVulnLab?style=social)
+![GitHub forks](https://img.shields.io/github/forks/sil3ntH4ck3r/WebVulnLab?style=social)
+![Contributors](https://img.shields.io/github/contributors/sil3ntH4ck3r/WebVulnLab?color=dark-green)
+![License](https://img.shields.io/github/license/sil3ntH4ck3r/WebVulnLab?color=blue)
+![Issues](https://img.shields.io/github/issues/sil3ntH4ck3r/WebVulnLab?color=red)
+
+**Learn cybersecurity in a safe and controlled environment**
+
+[🇺🇸 English](README.en.md) | [🇪🇸 Spanish](README.md)
+
 <a href="https://www.buymeacoffee.com/sil3nth4ck3r" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
-[Spanish Version](README.md)
+</div>
 
-**IMPORTANT NOTE:** Please note that this project is currently only available in Spanish, but efforts are being made to translate it into other languages.
+## 📋 Table of Contents
+- [📝 Description](#-description)
+- [✨ Features](#-features)
+- [🔧 Requirements](#-requirements)
+- [🔄 Customizing the Installation](#-customizing-the-installation)
+- [🚀 Installation](#-installation)
+- [🌐 Available Labs](#-available-labs)
+- [⬆️ Project Updates](#-project-updates)
+- [❓ Common Errors](#-common-errors)
+- [👥 Contributing](#-contributing)
+- [🔮 Upcoming Updates](#-upcoming-updates)
 
-Would you like to learn how to detect and exploit web vulnerabilities safely and enjoyably? Do you want to test your ethical hacking skills with real and varied challenges? Then don't miss the second version of the web vulnerability container tool, created by a passionate cybersecurity enthusiast.
+## 📝 Description
 
-In this new version, you will find a more attractive and user-friendly interface, as well as new features that will allow you to deploy and configure the containers to your liking. Although it is still in development, you can already download it and try out the first features. You will be surprised!
+**WebVulnLab** is a project designed for you to **learn how to detect and exploit web vulnerabilities** in a safe and fun way. With this second version, you'll find a more attractive and user-friendly interface, as well as new features that allow you to deploy and configure containers to your liking.
 
+> **IMPORTANT NOTE:** This project is currently only available in Spanish, but efforts are being made to translate it into other languages.
 
-## Content
-- [Requirements](#requirements)
-- [Customization of the installation (recommended)](#customizinginstallation)
-- [Installation](#installation)
-- [Steps to Update the Project](#update)
-- [Errores comunes](#errors)
-- [Contribute](#contribute)
-- [Things for the upcoming updates](#thingsfortheupcomingupdates)
+## ✨ Features
 
-## Requirements <a name="requirements"></a>
+- 🛠️ **More than 30 types of vulnerabilities** to practice
+- 🔄 **Container system** easy to deploy and manage
+- 🎯 **Controlled environment** for ethical testing
+- 🎨 **Improved interface** that's more user-friendly
+- 📊 **Control panel** to manage active containers
+- 🔒 **Constantly updated vulnerabilities**
 
-- docker (command to install docker on Kali Linux: `sudo apt-get install docker.io`)
-- docker-compose (command to install docker on Kali Linux: `sudo apt-get install docker-compose`)
-- php
-- Git: Make sure you have Git installed on your system. You can check if Git is installed by running the following command in the terminal:
-```shell
+## 🔧 Requirements
+
+Before starting, make sure you have the following installed:
+
+```bash
+# For Kali Linux
+sudo apt-get install docker.io docker-compose php git
+```
+
+You can verify if Git is installed by running:
+```bash
 git --version
 ```
-If Git is not installed, you can follow the installation instructions provided [here](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
-## Customizing the Installation <a name="customizinginstallation"></a>
-In the `install.sh` file, you will find three arrays containing information about the containers to be installed: `containers`, `database`, and `otros`. Each element of these arrays follows the following format:
+## 🔄 Customizing the Installation
 
-- containers
+You can customize which containers to install by modifying the `install.sh` file. Each item follows this format:
+
+<details>
+<summary>View customization details</summary>
+
+- **Containers**:
 ```
-container_name;$DIRECTORY_PATH;PUBLISHED_PORT:CONTAINER_PORT;container_image
+container_name;$DIRECTORY_PATH;PUBLISHED_PORT:CONTAINER_PORT;additionalParameters;staticIPAddress
 ```
-- database
-```
-database_container_name;$DIRECTORY_PATH;PUBLISHED_PORT:CONTAINER_PORT;container_image
-```
-- otros
+
+- **Others**:
 ```
 Command Description;command_to_execute
 ```
-You can comment out the lines of containers that you do not wish to install. For example:
-```
-database=(
-#   "sqli_db_v2;$PWD/sqli;8005:80;sqli_v2"
-#   "blindsqli_db_v2;$PWD/blindsqli;8014:80;blindsqli_v2"
-#   ...
+
+To exclude specific containers, simply comment out the corresponding lines:
+```bash
+containers=( 
+  #"menu_v2;$PWD/menu;8080:80;;172.18.0.2"
+  #"lfi_v2;$PWD/lfi;8000:80;;172.18.0.3"
+  #"csrf_v2;$PWD/csrf;8001:80;;172.18.0.4"
+  #"blindxxe_v2;$PWD/blindxxe;8002:80;;172.18.0.5"
+  #"xxe_v2;$PWD/xxe;8003:80;;172.18.0.6"
+  #...
 )
 ```
-This allows you to install only the containers that you need to avoid performance issues on your system. Once you have commented out the containers you do not want to install, you can proceed to the [next step](#installation).
-After you have resolved and used the installed containers, you can uninstall them if desired. You can do so using commands such as docker-compose down or docker rm, as appropriate.
-If you wish to install more containers, simply comment out the lines of unwanted containers in the install.sh file and run the script again.
+</details>
 
-This process allows you to selectively install and manage containers, which can be helpful for efficiently managing your system's resources.
+## 🚀 Installation
 
-## Installation <a name="installation"></a>
+> ⚠️ **IMPORTANT**: Run the installation script with superuser privileges.
 
-**IMPORTANT NOTE**: Run the installation script with superuser privileges.
+1. **Clone the repository**:
+   ```bash
+   git clone -b dev https://github.com/sil3ntH4ck3r/WebVulnLab.git
+   ```
 
-To install and use the WebVulnLab tool, follow these steps:
+2. **Prepare the installation script**:
+   ```bash
+   cd WebVulnLab
+   chmod +x install.sh
+   ```
+   > **Note**: The `install.sh` file is not compatible with Arch Linux (a new installation script is being developed).
 
-1. Download the GitHub repository using the following command in your terminal:
+3. **Run the script**:
+   ```bash
+   sudo ./install.sh
+   ```
 
-```
-git clone -b dev https://github.com/sil3ntH4ck3r/WebVulnLab.git
-```
-> If you don't have Git installed yet, download and install it from its [official website](https://git-scm.com/downloads).
+4. **All set!** Now you can access it through your browser.
 
-> To install it on Ubuntu/Debian, you can use this command:
-```bash
-sudo apt-get install git
-```
+## 🌐 Upcoming Labs
 
-2. Navigate to the directory where you cloned the repository and give execution permissions to the installation script:
+| Lab         | Status |
+|:------------|:------:|
+**ESI Injection** | ⏳ |
+**Cypher Injection** | ⏳ |
+**NodeJS IIFE Deserialization** | ⏳ |
+**HTTP smuggling** | ⏳ |
+**Active Directory** | ⏳ |
+**And much more!** |
 
-**Note:** The `install.sh` file is not compatible with Arch Linux (a new installation script is being worked on).
+<details>
+<summary>View all available labs</summary>
 
-```bash
-cd WebVulnLab
-chmod +x install.sh
-```
+| Lab | Status |
+|:------------|:------:|
+**[Dashboard](http://tablero.local/)** | ✅ |
+**[Main Server](http://menu.local/)** | ✅ |
+**[LFI](http://lfi.local/)** | ✅ |
+**[Padding Oracle Attack](http://paddingoracleattack.local/)** | ✅ |
+**[Type Juggling](http://typejuggling.local/)** | ✅ |
+**[Remote File Inclusion](http://rfi.local/)** | ✅ |
+**[XSS](http://xss.local/)** | ✅ |
+|**[XXE](http://xxe.local/)** | ✅ |
+**[XPath Injection](http://xpathinjection.local/)** | ✅ |
+**[LaTeX Injection](http://latexinjection.local/)** | ✅ |
+**[ShellShock](http://shellshock.local/)** | ✅ |
+**[SQL Injection (Error)](http://sqli.local/)** | ✅ |
+**[Blind SQL Injection (Time)](http://blindsqli.local/)** | ✅ |
+**[Domain Zone Transfer](http://domainzonetransfer.local/)** | ✅ |
+**[CSRF](http://csrf.local/)** | ✅ |
+**[SSRF](http://ssrf.local/)** | ✅ |
+**[Blind XXE](http://blindxxe.local/)** | ✅ |
+**[Blind XSS](http://blindxss.local/)** | ✅ |
+**[HTML Injection](http://htmlinjection.local/)** | ✅ |
+**[PHP Insecure Deseralization](http://insecuredeseralizationphp.local/)** | ✅ |
+**[Insecure Direct Object Reference (iDOR)](http://idor.local/)** | ✅ |
+**[Server-Side Template Injection (SSTI)](http://ssti.local/)** | ✅ |
+**[Client-Side Template Injection (CSTI)](http://csti.local/)** | ✅ |
+**[NoSQL Injections](http://nosqlinjection.local/)** | ✅ |
+**[LDAP Injections](http://ldapinjection.local/)** | ✅ |
+**[API's Abuse and Mass-Asignament Attack](http://apiabuse.local/)** | ✅ |
+**[File Upload Abuse](http://fileuploadabuse.local/)** | ✅ |
+**[Prototype Pollution](http://prototypepollution.local/)** | ✅ |
+**[Open Redirect](http://openredirect.local/)** | ✅ |
+**[WebDAV](http://webdav.local/)** | ✅ |
+**[SquidProxies](http://squidproxy.local/)** | ✅ |
+**[CORS Vulnerability](http://cors.local)** | ✅ |
+**[SQL Truncation](http://sqltruncation.local/)** | ✅ |
+**[Session Puzzling/Fixation/Overloading](http://sessionpuzzling.local/)** | ✅ |
+**[JSON Web Token](http://jwt.local/)** | ✅ |
+**[Race Condition](http://racecondition.local/)** | ✅ |
+**[CSS Injection](http://cssi.local/)** | ✅ |
+**[Python Deserelization (DES-Yaml)](http://yamldeseralization.local/)** | ✅ |
+**[Python Deserelization (DES-Pickle)](http://pickledeseralization.local/)** | ✅ |
+**[GraphQL Introspection, Mutations](http://graphql.local/)** | ✅ |
+**[OAuth / Werkzeug Debugger Console Abuse](http://oauth_gallery.local/)** | ✅ |
+**[SNMP Abuse + IPv6](http://snmp.local/)** | ✅ |
+**[AWS Lambda Abuse](http://aws.local/)** | ✅ |
+**[HTTP/3](https://http3.local/)** | ✅ |
+**[Redis](http://redis.local/)** | ✅ |
 
-3. Run the installation script:
+</details>
 
-```bash
-sudo ./install.sh
-```
+## ⬆️ Project Updates
 
-This script will download and install all the necessary dependencies, create the Docker containers, and configure the tool so you can start using it.
+To keep WebVulnLab updated, follow these steps:
 
-4. Once the installation is complete, you can access the different containers through the following links:
+1. **Navigate to the project directory**:
+   ```bash
+   cd path/to/project
+   ```
 
-| Docker               | Container Link                             |Status                                |
-|:---------------------|:-------------------------------------------|--------------------------------------|
-| Dashboard            | http://tablero.local/                      |Functional                            |
-| Main Server          | http://menu.local/                         |Functional                            |
-| LFI                  | http://lfi.local/                          |Functional                            |
-| Padding Oracle Attack| http://paddingoracleattack.local/          |Functional                            |
-| Type Juggling        | http://typejuggling.local/                 |Functional                            |
-| Remote File Inclusion|http://rfi.local/                           |Functional                            |
-| XSS                  | http://xss.local/                          |Functional                            |
-| XXE                  | http://xxe.local/                          |Functional                            |
-| XPath Injection      | http://xpathinjection.local/               |Functional                            |
-| LaTeX Injection      | http://latexinjection.local/               |Functional                            |
-| ShellShock           | http://shellshock.local/                   |Functional                            |
-| SQL Injection (Error)| http://sqli.local/                         |Functional                            |
-| Blind SQL Injection (Time)| http://blindsqli.local/               |Functional                            |
-| Domain Zone Transfer | http://domainzonetransfer.local/           |Functional                            |
-| CSRF                 | http://csrf.local/                         |Functional                            |
-| SSRF                 | http://ssrf.local/                         |Functional                            |
-| Blind XXE            | http://blindxxe.local/                     |Functional                            |
-| Blind XSS            | http://blindxss.local/                     |Functional                            |
-| HTML Injection       | http://htmlinjection.local/                |Functional                            |
-| PHP Insecure Deseralization | http://insecuredeseralizationphp.local/    |Functional                     |
-| Insecure Direct Object Reference (iDOR) | http://idor.local/      |Functional                            |
-| Server-Side Template Injection (SSTI) | http://ssti.local/        |Functional                            |
-| Client-Side Template Injection (CSTI)| http://csti.local/         |Functional                            |
-| NoSQL Injections     | http://nosqlinjection.local/               |Functional                            |
-| LDAP Injections      | http://ldapinjection.local/                |Functional                            |
-| API's Abuse and Mass-Asignament Attack | http://apiabuse.local/   |Functional                            |
-| File Upload Abuse    | http://fileuploadabuse.local/              |Functional                            |
-| Prototype Pollution  | http://prototypepollution.local/           |Functional                            |
-| Open Redirect| http://openredirect.local/ | Functional |
-| WebDAV| http://webdav.local/ | Functional |
-| SquidProxies| http://squidproxy.local/| Functional |
-| Cross-Origin Resource Sharing (CORS) Vulnerability | http://cors.local | Functional |
-| SQL Truncation| http://sqltruncation.local/ | Functional |
-|Session Puzzling / Session Fixation / Session Variable Overloading| http://sessionpuzzling.local/ | Functional |
-| Json Web Token| http://jwt.local/ | Functional |
-| Race Condition| http://racecondition.local/ | Functional |
-| CSS Injection| http://cssi.local/ | Functional |
-| Python Deserelization (DES-Yaml)| http://yamldeseralization.local/ | Functional |
-| Python Deserelization (DES-Pickle)| http://pickledeseralization.local/ | Functional |
-| GraphQL Introspection, Mutations| http://graphql.local/ | Functional |
-| OAuth / Werkzeug Debugger Console Abuse| [http://oauth_gallery.local](http://oauth_gallery.local/) 
-|                                        |[http://oauth_printing.local/](http://oauth_printing.local/) | Functional |
-| SNMP Abuse + IPv6| http://snmp.local/ | Functional |
-| AWS Lambda Abuse| http://aws.local/ | Functional |
-| HTTP/3 | https://http3.local/ | Functional |
-| HTTP smuggling | - | Working on it |
-| Active Directory| - | Working on it |
+2. **Run the update script**:
+   ```bash
+   ./update.sh
+   ```
 
-Note that it is still in development, and not all containers are working correctly. This repository is updated frequently.
+3. **Follow the instructions** that appear on screen to install available updates.
 
-## Project Update <a name="update"></a>
+## 👥 Contributing
 
-You can use the following script to check and apply updates to the project from the console.
+Your contribution is welcome! You can help in several ways:
 
-### Steps to Update the Project
+- 🐛 **Report bugs** or issues you find
+- 💡 **Propose new features** or improvements
+- 🔧 **Help solve problems** or develop new vulnerabilities
+- 📚 **Improve documentation** or translate it to other languages
 
-1. Open the terminal and navigate to the project directory:
-```shell
-cd path/to/project
-```
-2. Execute the script ***update.sh*** to check for available updates:
-```shell
-./update.sh
-```
-The script will check if there are new versions available and display a message indicating the presence of updates.
+## 🔮 Upcoming Updates
 
-3. If updates are available and you wish to install them, follow the instructions provided by the script. For example, you can enter ***s*** and press Enter to perform the update. If you decide not to install the updates, you can enter ***n*** and press Enter.
+- [ ] Add more vulnerabilities
+- [x] Display in the dashboard which machines are on and which are off
+- [x] Implement Traefik to configure subdomains instead of using IP addresses
+- [x] Improve aesthetics
+- [x] Add the ability to restart containers
+- [ ] Include a CTF machine
+- [ ] Add a learning option on each machine
+- [ ] Create a version of this project for Windows
+- [x] Improve documentation
 
-***NOTE***: Make sure to carefully read the instructions and messages displayed by the script before taking any action.
+---
 
-4. If the update is successfully completed, the script will display a message indicating the successful update. In case of any issues during the update, an appropriate error message will be shown.
+<div align="center">
+  
+### 💖 Support this project
 
-By following these steps, you will be able to check and apply updates to the project using the provided script.
+If you found this lab useful, consider [buying me a coffee ☕](https://www.buymeacoffee.com/sil3nth4ck3r)
 
-## Contribute <a name="contribute"></a>
+**Made with ❤️ by [sil3ntH4ck3r](https://github.com/sil3ntH4ck3r)**
 
-If you want to contribute to the development of Pentesting-Web-Lab, you are welcome to do so! You can do it in several ways:
-
-- Reporting bugs or issues you find in the tool through the "Issues" section in the GitHub repository.
-- Proposing new features or improvements.
-- Helping to solve problems or developing new vulnerabilities.
-
-## Things for the upcoming updates: <a name="thingsfortheupcomingupdates"></a>
-
-- Add more vulnerabilities.
-- ~~Display on the dashboard which machines are turned on and which machines are turned off.~~
-- ~~Implement Traefik for setting up subdomains instead of using IP addresses.~~
-  - (**Note**: Eventually, Traefik wasn't used, and Virtual Hosting was applied instead. Now, the links to the containers are easier to remember.)
-- ~~Improve the aesthetics.~~
-- ~~Add the ability to restart containers.~~
-- Include a CTF machine.
-- On each machine, add a learning option where users can discover more about the specific vulnerability.
-- Create a version of this project (WebVulnLab) for Windows.
-- Enhance the documentation to make it more user-friendly and easy to follow.
-- Refactor the code to improve readability and maintainability.
+</div>
