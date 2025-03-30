@@ -10,7 +10,7 @@
 
 **Learn cybersecurity in a safe and controlled environment**
 
-[🇺🇸 English](README.en.md) | [🇪🇸 Spanish](README.md)
+[🇺🇸 English](README_en.md) | [🇪🇸 Spanish](README.md)
 
 <a href="https://www.buymeacoffee.com/sil3nth4ck3r" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
@@ -24,7 +24,6 @@
 - [🚀 Installation](#-installation)
 - [🌐 Available Labs](#-available-labs)
 - [⬆️ Project Updates](#-project-updates)
-- [❓ Common Errors](#-common-errors)
 - [👥 Contributing](#-contributing)
 - [🔮 Upcoming Updates](#-upcoming-updates)
 
