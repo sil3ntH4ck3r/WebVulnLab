@@ -1,0 +1,15 @@
+{
+    "name": "webvulnlab-iife-deserialization",
+    "version": "1.0.0",
+    "description": "Aplicación vulnerable para practicar IIFE NodeJS Deserialization Attack",
+    "main": "app.js",
+    "scripts": {
+      "start": "node app.js"
+    },
+    "dependencies": {
+      "express": "^4.18.2",
+      "body-parser": "^1.20.2",
+      "node-serialize": "0.0.4"
+    }
+  }
+  

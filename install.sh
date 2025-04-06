@@ -63,6 +63,7 @@ containers=(
   #"httpsmuggling_v2;$PWD/httpsmuggling;8043:80;;172.18.0.39"
   "sessionpuzzling_v2;$PWD/sessionpuzzling;8031:80;;172.18.0.40"
   "redis_v2;$PWD/redis;8044:80;;172.18.0.54"
+  "nodejsdeserelization_v2;$PWD/nodejsdeserelization;8045:80;;172.18.0.55"
 )
 
 otros=(
@@ -325,17 +326,15 @@ if ! command -v docker-compose &> /dev/null; then
     install_docker_compose
 fi
 
-#LA PÁGINA DE VSCODIUM ESTÁ DOWN, HASTA QUE NO LO ARREGLEN NO SE PUEDEN DESCOMENTAR LE SIGUIENTES LÍNEAS
-
-#if [ ${#INSTALL_PACKAGES[@]} -gt 0 ]; then
-#    log_info "Instalando dependencias necesarias: ${INSTALL_PACKAGES[*]}"
-#    apt-get update && apt-get install -y "${INSTALL_PACKAGES[@]}" >> "$LOG_FILE" 2>&1
-#    if [ $? -ne 0 ]; then
-#        log_error "Error al instalar las dependencias: ${INSTALL_PACKAGES[*]}"
-#        exit 1
-#    fi
-#    log_info "Dependencias instaladas correctamente."
-#fi
+if [ ${#INSTALL_PACKAGES[@]} -gt 0 ]; then
+    log_info "Instalando dependencias necesarias: ${INSTALL_PACKAGES[*]}"
+    apt-get update && apt-get install -y "${INSTALL_PACKAGES[@]}" >> "$LOG_FILE" 2>&1
+    if [ $? -ne 0 ]; then
+        log_error "Error al instalar las dependencias: ${INSTALL_PACKAGES[*]}"
+        exit 1
+    fi
+    log_info "Dependencias instaladas correctamente."
+fi
 
 if ! systemctl is-active --quiet docker; then
     log_info "Iniciando el servicio de Docker..."

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IIFE NodeJS</title>
+  <link rel="stylesheet" href="/public/styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1> Encrypt All <span class="subtitle">Cifrado para ti y para todos</span></h1>
+    </div>
+    
+    <div class="binary-bg"></div>
+    
+    <div class="tabs">
+      <button id="encryptTab" class="tab-btn active"> 🔒​ Cifrar</button>
+      <button id="decryptTab" class="tab-btn"> 🔓​ Descifrar</button>
+    </div>
+    
+    <div class="main">
+      <div id="encryptPanel" class="panel active">
+        <h2>Cifrar Mensaje</h2>
+        <div class="form-group">
+          <label for="message"> Mensaje:</label>
+          <textarea id="message" placeholder="Escribe tu mensaje aquí..."></textarea>
+        </div>
+        <button id="encryptBtn" class="action-btn">
+          <span class="btn-text"> Cifrar</span>
+          <span class="loader"></span>
+        </button>
+        <div class="result" id="encryptResult">
+          <h3>Resultado:</h3>
+          <div class="result-area">
+            <pre id="encryptedText"></pre>
+          </div>
+          <button id="copyEncryptBtn" class="copy-btn"> 📋 Copiar</button>
+        </div>
+      </div>
+      
+      <div id="decryptPanel" class="panel">
+        <h2>Descifrar Mensaje</h2>
+        <div class="form-group">
+          <label for="data"> Datos Cifrados:</label>
+          <textarea id="data" placeholder="Pega los datos cifrados aquí..."></textarea>
+        </div>
+        <button id="decryptBtn" class="action-btn">
+          <span class="btn-text"> Descifrar</span>
+          <span class="loader"></span>
+        </button>
+        <div class="result" id="decryptResult">
+          <h3>Mensaje Original:</h3>
+          <div class="result-area">
+            <pre id="decryptedText"></pre>
+          </div>
+          <button id="copyDecryptBtn" class="copy-btn"> 📋 Copiar</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="encryption-animation">
+      <div class="code-line"></div>
+      <div class="code-line"></div>
+      <div class="code-line"></div>
+      <div class="code-line"></div>
+      <div class="code-line"></div>
+    </div>
+    
+    <footer>
+      <div class="container">
+          <p>&copy; <a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0
+      </div>
+    </footer>
+  </div>
+  
+  <script src="/public/app.js"></script>
+</body>
+</html>
+
