@@ -113,9 +113,9 @@ containers=(
 
 | Lab         | Status |
 |:------------|:------:|
-**ESI Injection** | ⏳ |
 **Cypher Injection** | ⏳ |
-**NodeJS IIFE Deserialization** | ⏳ |
+**Memcache** | ⏳ |
+**Buffer Overflow** | ⏳ |
 **HTTP smuggling** | ⏳ |
 **Active Directory** | ⏳ |
 **And much more!** |
@@ -170,6 +170,8 @@ containers=(
 **[AWS Lambda Abuse](http://aws.local/)** | ✅ |
 **[HTTP/3](https://http3.local/)** | ✅ |
 **[Redis](http://redis.local/)** | ✅ |
+**[NodeJS IIFE Deserialization](http://nodejsdeserelization.local/)** | ✅ |
+**[ESI Injection](http://esiinjection.local/)** | ✅ |
 
 </details>
 
