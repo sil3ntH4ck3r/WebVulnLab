@@ -113,7 +113,8 @@ containers=(
 
 | Laboratorio | Estado |
 |:------------|:------:|
-**Inyección de Cifrado** | ⏳ |
+**Deserialización insegura en Java** | ⏳ |
+**Inyección JNDI** | ⏳ |
 **Memcache** | ⏳ |
 **Buffer Overflow** | ⏳ |
 **HTTP smuggling** | ⏳ |
@@ -172,6 +173,7 @@ containers=(
 **[Redis](http://redis.local/)** | ✅ |
 **[NodeJS IIFE Deserialization](http://nodejsdeserelization.local/)** | ✅ |
 **[ESI Injection](http://esiinjection.local/)** | ✅ |
+**[Cypher Injection](http://cypherinjection.local/)** | ✅ |
 
 </details>
 

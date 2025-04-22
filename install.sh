@@ -65,6 +65,9 @@ containers=(
   "redis_v2;$PWD/redis;8044:80;;172.18.0.54"
   "nodejsdeserelization_v2;$PWD/nodejsdeserelization;8045:80;;172.18.0.55"
   "esiinjection_v2;$PWD/esiinjection;8046:8080;;172.18.0.56"
+  "cypherinjection_v2;$PWD/cypherinjection;8047:80;;172.18.0.57"
+  #"javadeserelization_v2;$PWD/javadeserelization;8048:80;;172.18.0.58"
+  #"jndiinjection_v2;$PWD/jndiinjection;8049:80;;172.18.0.59"
 )
 
 otros=(
