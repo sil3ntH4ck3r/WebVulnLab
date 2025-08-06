@@ -22,6 +22,6 @@ ENV FLASK_ENV development
 
 ENV DATABASE_URI=postgresql://username:password@gallery_db:5432/gallery_db
 
-EXPOSE 5001
+EXPOSE 80
 
 CMD ["python3", "app.py"]

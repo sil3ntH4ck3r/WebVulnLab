@@ -79,11 +79,11 @@ def create_default_user():
     db.session.commit()
 
     # Create the default image associated with the default user
-    image_path = 'testing.png'  # Path to the image
-    # Después de leer el archivo testing.png
+    image_path = 'adminImage.png'  # Path to the image
+    # Después de leer el archivo adminImage.png
     with open(image_path, 'rb') as img_file:
         image_data = img_file.read()
-        filename = 'testing.jpg'  # Cambiar la extensión del archivo a .jpg
+        filename = 'adminImage.jpg'  # Cambiar la extensión del archivo a .jpg
 
         # Convertir la imagen a formato JPEG
         img = PILImage.open(io.BytesIO(image_data))
@@ -588,4 +588,4 @@ if __name__ == '__main__':
         with app.app_context():
             db.create_all()
             create_default_user()
-        app.run(debug=True, host='0.0.0.0', port=5001)
+        app.run(debug=True, host='0.0.0.0', port=80)

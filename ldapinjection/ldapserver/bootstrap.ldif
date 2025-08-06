@@ -1,7 +1,13 @@
+# Unidad organizativa
+dn: ou=users,dc=ldapinjection,dc=local
+objectClass: organizationalUnit
+ou: users
+
+# Usuario 1
 dn: uid=user1,ou=users,dc=ldapinjection,dc=local
 objectClass: top
 objectClass: account
 objectClass: simpleSecurityObject
-userPassword: password1
 uid: user1
+userPassword: password1
 description: User account

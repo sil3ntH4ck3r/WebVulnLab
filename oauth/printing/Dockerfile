@@ -24,8 +24,8 @@ ADD . /app
 ENV FLASK_ENV development
 ENV DATABASE_URI=postgresql://username:password@db:5432/printing_db
 
-# Exponer el puerto 5000
-EXPOSE 5000
+# Exponer el puerto 80
+EXPOSE 80
 
 # Copiar el script de inicialización
 COPY init_script.sh /usr/local/bin/init_script.sh

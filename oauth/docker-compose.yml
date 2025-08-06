@@ -29,7 +29,7 @@ services:
       context: ./printing
       dockerfile: Dockerfile
     ports:
-      - "8036:5000"
+      - "8036:80"
     environment:
       - DATABASE_URI=postgresql://username:password@printing_db:5432/printing_db
     depends_on:
@@ -46,7 +46,7 @@ services:
       context: ./gallery
       dockerfile: Dockerfile
     ports:
-      - "8037:5001"
+      - "8037:80"
     environment:
       - DATABASE_URI=postgresql://username:password@gallery_db:5432/gallery_db
     depends_on:

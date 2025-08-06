@@ -4,4 +4,4 @@
 GALLERY_IP=$(getent hosts gallery | awk '{ print $1 }')
 
 # Agregar la entrada al archivo /etc/hosts
-echo "$GALLERY_IP oauth.gallery.local" >> /etc/hosts
+echo "$GALLERY_IP oauth_gallery.local" >> /etc/hosts

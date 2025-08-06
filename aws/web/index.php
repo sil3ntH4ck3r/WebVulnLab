@@ -153,7 +153,7 @@ function invocarLambda() {
 </div>
 
 <footer>
-  <p id="contacto">Contacto: info@sonrisaperfecta.com | +34 900 123 456</p>
+  <p id="contacto">Contacto: info@aws.local | +34 900 123 456</p>
   <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/" style="text-align: center";>
             <a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by 
             <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under 

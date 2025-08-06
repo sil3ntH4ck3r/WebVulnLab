@@ -8,39 +8,27 @@
         define('LDAP_DN', "cn=admin," . LDAP_DC);
         define('LDAP_PASS', 'admin');
 
-        // Realizar la autenticación en el servidor LDAP
         $ldapconn = ldap_connect("ldap://ldap_server_v2:389");
         if ($ldapconn) {
             ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
             $ldapbind = ldap_bind($ldapconn, LDAP_DN, LDAP_PASS);
             if ($ldapbind) {
-                //echo "Autenticación exitosa al servidor LDAP!<br>";
-                
-                // Realizar la búsqueda en el servidor LDAP
 
                 $filter = '(&(uid=' . $username . ')(userPassword=' . $password . '))';
                 $search = ldap_search($ldapconn, LDAP_DC, $filter);
                 $entries = ldap_get_entries($ldapconn, $search);
 
                 if ($entries['count'] > 0) {
-                    // El usuario se autenticó correctamente
                     $_SESSION['mensaje'] = "Autenticación exitosa!";
-                    // Realizar acciones después de la autenticación exitosa
                 } else {
-                    // La autenticación falló
                     $_SESSION['mensaje'] = "Autenticación fallida!";
-                    // Realizar acciones después de la autenticación fallida
                 }
-
-                // Realizar otras operaciones después de la autenticación
 
             } else {
                 $_SESSION['mensaje'] = "Autenticación fallida al servidor LDAP! Compruebe que ldap_server_v2 esta encendido";
-                // Realizar acciones después de la autenticación fallida
             }
         } else {
             $_SESSION['mensaje'] = "Conexión al servidor LDAP fallida! Compruebe que ldap_server_v2 esta encendido";
-            // Realizar acciones después de la conexión fallida
         }
     }
 ?>

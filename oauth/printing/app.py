@@ -303,8 +303,8 @@ def gallery_photos():
         return redirect(url_for('login'))  # Redirigir al usuario al inicio de sesión
     
     try:
-        # Enviar solicitud GET a localhost:5001/get_images con el encabezado de autorización adecuado
-        response = requests.get('http://oauth.gallery.local:5001/get_images', headers={'Authorization': f'Bearer {oauth_token}'})
+        # Enviar solicitud GET a localhost/get_images con el encabezado de autorización adecuado
+        response = requests.get('http://oauth_gallery.local/get_images', headers={'Authorization': f'Bearer {oauth_token}'})
         
         # Verificar si la solicitud fue exitosa (código de estado 200)
         if response.status_code == 200:
@@ -370,4 +370,4 @@ if __name__ == '__main__':
     if try_connect_to_db():
         with app.app_context():
             db.create_all()
-        app.run(debug=True, host='0.0.0.0', port=5000)
+        app.run(debug=True, host='0.0.0.0', port=80)

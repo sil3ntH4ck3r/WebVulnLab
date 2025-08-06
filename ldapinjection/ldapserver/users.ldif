@@ -1,3 +1,0 @@
-dn: ou=users,dc=ldapinjection,dc=local
-objectClass: organizationalUnit
-ou: users

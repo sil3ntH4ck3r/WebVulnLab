@@ -23,7 +23,7 @@ containers=(
   #Siguen la siguiente estructura:
     #nombreContenedor ; rutaDockerfile ; mapeoDePuertos ; parametrosAdicionales ; ipEstatica
     
-  "menu_v2;$PWD/menu;8080:80;;172.18.0.2"
+  "menu_v2;$PWD/menu;8080:80;--add-host=menu.local:172.18.0.2;172.18.0.2"
   "lfi_v2;$PWD/lfi;8000:80;;172.18.0.3"
   "csrf_v2;$PWD/csrf;8001:80;;172.18.0.4"
   "blindxxe_v2;$PWD/blindxxe;8002:80;;172.18.0.5"
@@ -125,26 +125,123 @@ generate_http3_certificates() {
 }
 
 # ----------------------------------------------------------------------
-#                               LDAP Y RED
+#                           CERTIFICADOS PARA MENU.LOCAL
 # ----------------------------------------------------------------------
-configure_ldap_files(){
-    log_info "Configurando archivos para LDAP Server"
-    docker start ldap_server_v2 >> "$LOG_FILE" 2>&1
+generate_http3_certificates_menu() {
+    local cert="/etc/ssl/certs/menu.local.crt"
+    local key="/etc/ssl/private/menu.local.key"
+    local caroot userhome userdb exp_date exp_ts now_ts
 
-    ldapadd -x -H ldap://localhost -D "cn=admin,dc=ldapinjection,dc=local" -w admin -f "$PWD/ldapinjection/ldapserver/users.ldif" >> "$LOG_FILE" 2>&1
-    if [ $? -ne 0 ]; then
-        log_error "Error al configurar users.ldif"
-    else
-        log_info "Configurado correctamente users.ldif"
+    # 1) Instalar mkcert si no está
+    if ! command -v mkcert &>/dev/null; then
+        log_info "mkcert no encontrado, instalando..."
+        apt-get update -qq
+        apt-get install -y --no-install-recommends libnss3-tools wget ca-certificates
+        MKCERT_LATEST=$(wget -qO- https://api.github.com/repos/FiloSottile/mkcert/releases/latest \
+                       | grep '"tag_name":' | head -1 | cut -d '"' -f4)
+        wget -qO /usr/local/bin/mkcert \
+             "https://github.com/FiloSottile/mkcert/releases/download/${MKCERT_LATEST}/mkcert-${MKCERT_LATEST}-linux-amd64"
+        chmod +x /usr/local/bin/mkcert
+        log_info "mkcert instalado."
     fi
 
-    ldapadd -x -D "cn=admin,dc=ldapinjection,dc=local" -w admin -f "$PWD/ldapinjection/ldapserver/user1.ldif" >> "$LOG_FILE" 2>&1
-    if [ $? -ne 0 ]; then
-        log_error "Error al configurar user1.ldif"
-        docker stop ldap_server_v2 >> "$LOG_FILE" 2>&1
+    # 2) Si ya existen, comprobamos fecha de caducidad
+    if [[ -f "$cert" && -f "$key" ]]; then
+        exp_date=$(openssl x509 -enddate -noout -in "$cert" | cut -d= -f2)
+        exp_ts=$(date --date="$exp_date" +%s)
+        now_ts=$(date +%s)
+        if (( exp_ts > now_ts )); then
+            log_info "Certificado válido hasta $exp_date. Nada que hacer."
+            return
+        else
+            log_warn "Certificado caducado ($exp_date). Regenerando..."
+        fi
     else
-        log_info "Configurado correctamente user1.ldif"
-        docker stop ldap_server_v2 >> "$LOG_FILE" 2>&1
+        log_info "No existe certificado previo. Generando uno nuevo..."
+    fi
+
+    # 3) mkcert -install y obtenemos CAROOT
+    log_info "Instalando la CA local de mkcert..."
+    mkcert -install
+    caroot=$(mkcert -CAROOT)
+
+    # 4) Importar la CA en el store del sistema (Chrome/Chromium)
+    log_info "Copiando rootCA.pem al store del sistema..."
+    cp "${caroot}/rootCA.pem" /usr/local/share/ca-certificates/mkcert-rootCA.crt
+    update-ca-certificates -q
+
+    # 5) Inicializar NSS DB global (solo si no existe)
+    log_info "Inicializando NSS DB global..."
+    mkdir -p /etc/pki/nssdb
+    if [[ ! -f /etc/pki/nssdb/key4.db ]]; then
+        certutil -N -d sql:/etc/pki/nssdb -f /dev/null
+    fi
+
+    # 6) Importar la CA en la base NSS global
+    log_info "Importando CA en NSS DB global..."
+    certutil -A \
+      -d sql:/etc/pki/nssdb \
+      -n "mkcert development CA" \
+      -t "CT,," \
+      -i "${caroot}/rootCA.pem" \
+      -f /dev/null
+
+    # 7) Importar la CA en el perfil Firefox del SUDO_USER
+    if [[ -n "$SUDO_USER" && "$SUDO_USER" != "root" ]]; then
+        userhome=$(getent passwd "$SUDO_USER" | cut -d: -f6)
+        userdb="sql:${userhome}/.pki/nssdb"
+        log_info "Importando CA en NSS DB de Firefox para $SUDO_USER..."
+        mkdir -p "${userhome}/.pki/nssdb"
+        certutil -N -d "${userdb}" -f /dev/null 2>/dev/null || true
+        certutil -A \
+          -d "${userdb}" \
+          -n "mkcert development CA" \
+          -t "CT,," \
+          -i "${caroot}/rootCA.pem" \
+          -f /dev/null
+        chown -R "$SUDO_USER":"$SUDO_USER" "${userhome}/.pki/nssdb"
+    else
+        log_warn "No se detectó SUDO_USER válido; omitiendo importación en Firefox."
+    fi
+
+    # 8) Generar el certificado para menu.local
+    log_info "Generando certificado mkcert para menu.local..."
+    mkdir -p "$(dirname "$cert")" "$(dirname "$key")"
+    mkcert -cert-file "$cert" -key-file "$key" "menu.local" "127.0.0.1" "::1"
+
+    log_info "Certificado menu.local listo en:"
+    log_info "  CRT=$cert"
+    log_info "  KEY=$key"
+}
+
+remove_http3_certificates_menu() {
+    local cert="/etc/ssl/certs/menu.local.crt"
+    local key="/etc/ssl/private/menu.local.key"
+    local caroot
+
+    # 1) Borrar certificados de menu.local
+    rm -f "$cert" "$key"
+    log_info "Eliminados $cert y $key."
+
+    # 2) Recuperar CAROOT y eliminar CA del sistema
+    if command -v mkcert &>/dev/null; then
+        caroot=$(mkcert -CAROOT)
+        rm -f /usr/local/share/ca-certificates/mkcert-rootCA.crt
+        update-ca-certificates -q
+        log_info "CA mkcert eliminada del store del sistema."
+
+        # 3) Eliminar CA de NSS global
+        certutil -d sql:/etc/pki/nssdb -D -n "mkcert development CA" -f /dev/null || true
+        log_info "CA mkcert eliminada de NSS DB global."
+
+        # 4) Eliminar CA del perfil de Firefox del usuario
+        if [[ -n "$SUDO_USER" && "$SUDO_USER" != "root" ]]; then
+            local userhome
+            userhome=$(getent passwd "$SUDO_USER" | cut -d: -f6)
+            local userdb="sql:${userhome}/.pki/nssdb"
+            certutil -d "${userdb}" -D -n "mkcert development CA" -f /dev/null || true
+            log_info "CA mkcert eliminada del perfil NSS de $SUDO_USER."
+        fi
     fi
 }
 
@@ -716,11 +813,18 @@ build_local_server() {
 # --- No se usan funciones de VirtualHost, ya que se usará /etc/hosts ---
 build_local_server
 
-# Si se requiere generar certificados para http3_v2, se comprueba aquí
+# Si se requiere generar certificados para http3_v2 o menu_v2, se comprueba aquí
 for container in "${containers[@]}"; do
     IFS=';' read -ra container_info <<< "$container"
+
     if [ "${container_info[0]}" == "http3_v2" ]; then
         generate_http3_certificates
+        break
+    elif [ "${container_info[0]}" == "menu_v2" ]; then
+        remove_http3_certificates_menu
+        #generate_http3_certificates_menu
+        #sudo cp /etc/ssl/certs/menu.local.crt     $PWD/menu/src/certs/menu.local.crt
+        #sudo cp /etc/ssl/private/menu.local.key   $PWD/menu/src/certs/menu.local.key
         break
     fi
 done
@@ -774,9 +878,6 @@ for other in "${otros[@]}"; do
     IFS=';' read -ra otros_info <<< "$other"
     info=${otros_info[0]}
     command=${otros_info[1]}
-    if [ "$info" == "Construyendo contenedores para LDAP Injection" ]; then
-        configure_ldap_files
-    fi
     run_otros "$info" "$command" "$hide_output" "$ignore_errors"
     docker stop $(docker ps -aq) >> "$LOG_FILE" 2>&1
 done
@@ -794,17 +895,6 @@ setup_tablero_vhost() {
             ServerName tablero.local
             ProxyPass / http://localhost/tablero/
             ProxyPassReverse / http://localhost/tablero/
-        </VirtualHost>
-        <VirtualHost *:80>
-            ServerName oauth_gallery.local
-            ProxyPass / http://localhost:8037/
-            ProxyPassReverse / http://localhost:8037/
-        </VirtualHost>
-
-        <VirtualHost *:80>
-            ServerName oauth_printing.local
-            ProxyPass / http://localhost:8036/
-            ProxyPassReverse / http://localhost:8036/
         </VirtualHost>
 EOF
     )
