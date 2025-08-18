@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insecure Java Deserialization</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-tools"></i> Repair - Status
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/"><i class="fas fa-home"></i> Inicio</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div th:if="${error}" class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
+                    <hr>
+                    <a href="/" class="btn btn-primary">Volver al inicio</a>
+                </div>
+
+                <div th:if="${request}" class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3><i class="fas fa-search"></i> Estado de la Solicitud</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-id-card"></i> Información del Cliente</h5>
+                                <p><strong>Nombre:</strong> <span th:text="${request.customerName}"></span></p>
+                                <p><strong>Email:</strong> <span th:text="${request.customerEmail}"></span></p>
+                                <p><strong>Solicitud:</strong> <span th:text="${request.id}" class="badge bg-secondary"></span></p>
+                                <p><strong>Fecha:</strong> <span th:text="${#dates.format(request.createdDate, 'dd/MM/yyyy HH:mm')}"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-laptop"></i> Información del Equipo</h5>
+                                <p><strong>Tipo:</strong> <span th:text="${request.deviceType}"></span></p>
+                                <p><strong>Marca:</strong> <span th:text="${request.deviceBrand}"></span></p>
+                                <p><strong>Modelo:</strong> <span th:text="${request.deviceModel}"></span></p>
+                                <p><strong>Prioridad:</strong> 
+                                    <span th:class="'badge ' + (${request.priority} == 'HIGH' ? 'bg-danger' : 
+                                                 (${request.priority} == 'MEDIUM' ? 'bg-warning' : 'bg-secondary'))"
+                                          th:text="${request.priority}"></span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <h5><i class="fas fa-clipboard-list"></i> Problema Reportado</h5>
+                                <p th:text="${request.problemDescription}" class="text-muted"></p>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-tasks"></i> Estado Actual</h5>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar" role="progressbar" 
+                                         th:style="'width: ' + (${request.status} == 'PENDING' ? '25' : 
+                                                               (${request.status} == 'IN_PROGRESS' ? '75' : '100')) + '%'"
+                                         th:class="'progress-bar ' + (${request.status} == 'COMPLETED' ? 'bg-success' : 
+                                                                     (${request.status} == 'CANCELLED' ? 'bg-danger' : 'bg-primary'))">
+                                    </div>
+                                </div>
+
+                                <div th:if="${request.status == 'PENDING'}" class="alert alert-info">
+                                    <i class="fas fa-clock"></i> <strong>Pendiente</strong><br>
+                                    Su solicitud ha sido recibida y está en cola para diagnóstico.
+                                </div>
+
+                                <div th:if="${request.status == 'IN_PROGRESS'}" class="alert alert-warning">
+                                    <i class="fas fa-wrench"></i> <strong>En Proceso</strong><br>
+                                    Nuestros técnicos están trabajando en la reparación de su equipo.
+                                </div>
+
+                                <div th:if="${request.status == 'COMPLETED'}" class="alert alert-success">
+                                    <i class="fas fa-check-circle"></i> <strong>Completada</strong><br>
+                                    La reparación ha sido completada. Su equipo está listo para recoger.
+                                </div>
+
+                                <div th:if="${request.status == 'CANCELLED'}" class="alert alert-danger">
+                                    <i class="fas fa-times-circle"></i> <strong>Cancelada</strong><br>
+                                    La solicitud ha sido cancelada. Contacte con nosotros para más información.
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-dollar-sign"></i> Información de Costos</h5>
+                                <div th:if="${request.estimatedCost}" class="alert alert-light">
+                                    <p><strong>Costo Estimado:</strong> 
+                                        $<span th:text="${request.estimatedCost}"></span>
+                                    </p>
+                                    <small class="text-muted">
+                                        *El costo final puede variar según el diagnóstico completo
+                                    </small>
+                                </div>
+                                <div th:unless="${request.estimatedCost}" class="alert alert-light">
+                                    <p class="text-muted">
+                                        <i class="fas fa-info-circle"></i> 
+                                        El costo será estimado después del diagnóstico inicial.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <h6><i class="fas fa-phone"></i> ¿Necesita más información?</h6>
+                                <p class="text-muted">
+                                    Contáctenos al <strong>+34 619426154</strong> o 
+                                    <strong>soporte@javadeserelization.local</strong><br>
+                                    Mencione su código de referencia: <strong th:text="${request.id}"></strong>
+                                </p>
+                                
+                                <div class="mt-3">
+                                    <a href="/" class="btn btn-primary me-2">
+                                        <i class="fas fa-home"></i> Volver al Inicio
+                                    </a>
+                                    <button class="btn btn-outline-primary" onclick="window.print()">
+                                        <i class="fas fa-print"></i> Imprimir Estado
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-light mt-5 py-3">
+        <div class="container text-center">
+            <p class="text-muted mb-0">© 2024 TechRepair - Servicio Técnico Especializado</p>
+        </div>
+    </footer>
+
+    <script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

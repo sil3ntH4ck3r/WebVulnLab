@@ -113,7 +113,6 @@ containers=(
 
 | Lab         | Status |
 |:------------|:------:|
-**Java Deserelization** | ⏳ |
 **JNDI Injection** | ⏳ |
 **Memcache** | ⏳ |
 **Buffer Overflow** | ⏳ |
@@ -174,6 +173,7 @@ containers=(
 **[NodeJS IIFE Deserialization](http://nodejsdeserelization.local/)** | ✅ |
 **[ESI Injection](http://esiinjection.local/)** | ✅ |
 **[Cypher Injection](http://cypherinjection.local/)** | ✅ |
+**[Java Deserelization](http://javadeserelization.local/)** | ✅ |
 
 </details>
 

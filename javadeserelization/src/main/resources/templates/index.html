@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insecure Java Deserialization</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-tools"></i> Repair
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/admin"><i class="fas fa-cog"></i> Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3><i class="fas fa-laptop"></i> Solicitar Reparación</h3>
+                        <p class="mb-0">Complete el formulario para enviar su equipo a reparación</p>
+                    </div>
+                    <div class="card-body">
+                        <!-- Mensajes de éxito y error -->
+                        <div th:if="${success}" class="alert alert-success">
+                            <i class="fas fa-check-circle"></i> Solicitud enviada correctamente. 
+                            Su número de referencia es: <strong th:text="${requestId}"></strong>
+                        </div>
+                        
+                        <div th:if="${error}" class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}"></span>
+                        </div>
+
+                        <form th:action="@{/submit}" th:object="${repairRequest}" method="post">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Nombre Completo *</label>
+                                        <input type="text" class="form-control" th:field="*{customerName}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Email *</label>
+                                        <input type="email" class="form-control" th:field="*{customerEmail}" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Tipo de Equipo *</label>
+                                        <select class="form-select" th:field="*{deviceType}" required>
+                                            <option value="">Seleccionar...</option>
+                                            <option value="Laptop">Laptop</option>
+                                            <option value="Desktop">PC de Escritorio</option>
+                                            <option value="Tablet">Tablet</option>
+                                            <option value="Smartphone">Smartphone</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Marca *</label>
+                                        <input type="text" class="form-control" th:field="*{deviceBrand}" 
+                                               placeholder="Dell, HP, Apple, etc." required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Modelo</label>
+                                        <input type="text" class="form-control" th:field="*{deviceModel}" 
+                                               placeholder="Inspiron, Pavilion, etc.">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Descripción del Problema *</label>
+                                <textarea class="form-control" rows="4" th:field="*{problemDescription}" 
+                                          placeholder="Describa detalladamente el problema que presenta su equipo..." required></textarea>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-paper-plane"></i> Enviar Solicitud
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Información adicional -->
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-clock fa-2x text-primary mb-2"></i>
+                                <h5>Tiempos de Respuesta</h5>
+                                <p class="text-muted">Diagnóstico en 24-48 horas</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-shield-alt fa-2x text-success mb-2"></i>
+                                <h5>Garantía</h5>
+                                <p class="text-muted">6 meses en todas las reparaciones</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5><i class="fas fa-search"></i> Consultar Estado</h5>
+                        <p>Si ya tiene una solicitud, puede consultar su estado ingresando su código de referencia:</p>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="statusCode" placeholder="REP-XXX">
+                            <button class="btn btn-outline-primary" onclick="checkStatus()">
+                                <i class="fas fa-search"></i> Consultar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-light mt-5 py-3">
+        <div class="container text-center">
+            <p class="text-muted mb-0">&copy; <a property='dct:title' rel='cc:attributionURL' href='https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev'>WebVulnLab</a> by <a href='https://github.com/sil3ntH4ck3r'>sil3nth4ck3r</a> is licensed under <a href='http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1'>CC BY-NC-SA 4.0
+        </div>
+    </footer>
+
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function checkStatus() {
+            const code = document.getElementById('statusCode').value;
+            if (code.trim()) {
+                window.location.href = '/status/' + code.trim();
+            } else {
+                alert('Por favor ingrese un código de referencia');
+            }
+        }
+    </script>

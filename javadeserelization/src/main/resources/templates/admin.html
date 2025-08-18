@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insecure Java Deserialization</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-tools"></i> Repair - Admin
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/"><i class="fas fa-home"></i> Inicio</a>
+                <a class="nav-link" href="#" onclick="exportData()"><i class="fas fa-download"></i> Exportar</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-chart-pie"></i> Estadísticas</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <span class="badge bg-primary">Pendientes: <span th:text="${#lists.size(requests.?[status == 'PENDING'])}">0</span></span>
+                        </div>
+                        <div class="mb-3">
+                            <span class="badge bg-warning">En Proceso: <span th:text="${#lists.size(requests.?[status == 'IN_PROGRESS'])}">0</span></span>
+                        </div>
+                        <div class="mb-3">
+                            <span class="badge bg-success">Completadas: <span th:text="${#lists.size(requests.?[status == 'COMPLETED'])}">0</span></span>
+                        </div>
+                        <hr>
+                        <p><strong>Total:</strong> <span th:text="${#lists.size(requests)}">0</span> solicitudes</p>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5><i class="fas fa-upload"></i> Importar Datos</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="small text-muted">Importar solicitudes desde un archivo exportado previamente.</p>
+                        <div class="mb-3">
+                            <textarea class="form-control" id="importData" rows="4" placeholder="Pegue aquí los datos exportados..."></textarea>
+                        </div>
+                        <button class="btn btn-warning btn-sm" onclick="importData()">
+                            <i class="fas fa-upload"></i> Importar
+                        </button>
+                        <div id="importResult" class="mt-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-list"></i> Solicitudes de Reparación</h3>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${success}" class="alert alert-success">
+                            <span th:text="${success}"></span>
+                        </div>
+                        <div th:if="${error}" class="alert alert-danger">
+                            <span th:text="${error}"></span>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Cliente</th>
+                                        <th>Equipo</th>
+                                        <th>Problema</th>
+                                        <th>Prioridad</th>
+                                        <th>Estado</th>
+                                        <th>Costo</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="request : ${requests}">
+                                        <td><strong th:text="${request.id}"></strong></td>
+                                        <td>
+                                            <div th:text="${request.customerName}"></div>
+                                            <small class="text-muted" th:text="${request.customerEmail}"></small>
+                                        </td>
+                                        <td>
+                                            <div th:text="${request.deviceBrand} + ' ' + ${request.deviceModel}"></div>
+                                            <small class="text-muted" th:text="${request.deviceType}"></small>
+                                        </td>
+                                        <td>
+                                            <span th:text="${#strings.length(request.problemDescription) > 50 ? #strings.substring(request.problemDescription, 0, 47) + '...' : request.problemDescription}"
+                                                  th:title="${request.problemDescription}"></span>
+                                        </td>
+                                        <td>
+                                            <span th:class="${request.priority == 'HIGH' ? 'badge bg-danger' : (request.priority == 'MEDIUM' ? 'badge bg-warning' : 'badge bg-secondary')}"
+                                                  th:text="${request.priority}"></span>
+                                        </td>
+                                        <td>
+                                            <form th:action="@{/admin/update/{id}(id=${request.id})}" method="post" class="d-inline">
+                                                <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                                    <option value="PENDING" th:selected="${request.status == 'PENDING'}">Pendiente</option>
+                                                    <option value="IN_PROGRESS" th:selected="${request.status == 'IN_PROGRESS'}">En Proceso</option>
+                                                    <option value="COMPLETED" th:selected="${request.status == 'COMPLETED'}">Completada</option>
+                                                    <option value="CANCELLED" th:selected="${request.status == 'CANCELLED'}">Cancelada</option>
+                                                </select>
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <span th:if="${request.estimatedCost}" th:text="${request.estimatedCost}">$0.00</span>
+                                            <span th:unless="${request.estimatedCost}" class="text-muted">-</span>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary"
+                                                    th:data-request-id="${request.id}"
+                                                    th:data-current-cost="${request.estimatedCost ?: 0}"
+                                                    onclick="editCost(this)">
+                                                <i class="fas fa-dollar-sign"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar costo -->
+    <div class="modal fade" id="costModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="costForm" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Editar Costo Estimado</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Costo Estimado ($)</label>
+                            <input type="number" name="estimatedCost" id="estimatedCost" class="form-control" step="0.01" min="0">
+                            <input type="hidden" name="status" id="currentStatus">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let costModal;
+        document.addEventListener('DOMContentLoaded', function() {
+            costModal = new bootstrap.Modal(document.getElementById('costModal'));
+        });
+
+        function editCost(button) {
+            const requestId = button.getAttribute('data-request-id');
+            const currentCost = button.getAttribute('data-current-cost');
+            
+            document.getElementById('estimatedCost').value = currentCost || '';
+            document.getElementById('costForm').action = '/admin/update/' + requestId;
+            
+            // Obtener el estado actual del select en la misma fila
+            const row = button.closest('tr');
+            const statusSelect = row.querySelector('select[name="status"]');
+            if (statusSelect) {
+                document.getElementById('currentStatus').value = statusSelect.value;
+            }
+            
+            costModal.show();
+        }
+
+        async function exportData() {
+            try {
+                const response = await fetch('/api/export');
+                const data = await response.json();
+                if (data.data) {
+                    const element = document.createElement('a');
+                    const file = new Blob([data.data], { type: 'text/plain' });
+                    element.href = URL.createObjectURL(file);
+                    element.download = 'repair_requests_' + new Date().getTime() + '.txt';
+                    element.click();
+                    alert('Datos exportados correctamente: ' + data.count + ' registros');
+                } else {
+                    alert('Error al exportar: ' + (data.error || 'Error desconocido'));
+                }
+            } catch (error) {
+                alert('Error al exportar datos: ' + error.message);
+            }
+        }
+
+        async function importData() {
+            const data = document.getElementById('importData').value.trim();
+            const resultDiv = document.getElementById('importResult');
+            if (!data) {
+                resultDiv.innerHTML = '<div class="alert alert-warning">Por favor ingrese los datos a importar</div>';
+                return;
+            }
+            try {
+                const formData = new FormData();
+                formData.append('data', data);
+                const response = await fetch('/api/import', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    resultDiv.innerHTML = '<div class="alert alert-success">' + result.message + (result.count ? ' (' + result.count + ' registros)' : '') + '</div>';
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    resultDiv.innerHTML = '<div class="alert alert-danger">' + result.error + '</div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="alert alert-danger">Error de conexión: ' + error.message + '</div>';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -66,16 +66,16 @@ containers=(
   "nodejsdeserelization_v2;$PWD/nodejsdeserelization;8045:80;;172.18.0.55"
   "esiinjection_v2;$PWD/esiinjection;8046:8080;;172.18.0.56"
   "cypherinjection_v2;$PWD/cypherinjection;8047:80;;172.18.0.57"
-  #"javadeserelization_v2;$PWD/javadeserelization;8048:80;;172.18.0.58"
+  "javadeserelization_v2;$PWD/javadeserelization;8048:80;;172.18.0.58"
   #"jndiinjection_v2;$PWD/jndiinjection;8049:80;;172.18.0.59"
 )
 
 otros=(
-  "Construyendo contenedores para AWS Abuse;docker-compose -f $PWD/aws/docker-compose.yml up -d"
-  "Construyendo contenedores para LDAP Injection;docker-compose -f $PWD/ldapinjection/docker-compose.yml up -d"
-  "Construyendo contenedores para API Abuse;docker-compose -f $PWD/apiabuse/docker-compose.yml up -d"
-  "Contruyendo contenedores para GraphQL;docker-compose -f $PWD/graphql/docker-compose.yml up -d" # CAMBIAR A CONTENEDOR SOLO NORMAL
-  "Contruyendo contenedores para OAuth;docker-compose -f $PWD/oauth/docker-compose.yml up -d"
+  #"Construyendo contenedores para AWS Abuse;docker-compose -f $PWD/aws/docker-compose.yml up -d"
+  #"Construyendo contenedores para LDAP Injection;docker-compose -f $PWD/ldapinjection/docker-compose.yml up -d"
+  #"Construyendo contenedores para API Abuse;docker-compose -f $PWD/apiabuse/docker-compose.yml up -d"
+  #"Contruyendo contenedores para GraphQL;docker-compose -f $PWD/graphql/docker-compose.yml up -d" # CAMBIAR A CONTENEDOR SOLO NORMAL
+  #"Contruyendo contenedores para OAuth;docker-compose -f $PWD/oauth/docker-compose.yml up -d"
 )
 
 # Colores
