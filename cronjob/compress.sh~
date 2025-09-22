@@ -1,0 +1,94 @@
+#!/bin/bash
+# Script de backup automatizado - Ejecutado por cron cada 2 minutos
+# Autor: backup_admin
+# Descripción: Crea backups comprimidos de archivos de usuarios usando tar
+LOG_FILE="/backup/logs/backup.log"
+TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+BACKUP_TIMESTAMP=$(date '+%Y%m%d_%H%M%S')
+
+# Crear directorio de logs si no existe
+mkdir -p "$(dirname "$LOG_FILE")"
+
+# Función para logging que también muestra en stdout cuando se ejecuta manualmente
+log_message() {
+    local message="[$TIMESTAMP] $1"
+    echo "$message" >> "$LOG_FILE"
+    # Si se ejecuta desde terminal (no desde cron), mostrar también en pantalla
+    if [ -t 1 ]; then
+        echo "$message"
+    fi
+}
+
+log_message "Iniciando proceso de backup..."
+
+# Directorio fuente donde los usuarios suben archivos
+SOURCE_DIR="/var/www/html"
+DEST_DIR="/var/backup/"
+
+# Verificar si existe el directorio fuente
+if [ ! -d "$SOURCE_DIR" ]; then
+    log_message "ERROR: Directorio fuente no encontrado: $SOURCE_DIR"
+    exit 1
+fi
+
+# Crear directorio destino si no existe
+mkdir -p "$DEST_DIR"
+
+# Nombre del archivo de backup con timestamp
+BACKUP_FILE="$DEST_DIR/backup-$BACKUP_TIMESTAMP.tar.gz"
+
+# Cambiar al directorio fuente
+cd "$SOURCE_DIR"
+log_message "Creando backup comprimido desde $SOURCE_DIR..."
+
+# Crear backup con tar - VULNERABLE: usar wildcard sin comillas
+# Esto permite inyección de argumentos a través de nombres de archivos
+if tar czf "$BACKUP_FILE" * >> "$LOG_FILE" 2>&1; then
+    log_message "Backup creado exitosamente: $BACKUP_FILE"
+    
+    # Mostrar información del archivo creado
+    BACKUP_SIZE=$(stat -c%s "$BACKUP_FILE" 2>/dev/null || echo 0)
+    BACKUP_SIZE_MB=$((BACKUP_SIZE / 1048576))
+    log_message "Tamaño del backup: ${BACKUP_SIZE_MB}MB"
+else
+    log_message "ERROR: Fallo en el comando tar (código: $?)"
+fi
+
+# Verificar el resultado
+if [ $? -eq 0 ]; then
+    log_message "Backup completado exitosamente"
+else
+    log_message "ERROR: Fallo en el proceso de backup"
+fi
+
+# Limpiar backups antiguos (más de 7 días)
+log_message "Limpiando backups antiguos..."
+
+# VULNERABILIDAD MANTENIDA: Usar find con wildcard sin validación
+OLD_BACKUPS=$(find "$DEST_DIR" -name "backup-*.tar.gz" -mtime +7 2>/dev/null)
+if [ ! -z "$OLD_BACKUPS" ]; then
+    log_message "Eliminando backups antiguos:"
+    echo "$OLD_BACKUPS" >> "$LOG_FILE"
+    # VULNERABLE: rm con expansión de variable sin comillas
+    rm -f $OLD_BACKUPS 2>/dev/null
+    log_message "Backups antiguos eliminados"
+else
+    log_message "No hay backups antiguos para eliminar"
+fi
+
+# Limpiar archivos temporales del directorio de trabajo
+log_message "Limpiando archivos temporales..."
+find /tmp -name "backup_*" -mtime +1 -delete 2>/dev/null
+
+# Rotar logs si son muy grandes (más de 1MB)
+LOG_SIZE=$(stat -c%s "$LOG_FILE" 2>/dev/null || echo 0)
+if [ $LOG_SIZE -gt 1048576 ]; then
+    log_message "Rotando log de backup..."
+    mv "$LOG_FILE" "${LOG_FILE}.old"
+    touch "$LOG_FILE"
+    chown backup_admin:backup_admin "$LOG_FILE"
+    log_message "Log rotado exitosamente"
+fi
+
+log_message "Proceso de backup finalizado"
+echo "----------------------------------------" >> "$LOG_FILE"

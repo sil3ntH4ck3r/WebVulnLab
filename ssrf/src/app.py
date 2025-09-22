@@ -32,6 +32,32 @@ MALICIOUS_PATTERNS = [
     r'backdoor', r'trojan', r'virus', r'steal'
 ]
 
+# Lista negra "lite" y fácilmente bypasseable (sin resolución DNS)
+BLOCKED_SCHEMES = set(s.strip().lower() for s in os.getenv(
+    "BLOCKED_SCHEMES",
+    "file,gopher,javascript,data"
+).split(",") if s)
+
+BLOCKED_NETLOC_KEYWORDS = [
+    k.strip().lower() for k in os.getenv(
+        "BLOCKED_NETLOC_KEYWORDS",
+        # Palabras clave comunes que se pueden bypassear con representaciones alternativas
+        "localhost,127.0.0.1,169.254.169.254,metadata,internal"
+    ).split(",") if k
+]
+
+BLOCKED_NETLOC_SUFFIXES = [
+    s.strip().lower() for s in os.getenv(
+        "BLOCKED_NETLOC_SUFFIXES",
+        ".local"
+    ).split(",") if s
+]
+
+BLOCKED_PORTS = set(int(p) for p in os.getenv(
+    "BLOCKED_PORTS",
+    "22,3306,5432,6379,27017"
+).split(",") if p)
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -43,6 +69,30 @@ def is_url_safe(url):
         parsed_url = urlparse(url)
         if not parsed_url.scheme or not parsed_url.netloc:
             return False, "URL malformada"
+        
+        # Blacklist "lite": esquema
+        scheme = parsed_url.scheme.lower()
+        if scheme in BLOCKED_SCHEMES:
+            return False, "Esquema bloqueado"
+
+        # Blacklist "lite": credenciales embebidas (fácil de evadir con encoding)
+        if "@" in parsed_url.netloc:
+            return False, "URL con credenciales"
+
+        # Blacklist "lite": palabras clave y sufijos en netloc (fácil de evadir)
+        netloc_lc = parsed_url.netloc.lower()
+        if any(k in netloc_lc for k in BLOCKED_NETLOC_KEYWORDS):
+            return False, "Host bloqueado por palabra clave"
+        if any(netloc_lc.endswith(suf) for suf in BLOCKED_NETLOC_SUFFIXES):
+            return False, "Host bloqueado por sufijo"
+
+        # Blacklist "lite": puertos explícitos (si se indican)
+        try:
+            port = parsed_url.port
+        except ValueError:
+            return False, "Puerto inválido"
+        if port and port in BLOCKED_PORTS:
+            return False, "Puerto bloqueado"
         
         # Para fines de laboratorio se elimina la validación de lista blanca.
         # Se sigue comprobando si aparecen patrones maliciosos.

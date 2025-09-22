@@ -30,6 +30,10 @@
           <li class="section__item">Desarrollamos un nuevo método para detectar la presencia de contaminantes en el agua.</li>
           <li class="section__item">Encontramos evidencia de vida microbiana en una región del océano que se creía estéril.</li>
         </ul>
+        <div class="report">
+          <button id="generate-report-btn" class="report__button">Generar informe</button>
+          <p id="report-status" class="report__status" aria-live="polite"></p>
+        </div>
       </section>
   </main>
 
@@ -37,6 +41,8 @@
     const passwordForm = document.getElementById('password-form');
     const contentSection = document.querySelector('.section--content');
     const passwordSection = document.querySelector('.section--password');
+    const reportBtn = document.getElementById('generate-report-btn');
+    const reportStatus = document.getElementById('report-status');
 
     passwordForm.addEventListener('submit', (event) => {
       event.preventDefault();
@@ -57,6 +63,8 @@
           contentSection.style.display = 'block';
           // Ocultar el formulario de la Contraseña
           passwordSection.style.display = 'none';
+          // Habilitar generación de informe
+          if (reportBtn) reportBtn.disabled = false;
         }
         alert(data.message);
       })
@@ -64,9 +72,34 @@
         console.error('Error:', error);
       });
     });
+
+    // Lógica para generar el informe
+    if (reportBtn) {
+      reportBtn.addEventListener('click', () => {
+        reportBtn.disabled = true;
+        reportStatus.textContent = 'Generando informe...';
+        fetch('/generate-report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({})
+        })
+        .then(resp => resp.json())
+        .then(data => {
+          reportStatus.textContent = data.message || 'Informe generado';
+        })
+        .catch(err => {
+          console.error('Error generando informe:', err);
+          reportStatus.textContent = 'Error generando informe';
+          alert('Error generando informe');
+        })
+        .finally(() => {
+          reportBtn.disabled = false;
+        });
+      });
+    }
   </script>
 </body>
 <footer>
-    <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer">CC BY-NC-SA 4.0
+    <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/sil3ntH4ck3r/WebVulnLab/tree/dev">WebVulnLab</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/sil3ntH4ck3r">sil3nth4ck3r</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer">CC BY-NC-SA 4.0</a></p>
 </footer>
 </html>

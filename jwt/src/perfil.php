@@ -3,9 +3,10 @@
 <?php
 error_reporting(0);
 session_start();
+require_once __DIR__ . '/jwt_keys.php';
 
 function getUserFromJwt($jwt) {
-    $key = "your_secret_key"; // Change this to your own secret key
+    $publicKeyPem = jwt_get_public_key();
 
     list($header, $payload, $signature) = explode('.', $jwt);
 
@@ -15,20 +16,40 @@ function getUserFromJwt($jwt) {
     $headerData = json_decode($decodedHeader, true);
     $algorithm = $headerData['alg'];
 
-    if ($algorithm === 'NONE') {
-        $userData = json_decode($decodedPayload, true);
-        return $userData['user'];
-    } else {
-        $expectedSignature = hash_hmac('sha256', $header . '.' . $payload, $key, true);
-        $expectedBase64UrlSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($expectedSignature));
-
-        if ($signature !== $expectedBase64UrlSignature) {
-            return false; // Invalid JWT signature
+    // Helper: base64url decode
+    $b64url_to_bin = function($b64url) {
+        $b64 = strtr($b64url, '-_', '+/');
+        $pad = strlen($b64) % 4;
+        if ($pad) {
+            $b64 .= str_repeat('=', 4 - $pad);
         }
+        return base64_decode($b64);
+    };
 
-        $userData = json_decode($decodedPayload, true);
-        return $userData['user'];
+    if ($algorithm === 'RS256') {
+        $data = $header . '.' . $payload;
+        $sigBin = $b64url_to_bin($signature);
+        $ok = openssl_verify($data, $sigBin, openssl_pkey_get_public($publicKeyPem), OPENSSL_ALGO_SHA256);
+        if ($ok !== 1) {
+            return false; // Firma RS256 inválida
+        }
+    } elseif ($algorithm === 'HS256') {
+        // Vulnerable path: treat public RSA key as HMAC secret
+        $expectedSignature = hash_hmac('sha256', $header . '.' . $payload, $publicKeyPem, true);
+        $expectedBase64UrlSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($expectedSignature));
+        if ($signature !== $expectedBase64UrlSignature) {
+            return false; // Firma HS256 inválida
+        }
+    } else {
+        return false; // Algoritmo no soportado
     }
+
+    $userData = json_decode($decodedPayload, true);
+    // Enforce expiration if present
+    if (isset($userData['exp']) && is_numeric($userData['exp']) && $userData['exp'] < time()) {
+        return false;
+    }
+    return $userData['user'];
 }
 
 $cookieUser = null;
@@ -203,6 +224,16 @@ if (isset($_COOKIE["jwtToken"])) {
             <div class="profile-info">
                 <?php if ($cookieUser) : ?>
                     <h1>Usuario: <?php echo $cookieUser ?></h1>
+                    <?php
+                        if (isset($_COOKIE["jwtToken"])) {
+                            list($h, $p, $s) = explode('.', $_COOKIE["jwtToken"]);
+                            $b64 = strtr($p, '-_', '+/');
+                            $pad = strlen($b64) % 4; if ($pad) { $b64 .= str_repeat('=', 4 - $pad); }
+                            $payloadArr = json_decode(base64_decode($b64), true);
+                            $iat = isset($payloadArr['iat']) ? (int)$payloadArr['iat'] : null;
+                            $exp = isset($payloadArr['exp']) ? (int)$payloadArr['exp'] : null;
+                        }
+                    ?>
                 <?php else : ?>
                     <p>Debes iniciar sesión para ver tu perfil.</p>
                 <?php endif; ?>

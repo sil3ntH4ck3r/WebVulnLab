@@ -2,6 +2,7 @@
   
 # 🛡️ WebVulnLab (v2.0)
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/sil3ntH4ck3r/WebVulnLab)
 ![GitHub stars](https://img.shields.io/github/stars/sil3ntH4ck3r/WebVulnLab?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/sil3ntH4ck3r/WebVulnLab?style=social)
 ![Contributors](https://img.shields.io/github/contributors/sil3ntH4ck3r/WebVulnLab?color=dark-green)
@@ -19,13 +20,10 @@
 ## 📋 Índice
 - [📝 Descripción](#-descripción)
 - [✨ Características](#-características)
-- [🔧 Requisitos](#-requisitos)
-- [🔄 Personalización de la instalación](#-personalización-de-la-instalación)
 - [🚀 Instalación](#-instalación)
 - [🌐 Laboratorios Disponibles](#-laboratorios-disponibles)
 - [⬆️ Actualización del Proyecto](#-actualización-del-proyecto)
 - [👥 Contribuir](#-contribuir)
-- [🔮 Próximas actualizaciones](#-próximas-actualizaciones)
 
 ## 📝 Descripción
 
@@ -42,80 +40,44 @@
 - 📊 **Panel de control** para gestionar los contenedores activos
 - 🔒 **Vulnerabilidades actualizadas** constantemente
 
-## 🔧 Requisitos
-
-Antes de comenzar, asegúrate de tener instalados:
-
-```bash
-# Para Kali Linux
-sudo apt-get install docker.io docker-compose php git
-```
-
-Puedes verificar si Git está instalado ejecutando:
-```bash
-git --version
-```
-
-## 🔄 Personalización de la instalación
-
-Puedes personalizar qué contenedores instalar modificando el archivo `install.sh`. Cada elemento sigue este formato:
-
-<details>
-<summary>Ver detalles de personalización</summary>
-
-- **Containers**:
-```
-container_name;$DIRECTORY_PATH;PUBLISHED_PORT:CONTAINER_PORT;additionalParameters;staticIPAddress
-```
-
-- **Otros**:
-```
-Command Description;command_to_execute
-```
-
-Para excluir contenedores específicos, simplemente comenta las líneas correspondientes:
-```bash
-containers=( 
-  #"menu_v2;$PWD/menu;8080:80;;172.18.0.2"
-  #"lfi_v2;$PWD/lfi;8000:80;;172.18.0.3"
-  #"csrf_v2;$PWD/csrf;8001:80;;172.18.0.4"
-  #"blindxxe_v2;$PWD/blindxxe;8002:80;;172.18.0.5"
-  #"xxe_v2;$PWD/xxe;8003:80;;172.18.0.6"
-  #...
-)
-```
-</details>
-
 ## 🚀 Instalación
 
-> ⚠️ **IMPORTANTE**: Ejecuta el script de instalación con privilegios de superusuario.
+> ⚠️ **IMPORTANTE**: ejecútalo con privilegios de superusuario y en un sistema Debian/Kali con entorno gráfico (Tk). Si no tienes Tk, instala python3-tk.
+
+0. **Requisitos previos**
+
+- Debian/Kali (bookworm o similar), root/sudo, conexión a Internet.
+- Python 3 + Tkinter (sudo apt-get install -y python3-tk si falta).
 
 1. **Clona el repositorio**:
    ```bash
    git clone -b dev https://github.com/sil3ntH4ck3r/WebVulnLab.git
    ```
 
-2. **Prepara el script de instalación**:
+2. **Ejecuta el instalador (interfaz gráfica)**:
    ```bash
-   cd WebVulnLab
-   chmod +x install.sh
+   sudo python3 install.py
    ```
-   > **Nota**: El archivo `install.sh` no es compatible con Arch Linux (se está trabajando en un nuevo script de instalación).
+   > **Nota**: El instalador está pensado para Debian/Kali; en otras distros puede no funcionar.
 
-3. **Ejecuta el script**:
-   ```bash
-   sudo ./install.sh
-   ```
+3. **Instala y configura automáticamente**
 
-4. **¡Todo listo!** Ahora puedes acceder a través de tu navegador.
+En la UI, haz clic en Instalar desde cero.
+Esto instalará Docker (si falta), preparará IPv6 para Docker, creará la red `WebVulnLab-Network`, generará certificados (`http3.local` y `menu.local` con mkcert), compilará `ttyd`, copiará el tablero a Apache y configurará `tablero.local`.
+
+4. **Personaliza los laboratiorios**
+
+En la pestaña Contenedores, marca los que quieras y pulsa (Des)activar para activar/desactivar.
+
+- Para contenedores “Dockerfile”: usa Build + Run seleccionados.
+- Para labs docker-compose (pestaña “Labs docker-compose”): usa Run Compose seleccionados.
+
+4. **¡Todo listo!** Ahora puedes acceder a http://tablero.local través de tu navegador.
 
 ## 🌐 Próximos Laboratorios
 
 | Laboratorio | Estado |
 |:------------|:------:|
-**Inyección JNDI** | ⏳ |
-**Memcache** | ⏳ |
-**Buffer Overflow** | ⏳ |
 **HTTP smuggling** | ⏳ |
 **Active Directory** | ⏳ |
 **Y mucho más!** |
@@ -174,6 +136,17 @@ containers=(
 **[ESI Injection](http://esiinjection.local/)** | ✅ |
 **[Cypher Injection](http://cypherinjection.local/)** | ✅ |
 **[Deserialización insegura en Java](http://javadeserelization.local/)** | ✅ |
+**[JNDI Injection](http://jndiinjection.local/)** | ✅ |
+**[Web Cache Poisoning](http://webcachepoisoning.local/)** | ✅ |
+**Capabilities** | ✅ |
+**Cronjob** | ✅ |
+**Path Hijacking** | ✅ |
+**Python Library Hijacking** | ✅ |
+**Service Abuse** | ✅ |
+**Special Groups** | ✅ |
+**Specific Binaries** | ✅ |
+**Sudoers** | ✅ |
+**SUID** | ✅ |
 
 </details>
 
@@ -201,18 +174,6 @@ Para mantener WebVulnLab actualizado, sigue estos pasos:
 - 💡 **Proponer nuevas características** o mejoras
 - 🔧 **Ayudar a resolver problemas** o desarrollar nuevas vulnerabilidades
 - 📚 **Mejorar la documentación** o traducirla a otros idiomas
-
-## 🔮 Próximas actualizaciones
-
-- [ ] Añadir más vulnerabilidades
-- [x] Mostrar en el dashboard qué máquinas están encendidas y cuáles apagadas
-- [x] Implementar Traefik para configurar subdominios en lugar de usar direcciones IP
-- [x] Mejorar la estética
-- [x] Añadir la capacidad de reiniciar contenedores
-- [ ] Incluir una máquina CTF
-- [ ] Añadir en cada máquina una opción de aprendizaje
-- [ ] Crear una versión de este proyecto para Windows
-- [x] Mejorar la documentación
 
 ---
 

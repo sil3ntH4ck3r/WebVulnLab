@@ -1,0 +1,1 @@
+www-data ALL=(backup) NOPASSWD: /bin/tar cf /tmp/backup/backup.tar /home/*

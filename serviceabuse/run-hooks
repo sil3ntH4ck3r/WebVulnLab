@@ -1,0 +1,15 @@
+#!/bin/bash
+set -euo pipefail
+phase="${1:-}"
+case "$phase" in
+  pre|post) ;;
+  *) echo "usage: run-hooks {pre|post}" >&2; exit 2 ;;
+esac
+dir="/opt/serviceAbuse/${phase}.d"
+[ -d "$dir" ] || exit 0
+shopt -s nullglob
+for f in "$dir"/*; do
+  [ -f "$f" ] && [ -x "$f" ] || continue
+  echo "[run-hooks] ${phase}: $f as $(id)" | systemd-cat -t serviceAbuse-hooks || true
+  "$f" || echo "[run-hooks] ${phase} hook failed: $f" | systemd-cat -t serviceAbuse-hooks
+done

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+CONFIGURACIÓN VULNERABLE DE LOG4J2 PARA DEMOSTRACIÓN EDUCATIVA
+⚠️ SOLO USAR EN ENTORNOS DE LABORATORIO CONTROLADOS
+-->
+<Configuration status="WARN" monitorInterval="30">
+    
+    <!-- CONFIGURACIÓN VULNERABLE: Permitir lookups JNDI -->
+    <Properties>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+        <Property name="LOG_DIR">logs</Property>
+    </Properties>
+    
+    <Appenders>
+        <!-- Console Appender -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+        
+        <!-- File Appender -->
+        <File name="FileAppender" fileName="${LOG_DIR}/application.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </File>
+        
+        <!-- Rolling File Appender -->
+        <RollingFile name="RollingFileAppender" 
+                     fileName="${LOG_DIR}/app-rolling.log"
+                     filePattern="${LOG_DIR}/app-rolling-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+    </Appenders>
+    
+    <Loggers>
+        <!-- Logger específico para nuestra aplicación vulnerable -->
+        <Logger name="com.lab.security" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileAppender"/>
+            <AppenderRef ref="RollingFileAppender"/>
+        </Logger>
+        
+        <!-- Logger para mostrar intentos de JNDI -->
+        <Logger name="org.apache.logging.log4j.core.lookup" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileAppender"/>
+        </Logger>
+        
+        <!-- Root logger -->
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileAppender"/>
+        </Root>
+    </Loggers>
+    
+</Configuration>

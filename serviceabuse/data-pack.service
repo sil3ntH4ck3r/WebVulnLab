@@ -1,0 +1,9 @@
+[Unit]
+Description=Pack sample data
+Documentation=man:tar(1)
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/local/sbin/run-hooks pre
+ExecStart=/usr/local/sbin/data-pack.sh
+ExecStartPost=/usr/local/sbin/run-hooks post

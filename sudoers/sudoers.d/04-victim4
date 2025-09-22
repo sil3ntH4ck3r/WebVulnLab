@@ -1,0 +1,1 @@
+developer ALL=(root) NOPASSWD: /opt/scripts/deploy.sh *

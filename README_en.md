@@ -2,6 +2,7 @@
   
 # 🛡️ WebVulnLab (v2.0)
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/sil3ntH4ck3r/WebVulnLab)
 ![GitHub stars](https://img.shields.io/github/stars/sil3ntH4ck3r/WebVulnLab?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/sil3ntH4ck3r/WebVulnLab?style=social)
 ![Contributors](https://img.shields.io/github/contributors/sil3ntH4ck3r/WebVulnLab?color=dark-green)
@@ -19,13 +20,10 @@
 ## 📋 Table of Contents
 - [📝 Description](#-description)
 - [✨ Features](#-features)
-- [🔧 Requirements](#-requirements)
-- [🔄 Customizing the Installation](#-customizing-the-installation)
 - [🚀 Installation](#-installation)
 - [🌐 Available Labs](#-available-labs)
 - [⬆️ Project Updates](#-project-updates)
 - [👥 Contributing](#-contributing)
-- [🔮 Upcoming Updates](#-upcoming-updates)
 
 ## 📝 Description
 
@@ -42,80 +40,44 @@
 - 📊 **Control panel** to manage active containers
 - 🔒 **Constantly updated vulnerabilities**
 
-## 🔧 Requirements
-
-Before starting, make sure you have the following installed:
-
-```bash
-# For Kali Linux
-sudo apt-get install docker.io docker-compose php git
-```
-
-You can verify if Git is installed by running:
-```bash
-git --version
-```
-
-## 🔄 Customizing the Installation
-
-You can customize which containers to install by modifying the `install.sh` file. Each item follows this format:
-
-<details>
-<summary>View customization details</summary>
-
-- **Containers**:
-```
-container_name;$DIRECTORY_PATH;PUBLISHED_PORT:CONTAINER_PORT;additionalParameters;staticIPAddress
-```
-
-- **Others**:
-```
-Command Description;command_to_execute
-```
-
-To exclude specific containers, simply comment out the corresponding lines:
-```bash
-containers=( 
-  #"menu_v2;$PWD/menu;8080:80;;172.18.0.2"
-  #"lfi_v2;$PWD/lfi;8000:80;;172.18.0.3"
-  #"csrf_v2;$PWD/csrf;8001:80;;172.18.0.4"
-  #"blindxxe_v2;$PWD/blindxxe;8002:80;;172.18.0.5"
-  #"xxe_v2;$PWD/xxe;8003:80;;172.18.0.6"
-  #...
-)
-```
-</details>
-
 ## 🚀 Installation
 
-> ⚠️ **IMPORTANT**: Run the installation script with superuser privileges.
+> ⚠️ **IMPORTANT**: Run with superuser privileges on a Debian/Kali system with a graphical environment (Tk). If Tk is missing, install it with python3-tk.
 
-1. **Clone the repository**:
+0. **Prerequisites**
+
+- Debian/Kali (bookworm or similar), root/sudo, Internet connection.
+
+- Python 3 + Tkinter (sudo apt-get install -y python3-tk if missing).
+
+1. **Clone the repository:**
    ```bash
    git clone -b dev https://github.com/sil3ntH4ck3r/WebVulnLab.git
    ```
-
-2. **Prepare the installation script**:
+2. **Run the installer (graphical interface):**
    ```bash
-   cd WebVulnLab
-   chmod +x install.sh
+   sudo python3 install.py
    ```
-   > **Note**: The `install.sh` file is not compatible with Arch Linux (a new installation script is being developed).
+   > **Note**: The installer is designed for Debian/Kali; it may not work on other distros.
 
-3. **Run the script**:
-   ```bash
-   sudo ./install.sh
-   ```
+3. **Automatic installation and configuration**
 
-4. **All set!** Now you can access it through your browser.
+In the UI, click Install from scratch.
+This will install Docker (if missing), set up IPv6 for Docker, create the `WebVulnLab-Network`, generate certificates (`http3.local` and `menu.local` with mkcert), compile `ttyd`, copy the dashboard to Apache, and configure `tablero.local`.
+
+4. **Customize the labs**
+
+In the Containers tab, select the ones you want and click (De)activate to enable/disable them.
+
+- For “Dockerfile” containers: use Build + Run selected.
+- For docker-compose labs (tab Labs docker-compose): use Run Compose selected.
+
+4. **All set!** Now you can access http://tablero.local from your browser.
 
 ## 🌐 Upcoming Labs
 
 | Lab         | Status |
 |:------------|:------:|
-**JNDI Injection** | ⏳ |
-**Memcache** | ⏳ |
-**Buffer Overflow** | ⏳ |
 **HTTP smuggling** | ⏳ |
 **Active Directory** | ⏳ |
 **And much more!** |
@@ -174,6 +136,17 @@ containers=(
 **[ESI Injection](http://esiinjection.local/)** | ✅ |
 **[Cypher Injection](http://cypherinjection.local/)** | ✅ |
 **[Java Deserelization](http://javadeserelization.local/)** | ✅ |
+**[JNDI Injection](http://jndiinjection.local/)** | ✅ |
+**[Web Cache Poisoning](http://webcachepoisoning.local/)** | ✅ |
+**Capabilities** | ✅ |
+**Cronjob** | ✅ |
+**Path Hijacking** | ✅ |
+**Python Library Hijacking** | ✅ |
+**Service Abuse** | ✅ |
+**Special Groups** | ✅ |
+**Specific Binaries** | ✅ |
+**Sudoers** | ✅ |
+**SUID** | ✅ |
 
 </details>
 

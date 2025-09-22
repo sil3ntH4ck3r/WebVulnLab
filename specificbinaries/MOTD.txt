@@ -1,0 +1,5 @@
+-------------------------------------------------------------------------
+Buffer Overflow (ASLR + NX)
+Binario ELF 64-bit: /opt/bof-lab/bin/adminsvc
+Usuario para SSH: www-data  | Contraseña: password123
+-------------------------------------------------------------------------

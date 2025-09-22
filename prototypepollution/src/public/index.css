@@ -100,6 +100,41 @@
     text-align: center;
   }
   
+  /* Reporte: contenedor y controles */
+  .report {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .report__button {
+    padding: 0.5rem 1rem;
+    background-color: #1d6f42;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+  }
+
+  .report__button:hover {
+    background-color: #23814d;
+  }
+
+  .report__button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .report__status {
+    font-size: 0.95rem;
+    color: #333;
+    min-height: 1.2em;
+  }
+
   /* Estilos para el footer */
   footer {
     background-color: #333;

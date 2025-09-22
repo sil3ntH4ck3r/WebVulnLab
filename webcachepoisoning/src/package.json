@@ -1,0 +1,17 @@
+{
+  "name": "adservice-lab",
+  "version": "1.0.0",
+  "description": "Web Cache Poisoning WebVUlnLab",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "axios": "^1.11.0",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

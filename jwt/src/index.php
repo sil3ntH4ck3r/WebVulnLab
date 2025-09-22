@@ -1,4 +1,5 @@
 <?php 
+require_once __DIR__ . '/jwt_keys.php';
 
 // Conectar a la base de datos
 $conexion = mysqli_connect("127.0.0.1", "usuario", "password", "database");
@@ -42,27 +43,46 @@ if ($_SESSION['loggedin'] == true) {
 }
 
 function createJwt($user) {
-    $key = "your_secret_key"; // Change this to your own secret key
+    $privateKeyPem = jwt_get_private_key();
 
     $header = json_encode([
         'typ' => 'JWT',
-        'alg' => 'HS256'
+        'alg' => 'RS256'
     ]);
 
     $payload = json_encode([
         'user' => $user,
-        'exp' => time() + 3600 // JWT expiration time (1 hour from now)
+        'exp' => time() + 3600, // JWT expiration time (1 hour from now)
+        'iat' => time() // Issued at (current timestamp)
     ]);
 
     $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
     $base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
 
-    $signature = hash_hmac('sha256', $base64UrlHeader . '.' . $base64UrlPayload, $key, true);
-    $base64UrlSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
+    $dataToSign = $base64UrlHeader . '.' . $base64UrlPayload;
+    $signatureRaw = '';
+    $keyRes = $privateKeyPem ? @openssl_pkey_get_private($privateKeyPem) : false;
+    $ok = false;
+    if ($keyRes !== false) {
+        $ok = @openssl_sign($dataToSign, $signatureRaw, $keyRes, OPENSSL_ALGO_SHA256);
+    }
+    if ($ok !== true) {
+        // Generate ephemeral RSA keypair in-memory if stored key is unavailable
+        $cfg = [ 'private_key_bits' => 2048, 'private_key_type' => OPENSSL_KEYTYPE_RSA ];
+        $ephemeral = @openssl_pkey_new($cfg);
+        if ($ephemeral) {
+            $ok = @openssl_sign($dataToSign, $signatureRaw, $ephemeral, OPENSSL_ALGO_SHA256);
+        }
+    }
+    if ($ok !== true) {
+        return; // abort creating JWT to avoid setting invalid cookie
+    }
+    $base64UrlSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signatureRaw));
 
     $jwt = $base64UrlHeader . '.' . $base64UrlPayload . '.' . $base64UrlSignature;
 
-    setcookie("jwtToken", $jwt, time() + 3600, "/");
+    // Set cookie only after successful signing to avoid header issues
+    @setcookie("jwtToken", $jwt, time() + 3600, "/");
 }
 
 ?>

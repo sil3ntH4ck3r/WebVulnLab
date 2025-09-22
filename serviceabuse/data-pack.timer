@@ -1,0 +1,11 @@
+[Unit]
+Description=Run data-pack.service every 30 seconds
+
+[Timer]
+OnUnitActiveSec=30s
+Unit=data-pack.service
+AccuracySec=1s
+Persistent=false
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ -z "$PYTHONPATH" ]; then
+  export PYTHONPATH="/usr/local/share/backup_lib"
+else
+  export PYTHONPATH="$PYTHONPATH:/usr/local/share/backup_lib"
+fi
+
+exec /usr/bin/python3 /usr/local/bin/backup.py "$@"

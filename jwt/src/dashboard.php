@@ -1,9 +1,10 @@
 <?php
 error_reporting(0);
 session_start();
+require_once __DIR__ . '/jwt_keys.php';
 
 function getUserFromJwt($jwt) {
-  $key = "your_secret_key"; // Change this to your own secret key
+  $publicKeyPem = jwt_get_public_key();
 
   list($header, $payload, $signature) = explode('.', $jwt);
 
@@ -13,20 +14,37 @@ function getUserFromJwt($jwt) {
   $headerData = json_decode($decodedHeader, true);
   $algorithm = $headerData['alg'];
 
-  if ($algorithm === 'NONE') {
-      $userData = json_decode($decodedPayload, true);
-      return $userData['user'];
-  } else {
-      $expectedSignature = hash_hmac('sha256', $header . '.' . $payload, $key, true);
-      $expectedBase64UrlSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($expectedSignature));
+  // Helper: base64url decode
+  $b64url_to_bin = function($b64url) {
+      $b64 = strtr($b64url, '-_', '+/');
+      $pad = strlen($b64) % 4;
+      if ($pad) { $b64 .= str_repeat('=', 4 - $pad); }
+      return base64_decode($b64);
+  };
 
-      if ($signature !== $expectedBase64UrlSignature) {
-          return false; // Invalid JWT signature
+  if ($algorithm === 'RS256') {
+      $data = $header . '.' . $payload;
+      $sigBin = $b64url_to_bin($signature);
+      $ok = openssl_verify($data, $sigBin, openssl_pkey_get_public($publicKeyPem), OPENSSL_ALGO_SHA256);
+      if ($ok !== 1) {
+          return false; // Firma RS256 inválida
       }
-
-      $userData = json_decode($decodedPayload, true);
-      return $userData['user'];
+  } elseif ($algorithm === 'HS256') {
+      // Vulnerable path: treat public RSA key as HMAC secret
+      $expectedSignature = hash_hmac('sha256', $header . '.' . $payload, $publicKeyPem, true);
+      $expectedBase64UrlSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($expectedSignature));
+      if ($signature !== $expectedBase64UrlSignature) {
+          return false; // Firma HS256 inválida
+      }
+  } else {
+      return false; // Algoritmo no soportado
   }
+
+  $userData = json_decode($decodedPayload, true);
+  if (isset($userData['exp']) && is_numeric($userData['exp']) && $userData['exp'] < time()) {
+      return false;
+  }
+  return $userData['user'];
 }
 
 $cookieUser = null;
@@ -49,7 +67,7 @@ if (isset($_COOKIE["jwtToken"])) {
     <title>Json Web Token</title>
     <meta charset="utf-8">
     <?php
-    $conexion = mysqli_connect("db", "usuario", "contraseña", "database");
+    $conexion = mysqli_connect("127.0.0.1", "usuario", "password", "database");
     if ($conexion) {
       $conexion->set_charset("utf8");
     }
