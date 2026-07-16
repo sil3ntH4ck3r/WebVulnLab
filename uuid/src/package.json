@@ -1,0 +1,14 @@
+{
+  "name": "uuid-lab",
+  "version": "1.0.0",
+  "description": "UUID v1 Sandwich Attack Lab",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "uuid": "^9.0.0"
+  }
+}

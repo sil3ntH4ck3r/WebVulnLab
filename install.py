@@ -225,6 +225,7 @@ def default_containers(base_dir: Path) -> List[ContainerDef]:
         ContainerDef("specialgroups_v2", f"{P}/specialgroups", "8057:22", "--privileged --cgroupns=host --security-opt apparmor=unconfined --security-opt seccomp=unconfined --device /dev/fuse", "172.18.0.67", False),
         ContainerDef("serviceabuse_v2", f"{P}/serviceabuse", "8058:22", "--privileged", "172.18.0.68", False),
         ContainerDef("specificbinaries_v2", f"{P}/specificbinaries", "8059:22", "--privileged", "172.18.0.69", False),
+        ContainerDef("uuid_v2", f"{P}/uuid", "8060:80", "", "172.18.0.70", False),
     ]
     return items
 
@@ -253,6 +254,7 @@ class AppConfig:
         {"ip": "172.18.0.49", "domain": "graphql.local"},
         {"ip": "172.18.0.53", "domain": "oauth_gallery.local"},
         {"ip": "172.18.0.52", "domain": "oauth_printing.local"},
+        {"ip": "172.18.0.70", "domain": "uuid.local"},
     ])
 
     def to_json(self) -> dict:
