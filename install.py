@@ -2,18 +2,16 @@
 # -*- coding: utf-8 -*-
 import json
 import os
-import re
+import queue
+import re as _re
 import shutil
-import signal
 import subprocess
 import sys
 import threading
 import time
-import re as _re
-import shutil, subprocess
 from dataclasses import dataclass, asdict, field
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import Callable, List, Dict, Optional
 from collections import deque
 
 import tkinter as tk
@@ -21,7 +19,8 @@ from tkinter import ttk, messagebox, filedialog
 
 APP_NAME = "WebVulnLab Installer"
 CONFIG_PATH = Path.home() / ".webvulnlab_ui.json"
-LOG_PATH = Path("/var/log/assign_subnet.log")
+LOG_DIR = Path.home() / ".webvulnlab"
+LOG_PATH = LOG_DIR / "install.log"
 DEFAULT_NETWORK_NAME = "WebVulnLab-Network"
 DEFAULT_SUBNET_V4 = "172.18.0.0/16"
 DOCKER_DAEMON_FILE = Path("/etc/docker/daemon.json")
@@ -40,24 +39,40 @@ def which(cmd: str) -> Optional[str]:
     return shutil.which(cmd)
 
 
-def run_cmd(cmd: List[str], hide_output: bool, log_widget: Optional[tk.Text], cwd: Optional[str] = None) -> subprocess.CompletedProcess:
-    """Ejecuta un comando devolviendo CompletedProcess, logueando en tiempo real si no se oculta salida."""
-    if not hide_output and log_widget is not None:
-        log_widget_insert(log_widget, f"$ {' '.join(cmd)}\n")
+def _sink_call(sink: Optional[Callable[[str], None]], text: str):
+    """Llama al sink de forma segura. Si es None, no hace nada."""
+    if sink is None:
+        return
+    try:
+        sink(text)
+    except Exception:
+        pass
+
+
+def run_cmd(cmd: List[str], hide_output: bool, log_sink: Optional[Callable[[str], None]] = None, cwd: Optional[str] = None) -> subprocess.CompletedProcess:
+    """Ejecuta un comando devolviendo CompletedProcess, logueando en tiempo real si no se oculta salida.
+
+    `log_sink` debe ser un callable thread-safe (por ejemplo, un `queue.Queue.put_nowait`).
+    NO pasar nunca un widget de Tkinter: las llamadas se hacen desde un hilo secundario
+    y provocarían un segmentation fault en macOS.
+    """
+    if not hide_output and log_sink is not None:
+        _sink_call(log_sink, f"$ {' '.join(cmd)}\n")
     try:
         if hide_output:
             proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, cwd=cwd)
             append_log(proc.stdout)
-            if not hide_output and log_widget is not None:
-                log_widget_insert(log_widget, proc.stdout)
+            if not hide_output and log_sink is not None:
+                _sink_call(log_sink, proc.stdout)
             return proc
         else:
-            with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, cwd=cwd, bufsize=1) as p:
+            # Importante: NO usar bufsize=1 con text=True. En macOS con Tcl/Tk de Apple
+            # esa combinación puede provocar SIGSEGV al leer el stdout del subproceso.
+            with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, cwd=cwd) as p:
                 out_lines = []
                 for line in p.stdout:
                     out_lines.append(line)
-                    if log_widget is not None:
-                        log_widget_insert(log_widget, line)
+                    _sink_call(log_sink, line)
                 p.wait()
                 out = ''.join(out_lines)
                 append_log(out)
@@ -65,8 +80,7 @@ def run_cmd(cmd: List[str], hide_output: bool, log_widget: Optional[tk.Text], cw
     except FileNotFoundError:
         msg = f"Comando no encontrado: {cmd[0]}\n"
         append_log(msg)
-        if log_widget is not None:
-            log_widget_insert(log_widget, msg)
+        _sink_call(log_sink, msg)
         return subprocess.CompletedProcess(cmd, 127, msg, None)
 
 
@@ -268,9 +282,12 @@ class AppConfig:
 # ---------------------------- LÓGICA CORE ----------------------------
 
 class Core:
-    def __init__(self, cfg: AppConfig, log_widget: tk.Text):
+    def __init__(self, cfg: AppConfig, log_sink: Optional[Callable[[str], None]] = None):
         self.cfg = cfg
-        self.log_widget = log_widget
+        # `log_sink` es un callable thread-safe (queue.put_nowait o similar).
+        # NUNCA un widget Tk: los métodos de Core se ejecutan en un hilo
+        # secundario y acceder a Tk desde ahí provoca segfaults en macOS.
+        self.log_sink = log_sink
 
     def install_docker_official(self):
         append_log("Instalando Docker (repositorio oficial)...")
@@ -286,41 +303,41 @@ class Core:
             ["apt-get", "install", "-y", "docker-ce", "docker-ce-cli", "containerd.io", "docker-buildx-plugin", "docker-compose-plugin"],
         ]
         for c in cmds:
-            cp = run_cmd(c, self.cfg.hide_output, self.log_widget)
+            cp = run_cmd(c, self.cfg.hide_output, self.log_sink)
             if cp.returncode != 0:
                 raise RuntimeError("Fallo instalando Docker")
-        run_cmd(["systemctl", "enable", "--now", "docker"], self.cfg.hide_output, self.log_widget)
+        run_cmd(["systemctl", "enable", "--now", "docker"], self.cfg.hide_output, self.log_sink)
 
     def install_packages(self, packages: List[str]):
         if not packages:
             return
         cmd = ["apt-get", "update"]
-        run_cmd(cmd, self.cfg.hide_output, self.log_widget)
-        run_cmd(["apt-get", "install", "-y"] + packages, self.cfg.hide_output, self.log_widget)
+        run_cmd(cmd, self.cfg.hide_output, self.log_sink)
+        run_cmd(["apt-get", "install", "-y"] + packages, self.cfg.hide_output, self.log_sink)
 
     def ensure_ttyd(self):
         if which("ttyd"):
             append_log("ttyd ya instalado.\n")
             return
         append_log("Compilando e instalando ttyd...")
-        run_cmd(["apt-get", "update"], self.cfg.hide_output, self.log_widget)
+        run_cmd(["apt-get", "update"], self.cfg.hide_output, self.log_sink)
         self.install_packages(["build-essential", "cmake", "git", "libjson-c-dev", "libwebsockets-dev"]) 
         tmpdir = "/tmp/ttyd-build"
         shutil.rmtree(tmpdir, ignore_errors=True)
         os.makedirs(tmpdir, exist_ok=True)
-        run_cmd(["git", "clone", "https://github.com/tsl0922/ttyd.git", tmpdir], self.cfg.hide_output, self.log_widget)
+        run_cmd(["git", "clone", "https://github.com/tsl0922/ttyd.git", tmpdir], self.cfg.hide_output, self.log_sink)
         os.makedirs(f"{tmpdir}/build", exist_ok=True)
-        run_cmd(["cmake", ".."], self.cfg.hide_output, self.log_widget, cwd=f"{tmpdir}/build")
-        cp = run_cmd(["make"], self.cfg.hide_output, self.log_widget, cwd=f"{tmpdir}/build")
+        run_cmd(["cmake", ".."], self.cfg.hide_output, self.log_sink, cwd=f"{tmpdir}/build")
+        cp = run_cmd(["make"], self.cfg.hide_output, self.log_sink, cwd=f"{tmpdir}/build")
         if cp.returncode != 0:
             raise RuntimeError("Error compilando ttyd")
-        run_cmd(["make", "install"], self.cfg.hide_output, self.log_widget, cwd=f"{tmpdir}/build")
+        run_cmd(["make", "install"], self.cfg.hide_output, self.log_sink, cwd=f"{tmpdir}/build")
 
     def start_docker_service(self):
-        run_cmd(["systemctl", "start", "docker"], self.cfg.hide_output, self.log_widget)
+        run_cmd(["systemctl", "start", "docker"], self.cfg.hide_output, self.log_sink)
 
     def _detect_global_prefix(self) -> Optional[str]:
-        cp = run_cmd(["bash", "-lc", "ip -6 addr show scope global | grep -oP 'inet6 \\K[^/]+(?=/)' || true"], True, self.log_widget)
+        cp = run_cmd(["bash", "-lc", "ip -6 addr show scope global | grep -oP 'inet6 \\K[^/]+(?=/)' || true"], True, self.log_sink)
         addrs = [a.strip() for a in cp.stdout.splitlines() if a.strip()]
         for addr in addrs:
             parts = addr.split(":")
@@ -329,13 +346,13 @@ class Core:
         return None
 
     def _generate_ula_prefix(self) -> str:
-        cp = run_cmd(["bash", "-lc", "openssl rand -hex 5"], True, self.log_widget)
+        cp = run_cmd(["bash", "-lc", "openssl rand -hex 5"], True, self.log_sink)
         gid = re.sub(r"[^0-9a-fA-F]", "", (cp.stdout or "")).lower()[:10].ljust(10, "0")
         return f"fd{gid[0:2]}:{gid[2:6]}:{gid[6:10]}:"
 
     def _is_subnet_in_use(self, subnet: str) -> bool:
         needle = subnet.split("/")[0]
-        cp = run_cmd(["bash", "-lc", f"ip -6 addr show | grep -q '{needle}' && echo USED || echo FREE"], True, self.log_widget)
+        cp = run_cmd(["bash", "-lc", f"ip -6 addr show | grep -q '{needle}' && echo USED || echo FREE"], True, self.log_sink)
         return "USED" in cp.stdout
 
     def _find_free_subnet(self, base_prefix: str) -> Optional[str]:
@@ -385,16 +402,16 @@ class Core:
         with open(tmp, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2)
         shutil.move(tmp, DOCKER_DAEMON_FILE)
-        cp = run_cmd(["systemctl", "restart", "docker"], self.cfg.hide_output, self.log_widget)
+        cp = run_cmd(["systemctl", "restart", "docker"], self.cfg.hide_output, self.log_sink)
         if cp.returncode != 0 and backup:
             shutil.copy2(backup, DOCKER_DAEMON_FILE)
-            run_cmd(["systemctl", "restart", "docker"], self.cfg.hide_output, self.log_widget)
+            run_cmd(["systemctl", "restart", "docker"], self.cfg.hide_output, self.log_sink)
             raise RuntimeError("No se pudo reiniciar Docker; restaurado backup.")
         append_log("Docker reiniciado; IPv6 aplicado.\n")
 
     def ensure_network(self):
         append_log(f"Creando red {self.cfg.network_name} con subnet {self.cfg.subnet_v4} (si no existe)\n")
-        run_cmd(["bash", "-lc", f"docker network inspect {self.cfg.network_name} >/dev/null 2>&1 || docker network create --subnet={self.cfg.subnet_v4} {self.cfg.network_name}"], self.cfg.hide_output, self.log_widget)
+        run_cmd(["bash", "-lc", f"docker network inspect {self.cfg.network_name} >/dev/null 2>&1 || docker network create --subnet={self.cfg.subnet_v4} {self.cfg.network_name}"], self.cfg.hide_output, self.log_sink)
 
     def generate_http3_certs(self):
         cert = "/etc/ssl/certs/http3.local.crt"
@@ -404,7 +421,7 @@ class Core:
             return
         os.makedirs("/etc/ssl/certs", exist_ok=True)
         os.makedirs("/etc/ssl/private", exist_ok=True)
-        cp = run_cmd(["bash", "-lc", f"openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout {key} -out {cert} -subj '/CN=http3.local'"], self.cfg.hide_output, self.log_widget)
+        cp = run_cmd(["bash", "-lc", f"openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout {key} -out {cert} -subj '/CN=http3.local'"], self.cfg.hide_output, self.log_sink)
         if cp.returncode == 0:
             append_log(f"Certificados generados en {cert} y {key}.\n")
         else:
@@ -426,13 +443,13 @@ class Core:
                 "chmod +x /usr/local/bin/mkcert;"
                 "hash -r; command -v mkcert && mkcert -version"
             )
-            run_cmd(["bash", "-lc", install_script], self.cfg.hide_output, self.log_widget)
-        run_cmd(["bash", "-lc", "mkcert -install"], self.cfg.hide_output, self.log_widget)
+            run_cmd(["bash", "-lc", install_script], self.cfg.hide_output, self.log_sink)
+        run_cmd(["bash", "-lc", "mkcert -install"], self.cfg.hide_output, self.log_sink)
         if os.path.exists(cert):
-            cp = run_cmd(["bash", "-lc", f"openssl x509 -enddate -noout -in {cert} | cut -d= -f2"], True, self.log_widget)
+            cp = run_cmd(["bash", "-lc", f"openssl x509 -enddate -noout -in {cert} | cut -d= -f2"], True, self.log_sink)
             exp = cp.stdout.strip()
             if exp:
-                cp2 = run_cmd(["bash", "-lc", f"date --date='{exp}' +%s"], True, self.log_widget)
+                cp2 = run_cmd(["bash", "-lc", f"date --date='{exp}' +%s"], True, self.log_sink)
                 exp_ts = int((cp2.stdout or "0").strip() or 0)
                 now_ts = int(time.time())
                 if exp_ts > now_ts:
@@ -440,23 +457,23 @@ class Core:
                     return
                 else:
                     append_log(f"Certificado caducado ({exp}). Regenerando...\n")
-        run_cmd(["mkcert", "-install"], self.cfg.hide_output, self.log_widget)
-        cp = run_cmd(["bash", "-lc", "mkcert -CAROOT"], True, self.log_widget)
+        run_cmd(["mkcert", "-install"], self.cfg.hide_output, self.log_sink)
+        cp = run_cmd(["bash", "-lc", "mkcert -CAROOT"], True, self.log_sink)
         caroot = cp.stdout.strip()
-        run_cmd(["bash", "-lc", f"cp '{caroot}/rootCA.pem' /usr/local/share/ca-certificates/mkcert-rootCA.crt && update-ca-certificates -q"], self.cfg.hide_output, self.log_widget)
-        run_cmd(["bash", "-lc", "mkdir -p /etc/pki/nssdb && [[ -f /etc/pki/nssdb/key4.db ]] || certutil -N -d sql:/etc/pki/nssdb -f /dev/null"], self.cfg.hide_output, self.log_widget)
-        run_cmd(["bash", "-lc", f"certutil -A -d sql:/etc/pki/nssdb -n 'mkcert development CA' -t 'CT,,' -i '{caroot}/rootCA.pem' -f /dev/null || true"], self.cfg.hide_output, self.log_widget)
+        run_cmd(["bash", "-lc", f"cp '{caroot}/rootCA.pem' /usr/local/share/ca-certificates/mkcert-rootCA.crt && update-ca-certificates -q"], self.cfg.hide_output, self.log_sink)
+        run_cmd(["bash", "-lc", "mkdir -p /etc/pki/nssdb && [[ -f /etc/pki/nssdb/key4.db ]] || certutil -N -d sql:/etc/pki/nssdb -f /dev/null"], self.cfg.hide_output, self.log_sink)
+        run_cmd(["bash", "-lc", f"certutil -A -d sql:/etc/pki/nssdb -n 'mkcert development CA' -t 'CT,,' -i '{caroot}/rootCA.pem' -f /dev/null || true"], self.cfg.hide_output, self.log_sink)
         sudo_user = os.environ.get("SUDO_USER")
         if sudo_user and sudo_user != "root":
-            cp2 = run_cmd(["bash", "-lc", f"getent passwd {sudo_user} | cut -d: -f6"], True, self.log_widget)
+            cp2 = run_cmd(["bash", "-lc", f"getent passwd {sudo_user} | cut -d: -f6"], True, self.log_sink)
             userhome = cp2.stdout.strip()
             userdb = f"sql:{userhome}/.pki/nssdb"
-            run_cmd(["bash", "-lc", f"mkdir -p '{userhome}/.pki/nssdb' && certutil -N -d '{userdb}' -f /dev/null 2>/dev/null || true"], self.cfg.hide_output, self.log_widget)
-            run_cmd(["bash", "-lc", f"certutil -A -d '{userdb}' -n 'mkcert development CA' -t 'CT,,' -i '{caroot}/rootCA.pem' -f /dev/null || true"], self.cfg.hide_output, self.log_widget)
-            run_cmd(["chown", "-R", f"{sudo_user}:{sudo_user}", f"{userhome}/.pki/nssdb"], self.cfg.hide_output, self.log_widget)
+            run_cmd(["bash", "-lc", f"mkdir -p '{userhome}/.pki/nssdb' && certutil -N -d '{userdb}' -f /dev/null 2>/dev/null || true"], self.cfg.hide_output, self.log_sink)
+            run_cmd(["bash", "-lc", f"certutil -A -d '{userdb}' -n 'mkcert development CA' -t 'CT,,' -i '{caroot}/rootCA.pem' -f /dev/null || true"], self.cfg.hide_output, self.log_sink)
+            run_cmd(["chown", "-R", f"{sudo_user}:{sudo_user}", f"{userhome}/.pki/nssdb"], self.cfg.hide_output, self.log_sink)
         os.makedirs(os.path.dirname(cert), exist_ok=True)
         os.makedirs(os.path.dirname(key), exist_ok=True)
-        run_cmd(["mkcert", "-cert-file", cert, "-key-file", key, "menu.local", "127.0.0.1", "::1"], self.cfg.hide_output, self.log_widget)
+        run_cmd(["mkcert", "-cert-file", cert, "-key-file", key, "menu.local", "127.0.0.1", "::1"], self.cfg.hide_output, self.log_sink)
         append_log(f"Certificado menu.local listo en {cert} y {key}\n")
 
     def remove_menu_local_certs(self):
@@ -469,14 +486,14 @@ class Core:
             except FileNotFoundError:
                 pass
         if which("mkcert"):
-            run_cmd(["bash", "-lc", "rm -f /usr/local/share/ca-certificates/mkcert-rootCA.crt && update-ca-certificates -q"], self.cfg.hide_output, self.log_widget)
-            run_cmd(["bash", "-lc", "certutil -d sql:/etc/pki/nssdb -D -n 'mkcert development CA' -f /dev/null || true"], self.cfg.hide_output, self.log_widget)
+            run_cmd(["bash", "-lc", "rm -f /usr/local/share/ca-certificates/mkcert-rootCA.crt && update-ca-certificates -q"], self.cfg.hide_output, self.log_sink)
+            run_cmd(["bash", "-lc", "certutil -d sql:/etc/pki/nssdb -D -n 'mkcert development CA' -f /dev/null || true"], self.cfg.hide_output, self.log_sink)
             sudo_user = os.environ.get("SUDO_USER")
             if sudo_user and sudo_user != "root":
-                cp2 = run_cmd(["bash", "-lc", f"getent passwd {sudo_user} | cut -d: -f6"], True, self.log_widget)
+                cp2 = run_cmd(["bash", "-lc", f"getent passwd {sudo_user} | cut -d: -f6"], True, self.log_sink)
                 userhome = cp2.stdout.strip()
                 userdb = f"sql:{userhome}/.pki/nssdb"
-                run_cmd(["bash", "-lc", f"certutil -d '{userdb}' -D -n 'mkcert development CA' -f /dev/null || true"], self.cfg.hide_output, self.log_widget)
+                run_cmd(["bash", "-lc", f"certutil -d '{userdb}' -D -n 'mkcert development CA' -f /dev/null || true"], self.cfg.hide_output, self.log_sink)
 
     def configure_terminal_wrapper(self):
         src = Path.cwd() / "docker_exec_wrapper.sh"
@@ -487,7 +504,7 @@ class Core:
             shutil.copy2(src, WRAPPER_SCRIPT_DEST)
             append_log(f"Copiado wrapper a {WRAPPER_SCRIPT_DEST}\n")
         os.chmod(WRAPPER_SCRIPT_DEST, 0o755)
-        run_cmd(["chown", "root:root", str(WRAPPER_SCRIPT_DEST)], self.cfg.hide_output, self.log_widget)
+        run_cmd(["chown", "root:root", str(WRAPPER_SCRIPT_DEST)], self.cfg.hide_output, self.log_sink)
         if not SUDOERS_FILE.exists():
             SUDOERS_FILE.write_text(f"www-data ALL=(ALL) NOPASSWD: {WRAPPER_SCRIPT_DEST}\n", encoding='utf-8')
             os.chmod(SUDOERS_FILE, 0o440)
@@ -499,14 +516,14 @@ class Core:
         if not tablero_src.exists():
             raise RuntimeError(f"No existe {tablero_src}")
         dst = Path("/var/www/html") / tablero_src.name
-        run_cmd(["bash", "-lc", f"rm -rf '{dst}' && cp -R '{tablero_src}' '/var/www/html/'"], self.cfg.hide_output, self.log_widget)
-        run_cmd(["bash", "-lc", r"sed -i 's/\-\-containerd=\/run\/containerd\/containerd.sock/\-H=tcp:\/\/0.0.0.0:2375/' /lib/systemd/system/docker.service"], self.cfg.hide_output, self.log_widget)
-        run_cmd(["systemctl", "daemon-reload"], self.cfg.hide_output, self.log_widget)
-        run_cmd(["systemctl", "restart", "docker"], self.cfg.hide_output, self.log_widget)
-        cp = run_cmd(["bash", "-lc", "php -v | sed -nr 's/PHP[[:space:]]+([0-9]+\\.[0-9]+).*/\\1/p'"], True, self.log_widget)
+        run_cmd(["bash", "-lc", f"rm -rf '{dst}' && cp -R '{tablero_src}' '/var/www/html/'"], self.cfg.hide_output, self.log_sink)
+        run_cmd(["bash", "-lc", r"sed -i 's/\-\-containerd=\/run\/containerd\/containerd.sock/\-H=tcp:\/\/0.0.0.0:2375/' /lib/systemd/system/docker.service"], self.cfg.hide_output, self.log_sink)
+        run_cmd(["systemctl", "daemon-reload"], self.cfg.hide_output, self.log_sink)
+        run_cmd(["systemctl", "restart", "docker"], self.cfg.hide_output, self.log_sink)
+        cp = run_cmd(["bash", "-lc", "php -v | sed -nr 's/PHP[[:space:]]+([0-9]+\\.[0-9]+).*/\\1/p'"], True, self.log_sink)
         version = (cp.stdout.strip() or "8.2")
-        run_cmd(["apt-get", "install", f"php{version}-curl", "-y"], self.cfg.hide_output, self.log_widget)
-        run_cmd(["systemctl", "restart", "apache2"], self.cfg.hide_output, self.log_widget)
+        run_cmd(["apt-get", "install", f"php{version}-curl", "-y"], self.cfg.hide_output, self.log_sink)
+        run_cmd(["systemctl", "restart", "apache2"], self.cfg.hide_output, self.log_sink)
 
     def setup_tablero_vhost(self):
         vhost_path = Path("/etc/apache2/sites-available/tablero.local.conf")
@@ -518,28 +535,28 @@ class Core:
 </VirtualHost>
 """.strip() + "\n"
         vhost_path.write_text(vhost_content, encoding='utf-8')
-        run_cmd(["a2ensite", "tablero.local.conf"], self.cfg.hide_output, self.log_widget)
-        run_cmd(["a2enmod", "proxy", "proxy_http"], self.cfg.hide_output, self.log_widget)
-        cp = run_cmd(["systemctl", "reload", "apache2"], self.cfg.hide_output, self.log_widget)
+        run_cmd(["a2ensite", "tablero.local.conf"], self.cfg.hide_output, self.log_sink)
+        run_cmd(["a2enmod", "proxy", "proxy_http"], self.cfg.hide_output, self.log_sink)
+        cp = run_cmd(["systemctl", "reload", "apache2"], self.cfg.hide_output, self.log_sink)
         if cp.returncode != 0:
             append_log("apache2 no estaba activo; intentando arrancarlo...\n")
-            run_cmd(["systemctl", "start", "apache2"], self.cfg.hide_output, self.log_widget)
-        ensure_host_entry("127.0.0.1", "tablero.local", self.cfg.hide_output, self.log_widget)
+            run_cmd(["systemctl", "start", "apache2"], self.cfg.hide_output, self.log_sink)
+        ensure_host_entry("127.0.0.1", "tablero.local", self.cfg.hide_output, self.log_sink)
 
     def reset_apache_to_defaults(self):
         append_log("Restaurando Apache a configuración por defecto...\n")
-        run_cmd(["bash", "-lc", "a2dissite tablero.local.conf >/dev/null 2>&1 || true"], self.cfg.hide_output, self.log_widget)
-        run_cmd(["bash", "-lc", "rm -f /etc/apache2/sites-available/tablero.local.conf"], self.cfg.hide_output, self.log_widget)
-        run_cmd(["bash", "-lc", "a2ensite 000-default.conf >/dev/null 2>&1 || true"], self.cfg.hide_output, self.log_widget)
-        cp = run_cmd(["systemctl", "reload", "apache2"], self.cfg.hide_output, self.log_widget)
+        run_cmd(["bash", "-lc", "a2dissite tablero.local.conf >/dev/null 2>&1 || true"], self.cfg.hide_output, self.log_sink)
+        run_cmd(["bash", "-lc", "rm -f /etc/apache2/sites-available/tablero.local.conf"], self.cfg.hide_output, self.log_sink)
+        run_cmd(["bash", "-lc", "a2ensite 000-default.conf >/dev/null 2>&1 || true"], self.cfg.hide_output, self.log_sink)
+        cp = run_cmd(["systemctl", "reload", "apache2"], self.cfg.hide_output, self.log_sink)
         if cp.returncode != 0:
             append_log("apache2 no estaba activo; intentando arrancarlo...\n")
-            run_cmd(["systemctl", "start", "apache2"], self.cfg.hide_output, self.log_widget)
+            run_cmd(["systemctl", "start", "apache2"], self.cfg.hide_output, self.log_sink)
         append_log("Apache restaurado (sitio por defecto habilitado).\n")
 
     def delete_network(self):
         append_log(f"Eliminando red {self.cfg.network_name} (si existe)...\n")
-        run_cmd(["bash", "-lc", f"docker network rm {self.cfg.network_name} >/dev/null 2>&1 || true"], self.cfg.hide_output, self.log_widget)
+        run_cmd(["bash", "-lc", f"docker network rm {self.cfg.network_name} >/dev/null 2>&1 || true"], self.cfg.hide_output, self.log_sink)
 
     def revert_docker_ipv6(self):
         append_log("Revirtiendo ajustes IPv6 en /etc/docker/daemon.json ...\n")
@@ -556,7 +573,7 @@ class Core:
             with open(tmp, 'w', encoding='utf-8') as f:
                 json.dump(data, f, indent=2)
             shutil.move(tmp, DOCKER_DAEMON_FILE)
-            run_cmd(["systemctl", "restart", "docker"], self.cfg.hide_output, self.log_widget)
+            run_cmd(["systemctl", "restart", "docker"], self.cfg.hide_output, self.log_sink)
             append_log("IPv6 revertido y Docker reiniciado.\n")
         except Exception as e:
             raise RuntimeError(f"No se pudo revertir IPv6: {e}")
@@ -576,30 +593,30 @@ class Core:
             ["bash", "-lc", "docker system prune -a -f"],
         ]
         for c in cmds:
-            run_cmd(c, self.cfg.hide_output, self.log_widget)
+            run_cmd(c, self.cfg.hide_output, self.log_sink)
         append_log("Limpieza completada.\n")
 
     def apply_hosts(self):
         for item in self.cfg.extra_hosts:
-            ensure_host_entry(item["ip"], item["domain"], self.cfg.hide_output, self.log_widget)
+            ensure_host_entry(item["ip"], item["domain"], self.cfg.hide_output, self.log_sink)
 
     def is_port_in_use(self, port: str) -> bool:
-        cp = run_cmd(["bash", "-lc", f"lsof -i :{port} -sTCP:LISTEN >/dev/null 2>&1 && echo BUSY || echo OK"], True, self.log_widget)
+        cp = run_cmd(["bash", "-lc", f"lsof -i :{port} -sTCP:LISTEN >/dev/null 2>&1 && echo BUSY || echo OK"], True, self.log_sink)
         return "BUSY" in cp.stdout
 
     def show_port_details(self, port: str):
-        run_cmd(["bash", "-lc", f"echo 'Proceso(s) en {port}:'; lsof -i :{port} -sTCP:LISTEN || true"], False, self.log_widget)
+        run_cmd(["bash", "-lc", f"echo 'Proceso(s) en {port}:'; lsof -i :{port} -sTCP:LISTEN || true"], False, self.log_sink)
     
     def get_port_process_info(self, port: str) -> str:
-        cp = run_cmd(["bash", "-lc", f"LC_ALL=C lsof -nP -i :{port} -sTCP:LISTEN || true"], True, self.log_widget)
+        cp = run_cmd(["bash", "-lc", f"LC_ALL=C lsof -nP -i :{port} -sTCP:LISTEN || true"], True, self.log_sink)
         return _format_lsof_columns(cp.stdout.strip())
 
     def kill_process_on_port(self, port: str):
-        run_cmd(["bash", "-lc", f"pid=$(lsof -t -i :{port} -sTCP:LISTEN 2>/dev/null) && [[ -n $pid ]] && kill -9 $pid || true"], self.cfg.hide_output, self.log_widget)
+        run_cmd(["bash", "-lc", f"pid=$(lsof -t -i :{port} -sTCP:LISTEN 2>/dev/null) && [[ -n $pid ]] && kill -9 $pid || true"], self.cfg.hide_output, self.log_sink)
 
     def build_image(self, c: ContainerDef):
         append_log(f"Construyendo imagen {c.name}\n")
-        cp = run_cmd(["docker", "build", "-t", c.name, c.path], self.cfg.hide_output, self.log_widget)
+        cp = run_cmd(["docker", "build", "-t", c.name, c.path], self.cfg.hide_output, self.log_sink)
         if cp.returncode != 0:
             if not self.cfg.ignore_errors:
                 raise RuntimeError(f"Falló build de {c.name}")
@@ -637,19 +654,19 @@ class Core:
         mounts: List[str] = []
         if os.path.isdir(os.path.join(c.path, "src")):
             mounts = ["-v", f"{c.path}/src:/var/www/html"]
-        run_cmd(["bash", "-lc", f"docker rm -f {c.name} >/dev/null 2>&1 || true"], True, self.log_widget)
+        run_cmd(["bash", "-lc", f"docker rm -f {c.name} >/dev/null 2>&1 || true"], True, self.log_sink)
         cmd = ["docker", "run", "--name", c.name, "--network", self.cfg.network_name, "--ip", c.static_ip, "-d"] + port_args + add_args + mounts + [c.name]
-        cp = run_cmd(cmd, self.cfg.hide_output, self.log_widget)
+        cp = run_cmd(cmd, self.cfg.hide_output, self.log_sink)
         if cp.returncode != 0 and not self.cfg.ignore_errors:
             raise RuntimeError(f"Falló run de {c.name}")
         domain = (c.name.split("_v2")[0] + ".local")
         if c.name == "domainzonetransfer_v2":
-            ensure_host_entry(c.static_ip, "domainzonetransfer.local", self.cfg.hide_output, self.log_widget)
-            ensure_host_entry(c.static_ip, "codefusiondev.domainzonetransfer.local", self.cfg.hide_output, self.log_widget)
+            ensure_host_entry(c.static_ip, "domainzonetransfer.local", self.cfg.hide_output, self.log_sink)
+            ensure_host_entry(c.static_ip, "codefusiondev.domainzonetransfer.local", self.cfg.hide_output, self.log_sink)
         else:
-            ensure_host_entry(c.static_ip, domain, self.cfg.hide_output, self.log_widget)
+            ensure_host_entry(c.static_ip, domain, self.cfg.hide_output, self.log_sink)
         if self.cfg.stop_after_start:
-            run_cmd(["docker", "stop", c.name], self.cfg.hide_output, self.log_widget)
+            run_cmd(["docker", "stop", c.name], self.cfg.hide_output, self.log_sink)
 
     def build_and_run_selected(self, containers: List[ContainerDef]):
         self.ensure_network()
@@ -661,7 +678,7 @@ class Core:
 
     def run_compose(self, d: 'ComposeDef'):
         append_log(f"Iniciando stack docker compose: {d.vuln} ({d.compose_path})\n")
-        cp = run_cmd(["docker", "compose", "-f", d.compose_path, "up", "-d"], self.cfg.hide_output, self.log_widget)
+        cp = run_cmd(["docker", "compose", "-f", d.compose_path, "up", "-d"], self.cfg.hide_output, self.log_sink)
         if cp.returncode == 0:
             self.apply_hosts()
         if cp.returncode != 0 and not self.cfg.ignore_errors:
@@ -670,19 +687,19 @@ class Core:
 
 # ---------------------------- HELPERS OS ----------------------------
 
-def ensure_host_entry(ip: str, domains: str, hide_output: bool, log_widget: tk.Text):
+def ensure_host_entry(ip: str, domains: str, hide_output: bool, log_sink: Optional[Callable[[str], None]] = None):
     first_domain = domains.split()[0]
-    cp = run_cmd(["bash", "-lc", f"grep -qE '\\b{first_domain}\\b' /etc/hosts && echo YES || echo NO"], True, log_widget)
+    cp = run_cmd(["bash", "-lc", f"grep -qE '\\b{first_domain}\\b' /etc/hosts && echo YES || echo NO"], True, log_sink)
     if "YES" in cp.stdout:
         pattern = rf'^\s*{ip}\s+.*\b{first_domain}\b'
-        cp2 = run_cmd(["bash", "-lc", f"grep -qE '{pattern}' /etc/hosts && echo OK || echo FIX"],True,log_widget)
+        cp2 = run_cmd(["bash", "-lc", f"grep -qE '{pattern}' /etc/hosts && echo OK || echo FIX"], True, log_sink)
         if "FIX" in cp2.stdout:
-            run_cmd(["bash", "-lc",fr"sed -i.bak '/\<{first_domain}\>/ s/^[[:space:]]*[0-9.]\+/{ip}/' /etc/hosts"],hide_output,log_widget)
+            run_cmd(["bash", "-lc", fr"sed -i.bak '/\<{first_domain}\>/ s/^[[:space:]]*[0-9.]\+/{ip}/' /etc/hosts"], hide_output, log_sink)
             append_log(f"Actualizada entrada hosts para {domains} -> {ip}\n")
         else:
             append_log(f"Entrada hosts correcta para {domains}\n")
     else:
-        run_cmd(["bash", "-lc", f"echo '{ip} {domains}' >> /etc/hosts"], hide_output, log_widget)
+        run_cmd(["bash", "-lc", f"echo '{ip} {domains}' >> /etc/hosts"], hide_output, log_sink)
         append_log(f"Añadida entrada hosts: {ip} {domains}\n")
 
 def make_treeview_sortable(tree: ttk.Treeview):
@@ -756,7 +773,63 @@ class App(tk.Tk):
         self._build_menu()
         self._build_main()
 
-        self.core = Core(self.cfg, self.log_text)
+        # ------------------------------------------------------------------
+        # Canalización thread-safe para los logs.
+        # `Core` se ejecuta en hilos secundarios; nunca debe tocar widgets Tk.
+        # El worker encola texto con `self._enqueue_log`; el hilo principal
+        # lo drena con `_drain_log` y actualiza el widget. Esto evita el
+        # segfault que aparecía al pulsar "Run compose" en macOS.
+        # ------------------------------------------------------------------
+        self.log_queue: "queue.Queue[str]" = queue.Queue()
+        self._log_buffer = []
+        self._LOG_BUFFER_MAX = 5000  # líneas; evita OOM con compose verbosos
+        self.core = Core(self.cfg, log_sink=self._enqueue_log)
+        self.after(50, self._drain_log)
+
+    # --- logging thread-safe --------------------------------------------
+
+    def _enqueue_log(self, text: str) -> None:
+        """Sink thread-safe: lo llama Core (worker thread) sin tocar Tk."""
+        if not text:
+            return
+        try:
+            self.log_queue.put_nowait(text)
+        except queue.Full:
+            # Si la cola se desborda, descarta lo más antiguo en memoria
+            if self._log_buffer:
+                self._log_buffer.pop(0)
+            self._log_buffer.append(text)
+            if len(self._log_buffer) > self._LOG_BUFFER_MAX:
+                self._log_buffer = self._log_buffer[-self._LOG_BUFFER_MAX:]
+
+    def _drain_log(self) -> None:
+        """Drena la cola y actualiza el widget desde el hilo principal."""
+        try:
+            while True:
+                text = self.log_queue.get_nowait()
+                self._append_log_safe(text)
+        except queue.Empty:
+            pass
+        # Vuelca cualquier overflow que hayamos retenido en memoria
+        if self._log_buffer:
+            buf, self._log_buffer = self._log_buffer, []
+            for line in buf:
+                self._append_log_safe(line)
+        self.after(50, self._drain_log)
+
+    def _append_log_safe(self, text: str) -> None:
+        """Inserta texto en el log widget. SOLO desde el hilo principal."""
+        self.log_text.configure(state='normal')
+        self.log_text.insert('end', text)
+        self.log_text.see('end')
+        self.log_text.configure(state='disabled')
+
+    def _post(self, callback) -> None:
+        """Programa la ejecución de un callback en el hilo principal de Tk."""
+        try:
+            self.after(0, callback)
+        except Exception:
+            pass
 
     def _build_menu(self):
         menubar = tk.Menu(self)
@@ -1362,7 +1435,11 @@ class App(tk.Tk):
 
     def run_thread(self, func, desc: Optional[str] = None):
         def wrapper():
-            self.tabs.select(self.tab_logs)
+            # Cualquier acceso a widgets Tk o a messagebox debe pasar por
+            # `_post` para ejecutarse en el hilo principal. Lo contrario
+            # provoca segmentation faults intermitentes en macOS.
+            self._post(lambda: self.tabs.select(self.tab_logs))
+
             action = desc
             if not action:
                 try:
@@ -1372,24 +1449,22 @@ class App(tk.Tk):
                 except Exception:
                     action = None
             action = action or "operación"
-            try:
-                self.status_var.set(f"Ejecutando… {action}")
-            except Exception:
-                pass
-            log_widget_insert(self.log_text, f"\n▶️ Ejecutando… {action}\n")
+
+            self._post(lambda a=action: self.status_var.set(f"Ejecutando… {a}"))
+            self._enqueue_log(f"\n▶️ Ejecutando… {action}\n")
+
             try:
                 func()
-                self.status_var.set(f"Completado: {action}")
-                log_widget_insert(self.log_text, "\n✔️ Operación completada.\n\n")
+                self._post(lambda a=action: self.status_var.set(f"Completado: {a}"))
+                self._enqueue_log("\n✔️ Operación completada.\n\n")
             except Exception as e:
                 append_log(f"ERROR: {e}\n")
-                log_widget_insert(self.log_text, f"\n❌ ERROR: {e}\n\n")
-                try:
-                    self.status_var.set(f"ERROR: {e}")
-                except Exception:
-                    pass
+                self._enqueue_log(f"\n❌ ERROR: {e}\n\n")
+                err = str(e)
+                self._post(lambda e=err: self.status_var.set(f"ERROR: {e}"))
                 if not self.cfg.ignore_errors:
-                    messagebox.showerror(APP_NAME, str(e))
+                    self._post(lambda e=err: messagebox.showerror(APP_NAME, e))
+
         t = threading.Thread(target=wrapper, daemon=True)
         t.start()
 
