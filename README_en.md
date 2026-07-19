@@ -78,6 +78,9 @@ In the Containers tab, select the ones you want and click (De)activate to enable
 
 | Lab         | Status |
 |:------------|:------:|
+**WASM Out Of Bounds** | ⏳ |
+**WASM Overflow** | ⏳ |
+**CRLF Injection** | ⏳ |
 **HTTP smuggling** | ⏳ |
 **Active Directory** | ⏳ |
 **And much more!** |
@@ -138,6 +141,8 @@ In the Containers tab, select the ones you want and click (De)activate to enable
 **[Java Deserelization](http://javadeserelization.local/)** | ✅ |
 **[JNDI Injection](http://jndiinjection.local/)** | ✅ |
 **[Web Cache Poisoning](http://webcachepoisoning.local/)** | ✅ |
+**[UUID](http://uuid.local/)** | ✅ |
+**[RSQL Injection](http://rsqli.local/)** | ✅ |
 **Capabilities** | ✅ |
 **Cronjob** | ✅ |
 **Path Hijacking** | ✅ |

@@ -227,6 +227,9 @@ def default_containers(base_dir: Path) -> List[ContainerDef]:
         ContainerDef("specificbinaries_v2", f"{P}/specificbinaries", "8059:22", "--privileged", "172.18.0.69", False),
         ContainerDef("uuid_v2", f"{P}/uuid", "8060:80", "", "172.18.0.70", False),
         ContainerDef("rsqli_v2", f"{P}/rsqli", "8061:80", "", "172.18.0.71", False),
+	#ContainerDef("wasmoob_v2", f"{P}/wasmoob", "8062:80", "", "172.18.0.72", False),
+        #ContainerDef("wasoverflow_v2", f"{P}/wasoverflow", "8063:80", "", "172.18.0.73", False),
+	#ContainerDef("crlfinjection_v2", f"{P}/crlfinjection", "8064:80", "", "172.18.0.74", False),
     ]
     return items
 
@@ -255,8 +258,6 @@ class AppConfig:
         {"ip": "172.18.0.49", "domain": "graphql.local"},
         {"ip": "172.18.0.53", "domain": "oauth_gallery.local"},
         {"ip": "172.18.0.52", "domain": "oauth_printing.local"},
-        {"ip": "172.18.0.70", "domain": "uuid.local"},
-        {"ip": "172.18.0.71", "domain": "rsqli.local"},
     ])
 
     def to_json(self) -> dict:

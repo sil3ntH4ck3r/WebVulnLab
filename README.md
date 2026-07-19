@@ -78,6 +78,9 @@ En la pestaña Contenedores, marca los que quieras y pulsa (Des)activar para act
 
 | Laboratorio | Estado |
 |:------------|:------:|
+**WASM Out Of Bounds** | ⏳ |
+**WASM Overflow** | ⏳ |
+**CRLF Injection** | ⏳ |
 **HTTP smuggling** | ⏳ |
 **Active Directory** | ⏳ |
 **Y mucho más!** |
@@ -113,7 +116,7 @@ En la pestaña Contenedores, marca los que quieras y pulsa (Des)activar para act
 **[NoSQL Injections](http://nosqlinjection.local/)** | ✅ |
 **[LDAP Injections](http://ldapinjection.local/)** | ✅ |
 **[API's Abuse and Mass-Asignament Attack](http://apiabuse.local/)** | ✅ |
-**[File Upload Abuse](http://fileuploadabuse.local/)** | ✅ |
+w**[File Upload Abuse](http://fileuploadabuse.local/)** | ✅ |
 **[Prototype Pollution](http://prototypepollution.local/)** | ✅ |
 **[Open Redirect](http://openredirect.local/)** | ✅ |
 **[WebDAV](http://webdav.local/)** | ✅ |
@@ -138,6 +141,8 @@ En la pestaña Contenedores, marca los que quieras y pulsa (Des)activar para act
 **[Deserialización insegura en Java](http://javadeserelization.local/)** | ✅ |
 **[JNDI Injection](http://jndiinjection.local/)** | ✅ |
 **[Web Cache Poisoning](http://webcachepoisoning.local/)** | ✅ |
+**[UUID](http://uuid.local/)** | ✅ |
+**[RSQL Injection](http://rsqli.local/)** | ✅ |
 **Capabilities** | ✅ |
 **Cronjob** | ✅ |
 **Path Hijacking** | ✅ |
